@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "601559538411",
+    "firebase_url": "https://rfriend-7da2a.firebaseio.com",
+    "project_id": "rfriend-7da2a",
+    "storage_bucket": "rfriend-7da2a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:601559538411:android:557a60cbc361c3bb",
+        "android_client_info": {
+          "package_name": "com.pts3.r_friend"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "601559538411-aim231mgbpqfskc7aultcfc18br76rr6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.pts3.r_friend",
+            "certificate_hash": "ae85dc28326078f6ed3aa5f73f5e9c1e23b32a78"
+          }
+        },
+        {
+          "client_id": "601559538411-0hejh83fq0j1sl5ntmp57dejs7rr9h2l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANgsqoOi59THMvSRYGs7aIDckLR_mcXSI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "601559538411-0hejh83fq0j1sl5ntmp57dejs7rr9h2l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
