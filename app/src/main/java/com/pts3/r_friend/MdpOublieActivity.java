@@ -7,7 +7,6 @@ public class MdpOublieActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // this is a test
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mdp_oublie);
     }
