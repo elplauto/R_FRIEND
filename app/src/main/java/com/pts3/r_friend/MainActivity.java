@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity
         paramsIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                 Intent intent = new Intent(getApplicationContext(),CreationCompteActivity.class);
+                 Intent intent = new Intent(getApplicationContext(),ConnexionActivity.class);
                  startActivity(intent);
             }
         });
