@@ -8,6 +8,7 @@ public class Recommandation {
     private String type;
     private String sortie;
 
+
     public Recommandation(String destinataire, String emetteur, String titre, String type, String sortie) {
         this.destinataire = destinataire;
         this.emetteur = emetteur;
