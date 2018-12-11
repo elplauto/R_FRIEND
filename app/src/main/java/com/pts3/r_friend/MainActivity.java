@@ -1,15 +1,20 @@
 package com.pts3.r_friend;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
 import android.view.Display;
+import android.view.MenuInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -19,6 +24,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -27,6 +34,7 @@ import android.widget.ScrollView;
 import android.widget.SearchView;
 import android.widget.Space;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -68,8 +76,8 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent intent =new Intent(getApplicationContext(),CreationRecommandationActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -97,7 +105,6 @@ public class MainActivity extends AppCompatActivity
         firebaseManager = new FirebaseManager(this);
 
 
-
     }
 
     @Override
@@ -116,6 +123,7 @@ public class MainActivity extends AppCompatActivity
         getMenuInflater().inflate(R.menu.main, menu);
 
         final MenuItem searchItem = menu.findItem(R.id.action_search);
+
      //   mainSearchView =( SearchView) searchItem.getActionView();
 
         /*searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -131,7 +139,34 @@ public class MainActivity extends AppCompatActivity
             }
         });*/
 
-        return true;
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    /*@Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        // Inflate the search menu action bar.
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.main, menu);
+
+        // Get the search menu.
+        MenuItem searchMenu = menu.findItem(R.id.action_search);
+
+        // Get SearchView object.
+        SearchView searchView = (SearchView) searchMenu.getActionView();
+
+        // Get SearchView autocomplete object.
+        final  SearchView.SearchAutoComplete searchAutoComplete = (SearchView.SearchAutoComplete)searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        searchAutoComplete.setBackgroundColor(Color.BLUE);
+        searchAutoComplete.setTextColor(Color.WHITE);
+        searchAutoComplete.setDropDownBackgroundResource(android.R.color.holo_blue_light);
+
+        // Create a new ArrayAdapter and add data to search auto complete object.
+        String dataArr[] = {"Apple" , "Amazon" , "Amd", "Microsoft", "Microwave", "MicroNews", "Intel", "Intelligence"};
+        ArrayAdapter<String> newsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, dataArr);
+        searchAutoComplete.setAdapter(newsAdapter);
+
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -143,7 +178,7 @@ public class MainActivity extends AppCompatActivity
 
 
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
