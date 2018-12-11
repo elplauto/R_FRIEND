@@ -26,7 +26,6 @@
         <activity android:name=".ConnexionActivity"></activity>
         <activity android:name=".MdpOublieActivity" />
         <activity android:name=".CreationCompteActivity" />
-        <activity android:name=".RecommandationActivity"></activity>
     </application>
 
 </manifest>
