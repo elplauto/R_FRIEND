@@ -113,14 +113,5 @@ public class ConnexionActivity extends AppCompatActivity {
     public void debug(String s) {
         Log.e("-----",s);
     }
-
-
-
-
-
-
-
-
-
 }
 
