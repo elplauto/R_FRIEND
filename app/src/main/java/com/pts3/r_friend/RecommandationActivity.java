@@ -10,6 +10,7 @@ public class RecommandationActivity extends AppCompatActivity {
     public TextView comments ;
     public String lesCommentaires ;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
