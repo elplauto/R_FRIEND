@@ -1,11 +1,13 @@
 package com.pts3.r_friend;
 
-import android.content.DialogInterface;
-import android.support.constraint.ConstraintLayout;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+
+import android.app.AlertDialog;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.widget.SearchView;
+import android.support.annotation.Nullable;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,100 +15,189 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ListView;
+import android.widget.SearchView;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CreationRecommandationActivity extends AppCompatActivity {
-    EditText textNomDestinataire;
-    String nomRecherche;
-    String nomDestinataire;
-    ListView listDestinataires;
-    Button buttonAjouter;
-    List<String> listDest;
-    ArrayAdapter<String> adapter;
-    ConstraintLayout ecran;
-    MainActivity context;
-    private SearchView.SearchAutoComplete mSearchAutoComplete;
-    private android.widget.SearchView searchView;
 
+    DeezerManager deezerManager;
+    Spinner spinner;
+    android.support.v7.widget.SearchView.SearchAutoComplete searchAutoComplete;
+    TextView tv1;
+    TextView tv2;
+    TextView tv3;
+    TextView tv4;
+    Boolean recherchePrecise;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_creer_recommandation);
-        ecran = findViewById(R.id.Ecran);
 
+        spinner = (Spinner) findViewById(R.id.spinner);
+        String choix[] = {"Musique","Album","Artiste"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1 ,choix);
+        spinner.setAdapter(adapter);
 
-      /*  ArrayList<String> propositions = new ArrayList<>();
-        propositions.add("blablabla");
-        propositions.add("blablablaaaaa");
-        propositions.add("lalalaal");
-        propositions.add("zddzzdzqdzqd");
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, propositions);
+        tv1 = findViewById(R.id.tv1);
+        tv2 = findViewById(R.id.tv2);
+        tv3 = findViewById(R.id.tv3);
+        tv4 = findViewById(R.id.tv4);
 
-        SearchView.SearchAutoComplete searchAutoComplete = findViewById(R.id.searchView);
+        recherchePrecise = false;
 
-        searchAutoComplete.setAdapter(adapter);*/
-
-        listDestinataires = findViewById(R.id.listDestinataires);
-        listDestinataires.setY(ecran.getY()-5);
-        buttonAjouter = findViewById(R.id.buttonAjouter);
-        listDest = new ArrayList<String>();
-        adapter = new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_list_item_1,listDest);
-        listDestinataires.setAdapter(adapter);
-        /*buttonAjouter.setOnClickListener(new View.OnClickListener() {
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onClick(View v) {
-                nomDestinataire = textNomDestinataire.getText().toString();
-                textNomDestinataire.setText("");
-                listDest.add(nomDestinataire);
-                adapter.notifyDataSetChanged();
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (spinner.getSelectedItem().toString().equals("Musique")) {
+                    tv1.setText("Titre : ---");
+                    tv2.setText("Album : ---");
+                    tv3.setText("Duree : ---");
+                    tv4.setText("Artiste : ---");
+                } else if (spinner.getSelectedItem().toString().equals("Album")) {
+                    tv1.setText("Nom : ---");
+                    tv2.setText("Nombre de titres : ---");
+                    tv3.setText("Artiste : ---");
+                    tv4.setText("");
+                } else if (spinner.getSelectedItem().toString().equals("Artiste")) {
+                    tv1.setText("Nom : ---");
+                    tv2.setText("");
+                    tv3.setText("");
+                    tv4.setText("");
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
-        listDestinataires.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                listDest.remove(position);
-                adapter.notifyDataSetChanged();
-            }
 
-        });*/
+        deezerManager = new DeezerManager(this,getResources().getString(R.string.app_id));
 
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("");
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
 
-        final MenuItem searchItem = menu.findItem(R.id.action_search);
+        // Inflate the search menu action bar.
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu_creation_recommandation, menu);
+        // Get the search menu.
+        MenuItem searchMenu = menu.findItem(R.id.search_view);
 
-        //   mainSearchView =( SearchView) searchItem.getActionView();
+        // Get SearchView object.
+        android.support.v7.widget.SearchView searchView = (android.support.v7.widget.SearchView) searchMenu.getActionView();
 
-        /*searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        // Get SearchView autocomplete object.
+        searchAutoComplete = (android.support.v7.widget.SearchView.SearchAutoComplete)searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        searchAutoComplete.setBackgroundColor(Color.BLUE);
+        searchAutoComplete.setTextColor(Color.GREEN);
+        searchAutoComplete.setDropDownBackgroundResource(android.R.color.holo_blue_light);
+
+        // Create a new ArrayAdapter and add data to search auto complete object.
+        String dataArr[] = {};
+        ArrayAdapter<String> newsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, dataArr);
+        searchAutoComplete.setAdapter(newsAdapter);
+
+        // Listen to search view item on click event.
+        searchAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                //votre code ici
+            public void onItemClick(AdapterView<?> adapterView, View view, int itemIndex, long id) {
+                String queryString=(String)adapterView.getItemAtPosition(itemIndex);
+                searchAutoComplete.setText("" + queryString);
+                recherchePrecise = true;
+                String typeRecherche=spinner.getSelectedItem().toString();
+                if (typeRecherche.equals("Musique")) {
+                    deezerManager.rechercheMusique(queryString);
+                } else if (typeRecherche.equals("Album")) {
+                    deezerManager.rechercheAlbum(queryString);
+                } else if (typeRecherche.equals("Artiste")) {
+                    deezerManager.rechercheArtiste(queryString);
+                }
+            }
+        });
+
+        // Below event is triggered when submit search query.
+        searchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String s) {
+                String typeRecherche=spinner.getSelectedItem().toString();
+                if (typeRecherche.equals("Musique")) {
+                    deezerManager.rechercheMusique(s);
+                } else if (typeRecherche.equals("Album")) {
+                    deezerManager.rechercheAlbum(s);
+                } else if (typeRecherche.equals("Artiste")) {
+                    deezerManager.rechercheArtiste(s);
+                }
+
                 return false;
             }
-        });*/
+        });
 
         return super.onCreateOptionsMenu(menu);
     }
 
+    public void rechercheMusiqueReponse(List<Musique> musiques) {
+        if (recherchePrecise && musiques.size()!=0) {
+            Musique musique = musiques.get(0);
+            tv1.setText("Titre : " + musique.getTitre());
+            tv2.setText("Album : ---");
+            tv3.setText("Duree : " + musique.getDuree());
+            tv4.setText("Artiste : " + musique.getArtiste());
+        } else if (!recherchePrecise) {
+            ArrayList<String> propositions = new ArrayList<>();
+            for (Musique musique : musiques) {
+                propositions.add(musique.getTitre());
+            }
+            ArrayAdapter<String> newsAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_dropdown_item_1line, propositions);
+            searchAutoComplete.setAdapter(newsAdapter);
+        }
+    }
 
+    public void rechercheAlbumReponse(List<com.pts3.r_friend.Album> albums) {
+        if (recherchePrecise && albums.size()!=0) {
+            Album album = albums.get(0);
+            tv1.setText("Nom : " + album.getTitre());
+            tv2.setText("Nombre de titres : " + album.getNbTrack());
+            tv3.setText("Artiste : " + album.getArtiste());
+            tv4.setText("");
+        } else if (!recherchePrecise) {
+            ArrayList<String> propositions = new ArrayList<>();
+            for (com.pts3.r_friend.Album album : albums) {
+                propositions.add(album.getTitre());
+            }
+            ArrayAdapter<String> newsAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_dropdown_item_1line, propositions);
+            searchAutoComplete.setAdapter(newsAdapter);
+        }
+    }
 
+    public void rechercheArtisteReponse(List<Artiste> artistes) {
+        if (recherchePrecise && artistes.size()!=0) {
+                Artiste artiste = artistes.get(0);
+                tv1.setText("Nom : " + artiste.getNom());
+                tv2.setText("");
+                tv3.setText("");
+                tv4.setText("");
+        } else if (!recherchePrecise) {
+            ArrayList<String> propositions = new ArrayList<>();
+            for (Artiste artiste : artistes) {
+                propositions.add(artiste.getNom());
+            }
+            ArrayAdapter<String> newsAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_dropdown_item_1line, propositions);
+            searchAutoComplete.setAdapter(newsAdapter);
+        }
+    }
 }
