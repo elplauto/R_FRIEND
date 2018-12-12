@@ -267,7 +267,7 @@ public class MainActivity extends AppCompatActivity
 
 
         //il faudrait récup les recommandations depuis la bdd
-        root.child("recommandations").child("recommandationsAlbum").addListenerForSingleValueEvent(new ValueEventListener() {
+        /*root.child("recommandations").child("recommandationsAlbum").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Iterator<DataSnapshot> i = dataSnapshot.getChildren().iterator();
@@ -294,11 +294,11 @@ public class MainActivity extends AppCompatActivity
                 // Failed to read value
                 debug("erreur");
             }
-        });
+        });*/
 
     }
 
-    private String idAlb;
+    /*private String idAlb;
     public int searchNbTracksFromAlbum(String idAlb) {
         root.child("albums").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -320,7 +320,7 @@ public class MainActivity extends AppCompatActivity
                 debug("erreur");
             }
         });
-    }
+    }*/
 
     public void afficherRecommandation() {
         ll.removeAllViews();
