@@ -6,12 +6,22 @@ public class Album {
     private String titre;
     private String artiste;
     private String nbTrack;
+    private String pictureURL;
 
-    public Album(String id, String titre, String artiste, String nbTrack) {
+    public Album(String id, String titre, String artiste, String nbTrack, String pictureURL) {
         this.id=id;
         this.titre = titre;
         this.artiste = artiste;
         this.nbTrack = nbTrack;
+        this.pictureURL=pictureURL;
+    }
+
+    public String getPictureURL() {
+        return pictureURL;
+    }
+
+    public void setPictureURL(String pictureURL) {
+        this.pictureURL = pictureURL;
     }
 
     public String getId() {
