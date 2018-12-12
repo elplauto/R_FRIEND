@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -23,8 +24,13 @@ import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.squareup.picasso.Picasso;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 public class CreationRecommandationActivity extends AppCompatActivity {
@@ -36,6 +42,7 @@ public class CreationRecommandationActivity extends AppCompatActivity {
     TextView tv2;
     TextView tv3;
     TextView tv4;
+    ImageView imageViewRecommandation;
     Boolean recherchePrecise;
     Button btnRecommander;
     Object recommandable;
@@ -58,6 +65,10 @@ public class CreationRecommandationActivity extends AppCompatActivity {
         tv2 = findViewById(R.id.tv2);
         tv3 = findViewById(R.id.tv3);
         tv4 = findViewById(R.id.tv4);
+
+        imageViewRecommandation = findViewById(R.id.imageViewRecommandation);
+        imageViewRecommandation.setVisibility(View.INVISIBLE);
+
 
         btnRecommander = findViewById(R.id.btnRecommander);
         btnRecommander.setOnClickListener(new View.OnClickListener() {
@@ -88,7 +99,7 @@ public class CreationRecommandationActivity extends AppCompatActivity {
                     tv4.setText("");
                 } else if (spinner.getSelectedItem().toString().equals("Artiste")) {
                     tv1.setText("Nom : ---");
-                    tv2.setText("");
+                    tv2.setText("Nombre d'album : ---");
                     tv3.setText("");
                     tv4.setText("");
                 }
@@ -181,9 +192,11 @@ public class CreationRecommandationActivity extends AppCompatActivity {
                 }
             }
             tv1.setText("Titre : " + musique.getTitre());
-            tv2.setText("Album : ---");
+            tv2.setText("Album : " + musique.getNomAlbum());
             tv3.setText("Duree : " + musique.getDuree());
             tv4.setText("Artiste : " + musique.getArtiste());
+            Picasso.with(this).load(musique.getPictureURL()).into(imageViewRecommandation);
+            imageViewRecommandation.setVisibility(View.VISIBLE);
             recommandable = musique;
             recherchePrecise=false;
         } else if (!recherchePrecise) {
@@ -208,6 +221,8 @@ public class CreationRecommandationActivity extends AppCompatActivity {
             tv2.setText("Nombre de titres : " + album.getNbTrack());
             tv3.setText("Artiste : " + album.getArtiste());
             tv4.setText("");
+            Picasso.with(this).load(album.getPictureURL()).into(imageViewRecommandation);
+            imageViewRecommandation.setVisibility(View.VISIBLE);
             recommandable=album;
             recherchePrecise=false;
         } else if (!recherchePrecise) {
@@ -229,9 +244,11 @@ public class CreationRecommandationActivity extends AppCompatActivity {
                 }
             }
             tv1.setText("Nom : " + artiste.getNom());
-            tv2.setText("");
+            tv2.setText("Nombre d'album : " + artiste.getNbAlbums());
             tv3.setText("");
             tv4.setText("");
+            Picasso.with(this).load(artiste.getPictureURL()).into(imageViewRecommandation);
+            imageViewRecommandation.setVisibility(View.VISIBLE);
             recommandable = artiste;
             recherchePrecise=false;
         } else if (!recherchePrecise) {
@@ -254,8 +271,9 @@ public class CreationRecommandationActivity extends AppCompatActivity {
             recommandation.child("emetteur").setValue("");
             recommandation.child("destinataire").setValue("");
             recommandation.child("idMusique").setValue(musique.getId());
-            recommandation.child("nbLike").setValue(0);
-            recommandation.child("nbCoeur").setValue(0);
+            recommandation.child("nbLikes").setValue(0);
+            recommandation.child("nbAppuis").setValue(0);
+            recommandation.child("dateRecommandation").setValue(new GregorianCalendar().getTime().toString());
         } else if (spinner.getSelectedItem().toString().equals("Album")) {
             Album album = (Album) recommandable;
             ajouterAlbum(album);
@@ -263,8 +281,9 @@ public class CreationRecommandationActivity extends AppCompatActivity {
             recommandation.child("emetteur").setValue("");
             recommandation.child("destinataire").setValue("");
             recommandation.child("idAlbum").setValue(album.getId());
-            recommandation.child("nbLike").setValue(0);
-            recommandation.child("nbCoeur").setValue(0);
+            recommandation.child("nbLikes").setValue(0);
+            recommandation.child("nbAppuis").setValue(0);
+            recommandation.child("dateRecommandation").setValue(new GregorianCalendar().getTime().toString());
         } else if (spinner.getSelectedItem().toString().equals("Artiste")) {
             Artiste artiste = (Artiste) recommandable;
             ajouterArtiste(artiste);
@@ -272,8 +291,9 @@ public class CreationRecommandationActivity extends AppCompatActivity {
             recommandation.child("emetteur").setValue("");
             recommandation.child("destinataire").setValue("");
             recommandation.child("idArtiste").setValue(artiste.getId());
-            recommandation.child("nbLike").setValue(0);
-            recommandation.child("nbCoeur").setValue(0);
+            recommandation.child("nbLikes").setValue(0);
+            recommandation.child("nbAppuis").setValue(0);
+            recommandation.child("dateRecommandation").setValue(new GregorianCalendar().getTime().toString());
         }
         Toast.makeText(getApplicationContext(), "Votre recommandation a bien été créée", Toast.LENGTH_SHORT).show();
         finish();
@@ -285,6 +305,8 @@ public class CreationRecommandationActivity extends AppCompatActivity {
         ref.child("artiste").setValue(musique.getArtiste());
         ref.child("duree").setValue(musique.getDuree());
         ref.child("titre").setValue(musique.getTitre());
+        ref.child("album").setValue(musique.getNomAlbum());
+        ref.child("pictureURL").setValue(musique.getPictureURL());
     }
 
     public void ajouterAlbum(Album album) {
@@ -293,11 +315,14 @@ public class CreationRecommandationActivity extends AppCompatActivity {
         ref.child("artiste").setValue(album.getArtiste());
         ref.child("titre").setValue(album.getTitre());
         ref.child("nbTrack").setValue(album.getNbTrack());
+        ref.child("pictureURL").setValue(album.getPictureURL());
     }
 
     public void ajouterArtiste(Artiste artiste) {
         DatabaseReference refMusiques = database.getReference("artistes");
         DatabaseReference ref = refMusiques.child(artiste.getId());
         ref.child("nom").setValue(artiste.getNom());
+        ref.child("nbAlbums").setValue(artiste.getNbAlbums());
+        ref.child("pictureURL").setValue(artiste.getPictureURL());
     }
 }
