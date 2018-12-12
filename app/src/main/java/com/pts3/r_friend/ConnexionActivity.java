@@ -1,7 +1,6 @@
 package com.pts3.r_friend;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,22 +18,15 @@ import com.google.firebase.database.ValueEventListener;
 
 public class ConnexionActivity extends AppCompatActivity {
 
-    Button buttonConnexion;
-    Button buttonCreerCompte;
+    Button btnConnexion;
+    Button btnCreerCompte;
     EditText editTextPseudo;
-    String textPseudo;
-    String textMDP;
+    EditText editTextMDP;
     String pseudo;
     String mdp;
-    EditText editTextMDP;
-    TextView mdpOublier;
-    boolean compatibilité = false;
-    MainActivity context;
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference myRefPseudo;
-    DatabaseReference myRefMdp;
-    DatabaseReference refNBId = database.getReference("nbId");
-    int id;
+    TextView mdpOublie;
+    FirebaseDatabase database;
+    DatabaseReference root;
 
 
     @Override
@@ -42,106 +34,84 @@ public class ConnexionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_connexion);
-        refNBId.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                id = dataSnapshot.getValue(Integer.class);
-            }
+        database = FirebaseDatabase.getInstance();
+        root = database.getReference();
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-        buttonConnexion = findViewById(R.id.buttonConnexion);
-        buttonCreerCompte = findViewById(R.id.btnValider);
+        btnConnexion = findViewById(R.id.btnConnexion);
+        btnCreerCompte = findViewById(R.id.btnCreerCompte);
         editTextPseudo = findViewById(R.id.textPseudo);
         editTextMDP = findViewById(R.id.textMDP);
-        mdpOublier = findViewById(R.id.textMDPOublier);
-        buttonConnexion.setOnClickListener(new View.OnClickListener() {
+        mdpOublie = findViewById(R.id.textMdpOublie);
+
+        btnConnexion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                textPseudo = editTextPseudo.getText().toString();
-                textMDP = editTextMDP.getText().toString();
-                //Log.e("Text Pseudo",""+textPseudo);
-                for(int i = 0;i<id;i++){
-                    myRefPseudo = database.getReference().child("Utilisateurs").child("user"+i).child("Pseudo");
-                    myRefMdp = database.getReference().child("Utilisateurs").child("user"+i).child("Motdepasse");
-                    myRefPseudo.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            pseudo = dataSnapshot.getValue(String.class);
-                            Log.e("----",""+pseudo);
-
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
-                    myRefMdp.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            mdp = dataSnapshot.getValue(String.class);
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
-                    Log.e("----",""+pseudo);
-
-                    if (textPseudo == pseudo){
-                        //Log.e("----","---- Compatibilité = "+compatibilité);
-                        compatibilité = true;
-                    }
-
+                pseudo = editTextPseudo.getText().toString();
+                mdp = editTextMDP.getText().toString();
+                if (pseudo.equals("")) {
+                    connexion(false, "Veuillez saisir un pseudo");
                 }
-                //Log.e("----",""+compatibilité);
-
-
-                if (compatibilité == true) {
-                    Toast.makeText(getApplicationContext(), "Correct\nPseudo: "+textPseudo+" mdp :"+textMDP, Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getApplicationContext(), "Incorrect", Toast.LENGTH_SHORT).show();
+                else if (mdp.equals("")){
+                    connexion(false, "Veuillez saisir un mot de passe");
                 }
-                compatibilité=false;
+                else {
+                    verification();
+                }
             }
-
         });
-        buttonCreerCompte.setOnClickListener(new View.OnClickListener() {
+
+        btnCreerCompte.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ConnexionActivity.this,CreationCompteActivity.class);
                 startActivity(intent);
             }
         });
-        mdpOublier.setClickable(true);
 
-        mdpOublier.setOnClickListener(new View.OnClickListener() {
+        mdpOublie.setClickable(true);
+
+        mdpOublie.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ConnexionActivity.this,MdpOublieActivity.class);
                 startActivity(intent);
-
             }
         });
+    }
 
+    private void verification() {
+        root.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                boolean pseudoExistant=dataSnapshot.hasChild(pseudo);
+                if (pseudoExistant) {
+                    if (mdp.equals(dataSnapshot.child(pseudo).child("mdp").getValue().toString())) {
+                        connexion(true, "Connexion réussie");
+                    } else {
+                        connexion(false, "Le pseudo et le mot de passe ne correspondent pas");
+                    }
+                } else {
+                    connexion(false, "Pseudo inexistant");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                debug("erreur");
+            }
+        });
+    }
+
+    private void connexion(boolean connexionReussie, String msg) {
+        Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+        if (connexionReussie) {
+            finish();
+        }
     }
 
     public void debug(String s) {
         Log.e("-----",s);
     }
-
-
-
-
-
-
-
-
-
 }
 

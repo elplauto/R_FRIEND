@@ -22,10 +22,10 @@ import java.util.List;
 
 public class DeezerManager {
 
-    MainActivity context;
+    CreationRecommandationActivity context;
     DeezerConnect deezerConnect;
 
-    public DeezerManager(MainActivity context, String appId) {
+    public DeezerManager(CreationRecommandationActivity context, String appId) {
         this.context = context;
         deezerConnect = new DeezerConnect(context, appId);
         String[] permissions = new String[] {
@@ -62,9 +62,7 @@ public class DeezerManager {
                 final List<Musique> musiques = new ArrayList<>();
                 List<Track> tracks = (List<Track>) result;
                 for (Track track : tracks) {
-                    debug("TITRE : " + track.getTitle());
-                    debug("ALBUM :" + track.getAlbum().getTitle());
-                   musiques.add(new Musique(track.getId()+"",track.getTitle(),track.getDuration()+"s", track.getArtist().getName()));
+                    musiques.add(new Musique(track.getId()+"",track.getTitle(),track.getDuration()+"s", track.getArtist().getName(), track.getAlbum().getTitle(), track.getAlbum().getBigImageUrl()));
                 }
                 context.rechercheMusiqueReponse(musiques);
             }
@@ -91,8 +89,7 @@ public class DeezerManager {
                 final List<com.pts3.r_friend.Album> listAlbums = new ArrayList<>();
                 List<Album> albums = (List<Album>) result;
                 for (Album album : albums) {
-                    debug(album.getTitle());
-                    listAlbums.add(new com.pts3.r_friend.Album(album.getId()+"",album.getTitle(),album.getArtist().getName(),album.getNbTracks()+""));
+                    listAlbums.add(new com.pts3.r_friend.Album(album.getId()+"",album.getTitle(),album.getArtist().getName(),album.getNbTracks()+"", album.getBigImageUrl()));
                 }
                 context.rechercheAlbumReponse(listAlbums);
             }
@@ -119,8 +116,7 @@ public class DeezerManager {
                 final List<Artiste> artistes = new ArrayList<>();
                 List<Artist> artists = (List<Artist>) result;
                 for (Artist artist : artists) {
-                    debug(artist.getName());
-                    artistes.add(new Artiste(artist.getId()+"",artist.getName()));
+                    artistes.add(new Artiste(artist.getId()+"",artist.getName(), artist.getNbAlbums()+"", artist.getBigImageUrl()));
                 }
                 context.rechercheArtisteReponse(artistes);
             }

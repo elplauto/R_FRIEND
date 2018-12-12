@@ -35,7 +35,7 @@ public class CreationCompteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_creation_compte);
 
-        btnValider = findViewById(R.id.btnValider);
+        btnValider = findViewById(R.id.btnCreerCompte);
         editTextEmail = findViewById(R.id.editTextEmail);
         editTextPseudo = findViewById(R.id.editTextPseudo);
         editTextMdp = findViewById(R.id.editTextMdp);
