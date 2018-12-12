@@ -248,6 +248,8 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    private Integer nbTracks;
+    private String idAlb, groupe, titre, imgAlbum;
     public void remplirRecommandation() {
 
         //recommandation de musiques
@@ -262,53 +264,55 @@ public class MainActivity extends AppCompatActivity
         recommandations.add(new GroupeRecom("Françoise", "Patrick", 18, 41, "Francky Vincent"));
 
         //recommandation d'albums
-        recommandations.add(new AlbumRecom("Foxxx", "Sasha", 1274, 26,"Amy Winehouse", 13, "Back to Black", "/"));
-        recommandations.add(new AlbumRecom("Alberto", "Jacques", 3, 14,"Megadeth", 9, "Rust in Peace", "/"));
+        /*recommandations.add(new AlbumRecom("Foxxx", "Sasha", 1274, 26,"Amy Winehouse", 13, "Back to Black", "/"));
+        recommandations.add(new AlbumRecom("Alberto", "Jacques", 3, 14,"Megadeth", 9, "Rust in Peace", "/"));*/
 
-
+        Log.i("stp_marche", "1");
         //il faudrait récup les recommandations depuis la bdd
-        /*root.child("recommandations").child("recommandationsAlbum").addListenerForSingleValueEvent(new ValueEventListener() {
+        root.child("recommandations").child("recommandationsAlbum").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.i("stp_marche", "2");
                 Iterator<DataSnapshot> i = dataSnapshot.getChildren().iterator();
                 while (i.hasNext()) {
                     DataSnapshot data = i.next();
+                    Log.i("stp_marche", "3");
 
+                    //réinitialisation des variables
+                    nbTracks = null;
+                    groupe = null;
+                    titre = null;
+                    imgAlbum = null;
+
+                    Log.i("stp_marche", "4");
+
+                    //recherche des infos des recommandations d'albums
                     String dest = data.child("destinataire").getValue().toString();
                     String emet = data.child("emetteur").getValue().toString();
-                    int nbLikes = Integer.parseInt(data.child("nbLikes").getValue().toString());
-                    int nbAppuis = Integer.parseInt(data.child("nbappuis").getValue().toString());
+                    Integer nbLikes = Integer.parseInt(data.child("nbLikes").getValue().toString());
+                    Integer nbAppuis = Integer.parseInt(data.child("nbappuis").getValue().toString());
+
+                    Log.i("stp_marche", "5");
 
                     //groupe, nbTracks, imgAlb et titre depuis recherche sur l'album
-                    String idAlb = data.child("idAlbum").getValue().toString();
-                    int nbTracks = searchNbTracksFromAlbum(idAlb);
+                    idAlb = data.child("idAlbum").getValue().toString();
+                    searchInfosFromAlbum();
 
+                    Log.i("stp_marche", "6");
 
-                }
+                    //avant de créer la recommandation je vérifie que j'ai toutes les infos (c'est pas certain car elles arrivent en décalé)
+                    boolean toutesLesInfos = false;
+                    do {
+                        Log.i("stp_marche", "7");
+                        if (dest != null && emet != null && /*nbLikes != null && nbAppuis != null && */
+                                nbTracks != null && groupe != null && titre != null)
+                            toutesLesInfos = true;
+                        Log.i("recupInfos", "pas toutes les infos");
+                    } while (!toutesLesInfos);
 
-                //il va falloir recup isLiked et isSupported depuis une autre branche de la bdd
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                debug("erreur");
-            }
-        });*/
-
-    }
-
-    /*private String idAlb;
-    public int searchNbTracksFromAlbum(String idAlb) {
-        root.child("albums").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Iterator<DataSnapshot> i = dataSnapshot.getChildren().iterator();
-                while (i.hasNext()) {
-                    DataSnapshot data = i.next();
-                    if (data.getValue().toString().equals(idAlb)) {
-
-                    }
+                    Log.i("stp_marche", "8");
+                    //création de l'objet recommandation
+                    recommandations.add(new AlbumRecom(dest, emet, nbLikes, nbAppuis, groupe, nbTracks, titre, imgAlbum));
 
                 }
 
@@ -320,7 +324,37 @@ public class MainActivity extends AppCompatActivity
                 debug("erreur");
             }
         });
-    }*/
+
+    }
+
+    public void searchInfosFromAlbum() {
+        root.child("albums").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.i("stp_marche", "5.1");
+                Iterator<DataSnapshot> i = dataSnapshot.getChildren().iterator();
+                while (i.hasNext()) {
+                    Log.i("stp_marche", "5.2");
+                    DataSnapshot data = i.next();
+                    if (data.getValue().toString().equals(idAlb)) {
+                        nbTracks = Integer.parseInt(data.child("nbLikes").getValue().toString());
+                        groupe = data.child("artiste").getValue().toString();
+                        titre = data.child("titre").getValue().toString();
+                        imgAlbum = data.child("pictureURL").getValue().toString();
+                    }
+                    Log.i("stp_marche", "5.3");
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                debug("erreur");
+            }
+        });
+    }
 
     public void afficherRecommandation() {
         ll.removeAllViews();
