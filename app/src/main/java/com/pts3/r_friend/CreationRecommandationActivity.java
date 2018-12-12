@@ -15,10 +15,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,11 +37,17 @@ public class CreationRecommandationActivity extends AppCompatActivity {
     TextView tv3;
     TextView tv4;
     Boolean recherchePrecise;
+    Button btnRecommander;
+    Object recommandable;
+    FirebaseDatabase database;
+    int selectedIndex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_creer_recommandation);
+
+        database = FirebaseDatabase.getInstance();
 
         spinner = (Spinner) findViewById(R.id.spinner);
         String choix[] = {"Musique","Album","Artiste"};
@@ -48,6 +58,18 @@ public class CreationRecommandationActivity extends AppCompatActivity {
         tv2 = findViewById(R.id.tv2);
         tv3 = findViewById(R.id.tv3);
         tv4 = findViewById(R.id.tv4);
+
+        btnRecommander = findViewById(R.id.btnRecommander);
+        btnRecommander.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (tv1.getText().equals("Titre : ---") || tv1.getText().equals("Nom : ---")) {
+                    Toast.makeText(getApplicationContext(), "Veuillez choisir un objet à recommander", Toast.LENGTH_SHORT).show();
+                } else {
+                    ajouterRecommandation();
+                }
+            }
+        });
 
         recherchePrecise = false;
 
@@ -112,9 +134,10 @@ public class CreationRecommandationActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int itemIndex, long id) {
                 String queryString=(String)adapterView.getItemAtPosition(itemIndex);
-                searchAutoComplete.setText("" + queryString);
+                searchAutoComplete.setText(queryString);
                 recherchePrecise = true;
                 String typeRecherche=spinner.getSelectedItem().toString();
+                selectedIndex = itemIndex;
                 if (typeRecherche.equals("Musique")) {
                     deezerManager.rechercheMusique(queryString);
                 } else if (typeRecherche.equals("Album")) {
@@ -142,7 +165,6 @@ public class CreationRecommandationActivity extends AppCompatActivity {
                 } else if (typeRecherche.equals("Artiste")) {
                     deezerManager.rechercheArtiste(s);
                 }
-
                 return false;
             }
         });
@@ -153,10 +175,17 @@ public class CreationRecommandationActivity extends AppCompatActivity {
     public void rechercheMusiqueReponse(List<Musique> musiques) {
         if (recherchePrecise && musiques.size()!=0) {
             Musique musique = musiques.get(0);
+            for (Musique each : musiques) {
+                if (each.getTitre().equals(searchAutoComplete.getText().toString())) {
+                    musique=each;
+                }
+            }
             tv1.setText("Titre : " + musique.getTitre());
             tv2.setText("Album : ---");
             tv3.setText("Duree : " + musique.getDuree());
             tv4.setText("Artiste : " + musique.getArtiste());
+            recommandable = musique;
+            recherchePrecise=false;
         } else if (!recherchePrecise) {
             ArrayList<String> propositions = new ArrayList<>();
             for (Musique musique : musiques) {
@@ -170,10 +199,17 @@ public class CreationRecommandationActivity extends AppCompatActivity {
     public void rechercheAlbumReponse(List<com.pts3.r_friend.Album> albums) {
         if (recherchePrecise && albums.size()!=0) {
             Album album = albums.get(0);
+            for (Album each : albums) {
+                if (each.getTitre().equals(searchAutoComplete.getText().toString())) {
+                    album=each;
+                 }
+            }
             tv1.setText("Nom : " + album.getTitre());
             tv2.setText("Nombre de titres : " + album.getNbTrack());
             tv3.setText("Artiste : " + album.getArtiste());
             tv4.setText("");
+            recommandable=album;
+            recherchePrecise=false;
         } else if (!recherchePrecise) {
             ArrayList<String> propositions = new ArrayList<>();
             for (com.pts3.r_friend.Album album : albums) {
@@ -186,11 +222,18 @@ public class CreationRecommandationActivity extends AppCompatActivity {
 
     public void rechercheArtisteReponse(List<Artiste> artistes) {
         if (recherchePrecise && artistes.size()!=0) {
-                Artiste artiste = artistes.get(0);
-                tv1.setText("Nom : " + artiste.getNom());
-                tv2.setText("");
-                tv3.setText("");
-                tv4.setText("");
+            Artiste artiste = artistes.get(0);
+            for (Artiste each : artistes) {
+                if (each.getNom().equals(searchAutoComplete.getText().toString())) {
+                    artiste = each;
+                }
+            }
+            tv1.setText("Nom : " + artiste.getNom());
+            tv2.setText("");
+            tv3.setText("");
+            tv4.setText("");
+            recommandable = artiste;
+            recherchePrecise=false;
         } else if (!recherchePrecise) {
             ArrayList<String> propositions = new ArrayList<>();
             for (Artiste artiste : artistes) {
@@ -199,5 +242,62 @@ public class CreationRecommandationActivity extends AppCompatActivity {
             ArrayAdapter<String> newsAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_dropdown_item_1line, propositions);
             searchAutoComplete.setAdapter(newsAdapter);
         }
+    }
+
+    private void ajouterRecommandation() {
+        DatabaseReference root = database.getReference();
+        DatabaseReference recommandation;
+        if (spinner.getSelectedItem().toString().equals("Musique")) {
+            Musique musique = (Musique) recommandable;
+            ajouterMusique(musique);
+            recommandation = root.child("recommandations").child("recommandationsMusique").push();
+            recommandation.child("emetteur").setValue("");
+            recommandation.child("destinataire").setValue("");
+            recommandation.child("idMusique").setValue(musique.getId());
+            recommandation.child("nbLike").setValue(0);
+            recommandation.child("nbCoeur").setValue(0);
+        } else if (spinner.getSelectedItem().toString().equals("Album")) {
+            Album album = (Album) recommandable;
+            ajouterAlbum(album);
+            recommandation = root.child("recommandations").child("recommandationsAlbum").push();
+            recommandation.child("emetteur").setValue("");
+            recommandation.child("destinataire").setValue("");
+            recommandation.child("idAlbum").setValue(album.getId());
+            recommandation.child("nbLike").setValue(0);
+            recommandation.child("nbCoeur").setValue(0);
+        } else if (spinner.getSelectedItem().toString().equals("Artiste")) {
+            Artiste artiste = (Artiste) recommandable;
+            ajouterArtiste(artiste);
+            recommandation = root.child("recommandations").child("recommandationsArtiste").push();
+            recommandation.child("emetteur").setValue("");
+            recommandation.child("destinataire").setValue("");
+            recommandation.child("idArtiste").setValue(artiste.getId());
+            recommandation.child("nbLike").setValue(0);
+            recommandation.child("nbCoeur").setValue(0);
+        }
+        Toast.makeText(getApplicationContext(), "Votre recommandation a bien été créée", Toast.LENGTH_SHORT).show();
+        finish();
+    }
+
+    public void ajouterMusique(Musique musique) {
+        DatabaseReference refMusique = database.getReference("musiques");
+        DatabaseReference ref = refMusique.child(musique.getId());
+        ref.child("artiste").setValue(musique.getArtiste());
+        ref.child("duree").setValue(musique.getDuree());
+        ref.child("titre").setValue(musique.getTitre());
+    }
+
+    public void ajouterAlbum(Album album) {
+        DatabaseReference refMusiques = database.getReference("albums");
+        DatabaseReference ref = refMusiques.child(album.getId());
+        ref.child("artiste").setValue(album.getArtiste());
+        ref.child("titre").setValue(album.getTitre());
+        ref.child("nbTrack").setValue(album.getNbTrack());
+    }
+
+    public void ajouterArtiste(Artiste artiste) {
+        DatabaseReference refMusiques = database.getReference("artistes");
+        DatabaseReference ref = refMusiques.child(artiste.getId());
+        ref.child("nom").setValue(artiste.getNom());
     }
 }

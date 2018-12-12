@@ -42,7 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener{
 
     List<Recommandation> recommandations;
     ConstraintLayout fenetrePrincipale;
@@ -55,8 +55,6 @@ public class MainActivity extends AppCompatActivity
     SwitchCompat switchArtistes;
     SearchView userSearchView;
     SearchView mainSearchView;
-    DeezerManager deezerManager;
-    FirebaseManager firebaseManager;
 
 
     @Override
@@ -94,17 +92,11 @@ public class MainActivity extends AppCompatActivity
         setScrollView();
        // afficherRecommandation();
 
-        deezerManager = new DeezerManager(this,getResources().getString(R.string.app_id));
-
         switchRecommandationsPersos = findViewById(R.id.app_bar_switch_persos);
         switchMusiques = findViewById(R.id.app_bar_switch_musiques);
         switchAlbums = findViewById(R.id.app_bar_switch_albums);
         switchArtistes = findViewById(R.id.app_bar_switch_artistes);
         userSearchView = findViewById(R.id.app_bar_search);
-
-        firebaseManager = new FirebaseManager(this);
-
-
     }
 
     @Override
@@ -221,16 +213,11 @@ public class MainActivity extends AppCompatActivity
         userSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                deezerManager.rechercheMusique(query);
-                deezerManager.rechercheArtiste(query);
-                deezerManager.rechercheAlbum(query);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-
-              //  Intent intent = new Intent(MainActivity.this,MainActivity2.class);
                 return false;
             }
         });
@@ -392,22 +379,4 @@ public class MainActivity extends AppCompatActivity
     public void debug(String s) {
         Log.e("-----",s);
     }
-
-    public void rechercheMusiqueReponse(List<Musique> musiques) {
-        for (Musique musique : musiques) {
-            firebaseManager.ajouterMusique(musique);
-        }
     }
-
-    public void rechercheAlbumReponse(List<com.pts3.r_friend.Album> albums) {
-        for (com.pts3.r_friend.Album album : albums) {
-            firebaseManager.ajouterAlbum(album);
-        }
-    }
-
-    public void rechercheArtisteReponse(List<Artiste> artistes) {
-        for (Artiste artiste : artistes) {
-            firebaseManager.ajouterArtiste(artiste);
-        }
-    }
-}
