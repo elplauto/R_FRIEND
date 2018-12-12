@@ -26,7 +26,13 @@ import android.widget.SearchView;
 import android.widget.Space;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
@@ -45,6 +51,7 @@ public class MainActivity extends AppCompatActivity
     SearchView mainSearchView;
     DeezerManager deezerManager;
     FirebaseManager firebaseManager;
+    DatabaseReference root;
 
 
     @Override
@@ -242,22 +249,77 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void remplirRecommandation() {
-        //il faudrait récup les recommandations depuis la bdd
 
         //recommandation de musiques
-        recommandations.add(new MusiqueRecom("Jean", "Paul", 3, 5, false, true, "Sum41", "3:00", "Blood in my Eyes"));
-        recommandations.add(new MusiqueRecom("Georges", "Hervé", 46, 6, false, true,"Sum41", "3:50", "Screaming Bloody Murders"));
-        recommandations.add(new MusiqueRecom("Huguette", "Josianne", 14, 23, true, true, "Cannibal Corpse", "17:23", "I Cum Blood"));
+        recommandations.add(new MusiqueRecom("Jean", "Paul", 3, 5, "Sum41", "3:00", "Blood in my Eyes"));
+        recommandations.add(new MusiqueRecom("", "Hervé", 46, 6,"Sum41", "3:50", "Screaming Bloody Murders"));
+        recommandations.add(new MusiqueRecom("Huguette", "Josianne", 14, 23, "Cannibal Corpse", "17:23", "I Cum Blood"));
 
         //recommandation d'artistes
-        recommandations.add(new GroupeRecom("Gilbert", "Claudette", 12, 256, false, false, "Pascal Obispo"));
-        recommandations.add(new GroupeRecom("Martin", "Baptiste", 0, 0, false, false, "Orelsan"));
-        recommandations.add(new GroupeRecom("Marc", "Sylvie", 61, 36, true, true, "Jean Michel Jarre"));
-        recommandations.add(new GroupeRecom("Françoise", "Patrick", 18, 41, true, false, "Francky Vincent"));
+        recommandations.add(new GroupeRecom("Gilbert", "Claudette", 12, 256, "Pascal Obispo"));
+        recommandations.add(new GroupeRecom("Martin", "Baptiste", 0, 0, "Orelsan"));
+        recommandations.add(new GroupeRecom("", "Sylvie", 61, 36, "Jean Michel Jarre"));
+        recommandations.add(new GroupeRecom("Françoise", "Patrick", 18, 41, "Francky Vincent"));
 
         //recommandation d'albums
-        recommandations.add(new AlbumRecom("Foxxx", "Sasha", 1274, 26, false, true,"Amy Winehouse", 13, "Back to Black", "/"));
-        recommandations.add(new AlbumRecom("Alberto", "Jacques", 3, 14, true, true,"Megadeth", 9, "Rust in Peace", "/"));
+        recommandations.add(new AlbumRecom("Foxxx", "Sasha", 1274, 26,"Amy Winehouse", 13, "Back to Black", "/"));
+        recommandations.add(new AlbumRecom("Alberto", "Jacques", 3, 14,"Megadeth", 9, "Rust in Peace", "/"));
+
+
+        //il faudrait récup les recommandations depuis la bdd
+        root.child("recommandations").child("recommandationsAlbum").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Iterator<DataSnapshot> i = dataSnapshot.getChildren().iterator();
+                while (i.hasNext()) {
+                    DataSnapshot data = i.next();
+
+                    String dest = data.child("destinataire").getValue().toString();
+                    String emet = data.child("emetteur").getValue().toString();
+                    int nbLikes = Integer.parseInt(data.child("nbLikes").getValue().toString());
+                    int nbAppuis = Integer.parseInt(data.child("nbappuis").getValue().toString());
+
+                    //groupe, nbTracks, imgAlb et titre depuis recherche sur l'album
+                    String idAlb = data.child("idAlbum").getValue().toString();
+                    int nbTracks = searchNbTracksFromAlbum(idAlb);
+
+
+                }
+
+                //il va falloir recup isLiked et isSupported depuis une autre branche de la bdd
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                debug("erreur");
+            }
+        });
+
+    }
+
+    private String idAlb;
+    public int searchNbTracksFromAlbum(String idAlb) {
+        root.child("albums").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Iterator<DataSnapshot> i = dataSnapshot.getChildren().iterator();
+                while (i.hasNext()) {
+                    DataSnapshot data = i.next();
+                    if (data.getValue().toString().equals(idAlb)) {
+
+                    }
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                debug("erreur");
+            }
+        });
     }
 
     public void afficherRecommandation() {
@@ -268,6 +330,7 @@ public class MainActivity extends AppCompatActivity
                     || recommandation instanceof AlbumRecom && switchAlbums.isChecked()
                     ){
                 ll.addView(new Space(this),new LinearLayout.LayoutParams(1,size.y/50));
+                Log.i("llcenter", "0");
                 ll.addView(recommandation.toLinearLayout(this));
             }
         }
