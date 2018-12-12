@@ -30,6 +30,7 @@
         <activity android:name=".CreationCompteActivity"></activity>
         <activity android:name=".CreationRecommandationActivity"></activity>
 
+        <activity android:name=".RecommandationActivity"></activity>
     </application>
 
 </manifest>
