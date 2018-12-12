@@ -15,6 +15,7 @@ import com.squareup.picasso.Picasso;
 
 public abstract class Recommandation {
 
+    private static String RECOMENDED_TO_EVERYONE = "";
     private String destinataire;
     private String emetteur;
     private int nbLikes;
@@ -135,6 +136,11 @@ public abstract class Recommandation {
     }
 
     //public abstract LinearLayout toLinearLayout(MainActivity c);
+
+
+    public static String getRecomendedToEveryone() {
+        return RECOMENDED_TO_EVERYONE;
+    }
 
     public String getDestinataire() {
         return destinataire;

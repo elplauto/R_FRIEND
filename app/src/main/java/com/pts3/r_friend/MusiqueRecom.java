@@ -32,12 +32,12 @@ public class MusiqueRecom extends Recommandation {
     public void displayCenterOfRecom(MainActivity c, LinearLayout[] ll) {
         Point size = c.getSize();
         TextView tv = new TextView(c);
-        tv.setText(this.getEmetteur() + " recommande une musique" + (getDestinataire().equals("") ? "" : " à "+this.getDestinataire()));
+        tv.setText(this.getEmetteur() + " recommande une musique" + (getDestinataire().equals(getRecomendedToEveryone()) ? "" : " à "+this.getDestinataire()));
         tv.setTypeface(null, Typeface.BOLD_ITALIC);
         ll[0].addView(tv);
         ll[0].addView(ll[1]);
         TextView tv2 = new TextView(c);
-        tv2.setText("Titre : " + this.getTitre() + "(" + this.getDuree() + " titres)");
+        tv2.setText("Titre : " + this.getTitre() + "(" + this.getDuree() + ")");
         TextView tv3 = new TextView(c);
         tv3.setText("Groupe : " + this.getGroupe());
         TextView tv4 = new TextView(c);

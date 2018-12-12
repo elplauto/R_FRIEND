@@ -14,13 +14,13 @@ import com.squareup.picasso.Picasso;
 public class AlbumRecom extends Recommandation {
 
     private String groupe;
-    private int nbTracks;
+    private String nbTracks;
     private String titre;
     private String imgAlbum;    //path de l'image
     private String[] titresMusiques;
 
 
-    public AlbumRecom(String destinataire, String emetteur, int nbLikes, int nbAppuis, String groupe, int nbTracks, String titre, String imgAlbum) {
+    public AlbumRecom(String destinataire, String emetteur, int nbLikes, int nbAppuis, String groupe, String nbTracks, String titre, String imgAlbum) {
         super(destinataire, emetteur, nbLikes, nbAppuis);
         this.groupe = groupe;
         this.nbTracks = nbTracks;
@@ -32,7 +32,7 @@ public class AlbumRecom extends Recommandation {
     public void displayCenterOfRecom(MainActivity c, LinearLayout[] ll) {
         Point size = c.getSize();
         TextView tv = new TextView(c);
-        tv.setText(this.getEmetteur() + " recommande un album" + (getDestinataire().equals("") ? "" : " à "+this.getDestinataire()));
+        tv.setText(this.getEmetteur() + " recommande un album" + (getDestinataire().equals(getRecomendedToEveryone()) ? "" : " à "+this.getDestinataire()));
         tv.setTypeface(null, Typeface.BOLD_ITALIC);
         ll[0].addView(tv);
         ll[0].addView(ll[1]);
@@ -52,7 +52,7 @@ public class AlbumRecom extends Recommandation {
         return groupe;
     }
 
-    public int getNbTracks() {
+    public String getNbTracks() {
         return nbTracks;
     }
 
@@ -72,7 +72,7 @@ public class AlbumRecom extends Recommandation {
         this.groupe = groupe;
     }
 
-    public void setNbTracks(int nbTracks) {
+    public void setNbTracks(String nbTracks) {
         this.nbTracks = nbTracks;
     }
 

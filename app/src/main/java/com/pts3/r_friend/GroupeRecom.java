@@ -28,7 +28,7 @@ public class GroupeRecom extends Recommandation {
     public void displayCenterOfRecom(MainActivity c, LinearLayout[] ll) {
         Point size = c.getSize();
         TextView tv = new TextView(c);
-        tv.setText(this.getEmetteur() + " recommande un groupe" + (getDestinataire().equals("") ? "" : " à "+this.getDestinataire()));
+        tv.setText(this.getEmetteur() + " recommande un groupe" + (getDestinataire().equals(getRecomendedToEveryone()) ? "" : " à "+this.getDestinataire()));
         tv.setTypeface(null, Typeface.BOLD_ITALIC);
         ll[0].addView(tv);
         ll[0].addView(ll[1]);
