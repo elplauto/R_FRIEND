@@ -52,7 +52,6 @@ public class MainActivity extends AppCompatActivity
     SearchView userSearchView;
     SearchView mainSearchView;
     DeezerManager deezerManager;
-    FirebaseManager firebaseManager;
     FirebaseDatabase database;
     DatabaseReference root;
 
@@ -94,15 +93,11 @@ public class MainActivity extends AppCompatActivity
         setScrollView();
        // afficherRecommandation();
 
-        deezerManager = new DeezerManager(this,getResources().getString(R.string.app_id));
-
         switchRecommandationsPersos = findViewById(R.id.app_bar_switch_persos);
         switchMusiques = findViewById(R.id.app_bar_switch_musiques);
         switchAlbums = findViewById(R.id.app_bar_switch_albums);
         switchArtistes = findViewById(R.id.app_bar_switch_artistes);
         userSearchView = findViewById(R.id.app_bar_search);
-
-        firebaseManager = new FirebaseManager(this);
 
     }
 
@@ -372,21 +367,4 @@ public class MainActivity extends AppCompatActivity
         Log.e("-----",s);
     }
 
-    public void rechercheMusiqueReponse(List<Musique> musiques) {
-        for (Musique musique : musiques) {
-            firebaseManager.ajouterMusique(musique);
-        }
-    }
-
-    public void rechercheAlbumReponse(List<com.pts3.r_friend.Album> albums) {
-        for (com.pts3.r_friend.Album album : albums) {
-            firebaseManager.ajouterAlbum(album);
-        }
-    }
-
-    public void rechercheArtisteReponse(List<Artiste> artistes) {
-        for (Artiste artiste : artistes) {
-            firebaseManager.ajouterArtiste(artiste);
-        }
-    }
 }
