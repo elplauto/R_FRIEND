@@ -18,15 +18,13 @@ public class MusiqueRecom extends Recommandation {
     private String duree;
     private String titre;
     private String nomAlbum;
-    private String imgAlbum;
 
-    public MusiqueRecom(String destinataire, String emetteur, int nbLikes, int nbAppuis, String groupe, String duree, String titre) {
-        super(destinataire, emetteur, nbLikes, nbAppuis);
+    public MusiqueRecom(String destinataire, String emetteur, int nbLikes, int nbAppuis, String picture, String groupe, String duree, String titre, String nomAlbum) {
+        super(destinataire, emetteur, nbLikes, nbAppuis, picture);
         this.groupe = groupe;
         this.duree = duree;
         this.titre = titre;
-        //retrouver le nom de l'album grâce au titre de la musique et le nom de l'artiste
-        //retrouver l'image de l'album grâce au nom de l'album
+        this.nomAlbum = nomAlbum;
     }
 
     public void displayCenterOfRecom(MainActivity c, LinearLayout[] ll) {
@@ -67,10 +65,6 @@ public class MusiqueRecom extends Recommandation {
         return nomAlbum;
     }
 
-    public String getImgAlbum() {
-        return imgAlbum;
-    }
-
     public void setGroupe(String groupe) {
         this.groupe = groupe;
     }
@@ -85,10 +79,6 @@ public class MusiqueRecom extends Recommandation {
 
     public void setNomAlbum(String nomAlbum) {
         this.nomAlbum = nomAlbum;
-    }
-
-    public void setImgAlbum(String imgAlbum) {
-        this.imgAlbum = imgAlbum;
     }
 
 }

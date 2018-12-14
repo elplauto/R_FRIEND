@@ -15,14 +15,12 @@ import com.squareup.picasso.Picasso;
 public class GroupeRecom extends Recommandation {
 
     private String nom;
-    private String photo;
-    private String[] albums = {};
+    private String nbAlbums;
 
-    public GroupeRecom(String destinataire, String emetteur, int nbLikes, int nbAppuis, String nom) {
-        super(destinataire, emetteur, nbLikes, nbAppuis);
+    public GroupeRecom(String destinataire, String emetteur, int nbLikes, int nbAppuis, String picture, String nom, String nbAlbums) {
+        super(destinataire, emetteur, nbLikes, nbAppuis, picture);
         this.nom = nom;
-        //rechercher photo de l'artiste depuisson nom
-        //rechercher les albums depuis le nom de l'artiste
+        this.nbAlbums = nbAlbums;
     }
 
     public void displayCenterOfRecom(MainActivity c, LinearLayout[] ll) {
@@ -35,11 +33,11 @@ public class GroupeRecom extends Recommandation {
         TextView tv2 = new TextView(c);
         tv2.setText("Nom : " + this.getNom());
         TextView tv3 = new TextView(c);
-        tv3.setText("Nombre d'albums : " + this.getAlbums().length);
+        tv3.setText("Nombre d'albums : " + this.getNbAlbums());
         ll[2].addView(tv2);
         ll[2].addView(tv3);
         ImageView imageView = new ImageView(c);
-        Picasso.with(c).load("http://i.imgur.com/DvpvklR.png").into(imageView);
+        Picasso.with(c).load(this.getPicture()).into(imageView);
         ll[1].addView(imageView,new LinearLayout.LayoutParams(size.x/5,size.y/5));
         ll[1].addView(ll[2]);
     }
@@ -48,23 +46,15 @@ public class GroupeRecom extends Recommandation {
         return nom;
     }
 
-    public String getPhoto() {
-        return photo;
-    }
-
-    public String[] getAlbums() {
-        return albums;
+    public String getNbAlbums() {
+        return nbAlbums;
     }
 
     public void setNom(String nom) {
         this.nom = nom;
     }
 
-    public void setPhoto(String photo) {
-        this.photo = photo;
-    }
-
-    public void setAlbums(String[] albums) {
-        this.albums = albums;
+    public void setNbAlbums(String nbAlbums) {
+        this.nbAlbums = nbAlbums;
     }
 }

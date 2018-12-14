@@ -60,8 +60,11 @@ public class MainActivity extends AppCompatActivity
     SearchView userSearchView;
     SearchView mainSearchView;
     DeezerManager deezerManager;
+
     FirebaseDatabase database;
     DatabaseReference root;
+    DataSnapshot dataSnapshotRecom;
+    DataSnapshot dataSnapshotInfosSupp;
 
 
     @Override
@@ -277,53 +280,13 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private String nbTracks, idAlb, groupe, titre, imgAlbum;
     public void remplirRecommandation() {
 
-        //recommandation de musiques
-        recommandations.add(new MusiqueRecom("Jean", "Paul", 3, 5, "Sum41", "3:00", "Blood in my Eyes"));
-        recommandations.add(new MusiqueRecom("", "Hervé", 46, 6,"Sum41", "3:50", "Screaming Bloody Murders"));
-        recommandations.add(new MusiqueRecom("Huguette", "Josianne", 14, 23, "Cannibal Corpse", "17:23", "I Cum Blood"));
-
-        //recommandation d'artistes
-        recommandations.add(new GroupeRecom("Gilbert", "Claudette", 12, 256, "Pascal Obispo"));
-        recommandations.add(new GroupeRecom("Martin", "Baptiste", 0, 0, "Orelsan"));
-        recommandations.add(new GroupeRecom("", "Sylvie", 61, 36, "Jean Michel Jarre"));
-        recommandations.add(new GroupeRecom("Françoise", "Patrick", 18, 41, "Francky Vincent"));
-
-        //recommandation d'albums
-        /*recommandations.add(new AlbumRecom("Foxxx", "Sasha", 1274, 26,"Amy Winehouse", 13, "Back to Black", "/"));
-        recommandations.add(new AlbumRecom("Alberto", "Jacques", 3, 14,"Megadeth", 9, "Rust in Peace", "/"));*/
-
-        //il faudrait récup les recommandations depuis la bdd
-        root.child("recommandations").child("recommandationsAlbum").addListenerForSingleValueEvent(new ValueEventListener() {
+        root.child("recommandations").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Iterator<DataSnapshot> i = dataSnapshot.getChildren().iterator();
-                while (i.hasNext()) {
-                    DataSnapshot data = i.next();
-
-                    //réinitialisation des variables
-                    nbTracks = null;
-                    groupe = null;
-                    titre = null;
-                    imgAlbum = null;
-
-                    //groupe, nbTracks, imgAlb et titre depuis recherche sur l'album
-                    idAlb = data.child("idAlbum").getValue(String.class);
-                    searchInfosFromAlbum();
-
-                    //recherche des infos des recommandations d'albums
-                    String dest = data.child("destinataire").getValue(String.class);
-                    String emet = data.child("emetteur").getValue(String.class);
-                    Integer nbLikes = new Integer(data.child("nbLikes").getValue(Integer.class));
-                    Integer nbAppuis = new Integer(data.child("nbAppuis").getValue(Integer.class));
-
-                    //création de l'objet recommandation
-                    recommandations.add(new AlbumRecom(dest, emet, nbLikes, nbAppuis, groupe, nbTracks, titre, imgAlbum));
-
-                }
-
+            public void onDataChange(DataSnapshot ds) {
+                dataSnapshotRecom = ds;
+                recupDataSnapshotFromRecommandable();
             }
 
             @Override
@@ -335,23 +298,14 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    public synchronized void searchInfosFromAlbum() {
-        root.child("albums").addListenerForSingleValueEvent(new ValueEventListener() {
+    public void recupDataSnapshotFromRecommandable () {
+        root.child("recommandables").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Iterator<DataSnapshot> i = dataSnapshot.getChildren().iterator();
-                while (i.hasNext()) {
-                    DataSnapshot data = i.next();
-                    if (data.getKey().equals(idAlb)) {
-                        //Log.i("stp_marche", "c'est le bon album");
-                        nbTracks = data.child("nbTrack").getValue(String.class);
-                        groupe = data.child("artiste").getValue(String.class);
-                        titre = data.child("titre").getValue(String.class);
-                        imgAlbum = data.child("pictureURL").getValue(String.class);
-                    } else {
-                        //Log.i("stp_marche", "c'est pas le bon album");
-                    }
-                }
+            public void onDataChange(DataSnapshot ds) {
+                dataSnapshotInfosSupp = ds;
+                createRecommandation("morceau");
+                createRecommandation("album");
+                createRecommandation("artiste");
             }
 
             @Override
@@ -360,6 +314,87 @@ public class MainActivity extends AppCompatActivity
                 debug("erreur");
             }
         });
+
+    }
+
+    public void createRecommandation(String type) {
+        String recomChild = "";
+        String infosSuppChild = "";
+        String infosSuppID = "";
+        switch(type) {
+            case "morceau":
+                recomChild = "recommandationsMusique";
+                infosSuppChild = "musiques";
+                infosSuppID = "idMusique";
+                break;
+            case "album":
+                recomChild = "recommandationsAlbum";
+                infosSuppChild = "albums";
+                infosSuppID = "idAlbum";
+                break;
+            case "artiste":
+                recomChild = "recommandationsArtiste";
+                infosSuppChild = "artistes";
+                infosSuppID = "idArtiste";
+                break;
+            default: Log.i("stp_marche", "Type inconnu : " + type);
+        }
+        Iterator<DataSnapshot> i = dataSnapshotRecom.child(recomChild).getChildren().iterator();
+        while (i.hasNext()) {
+            DataSnapshot dataRecom = i.next();
+            String dest = dataRecom.child("destinataire").getValue(String.class);
+            String emet = dataRecom.child("emetteur").getValue(String.class);
+            int nbLikes = dataRecom.child("nbLikes").getValue(Integer.class);
+            int nbAppuis = dataRecom.child("nbAppuis").getValue(Integer.class);
+
+            String idInfosSupp = dataRecom.child(infosSuppID).getValue(String.class);
+            Log.i("stp_marche", "ID infos supp (pour " + type + ") : " + idInfosSupp);
+
+            Iterator<DataSnapshot> j = dataSnapshotInfosSupp.child(infosSuppChild).getChildren().iterator();
+            while (j.hasNext()) {
+                DataSnapshot dataInfosSupp = j.next();
+                Log.i("stp_marche", "data : " + dataInfosSupp);
+                Log.i("stp_marche", "trying to create recom");
+                if (dataInfosSupp.getKey().equals(idInfosSupp)) {
+                    Log.i("stp_marche", "c'est le bon album");
+                    Log.i("stp_marche", "type : " + type);
+                    switch(type) {
+                        case "morceau":
+                            String artisteMorceau = dataInfosSupp.child("artiste").getValue(String.class);
+                            Integer dureeSecondes = dataInfosSupp.child("duree").getValue(Integer.class);
+                            String dureeMinutes = dureeSecondes/60 + "min" + dureeSecondes%60 + "s";
+                            String titreMorceau = dataInfosSupp.child("titre").getValue(String.class);
+                            String imgAlb = dataInfosSupp.child("pictureURL").getValue(String.class);
+                            String nomAlbum = dataInfosSupp.child("album").getValue(String.class);
+                            recommandations.add(new MusiqueRecom(dest, emet, nbLikes, nbAppuis, imgAlb, artisteMorceau, dureeMinutes, titreMorceau, nomAlbum));
+                            Log.i("stp_marche", "Création recommandation morceau");
+                            break;
+
+                        case "album":
+                            String nbTracks = dataInfosSupp.child("nbTrack").getValue(String.class);
+                            String artisteAlbum = dataInfosSupp.child("artiste").getValue(String.class);
+                            String titreAlbum = dataInfosSupp.child("titre").getValue(String.class);
+                            String imgAlbum = dataInfosSupp.child("pictureURL").getValue(String.class);
+                            recommandations.add(new AlbumRecom(dest, emet, nbLikes, nbAppuis, imgAlbum, artisteAlbum, nbTracks, titreAlbum));
+                            Log.i("stp_marche", "Création recommandation album");
+                            break;
+
+                        case "artiste":
+                            String nom = dataInfosSupp.child("nom").getValue(String.class);
+                            String nbAlbums = dataInfosSupp.child("nbAlbums").getValue(String.class);
+                            String picture = dataInfosSupp.child("pictureURL").getValue(String.class);
+                            recommandations.add(new GroupeRecom(dest, emet, nbLikes, nbAppuis, nom, nbAlbums, picture));
+                            Log.i("stp_marche", "Création recommandation artiste");
+                            break;
+
+                        default: Log.i("stp_marche", "Type inconnu : " + type);
+                    }
+                    break; //pour ne pas parcourir tous les autres infosSuppChildren
+                } else {
+                    //Log.i("stp_marche", "c'est pas le bon album");
+                }
+            }
+        }
 
     }
 

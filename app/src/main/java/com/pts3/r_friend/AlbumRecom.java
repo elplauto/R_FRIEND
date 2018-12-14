@@ -16,16 +16,14 @@ public class AlbumRecom extends Recommandation {
     private String groupe;
     private String nbTracks;
     private String titre;
-    private String imgAlbum;    //path de l'image
     private String[] titresMusiques;
 
 
-    public AlbumRecom(String destinataire, String emetteur, int nbLikes, int nbAppuis, String groupe, String nbTracks, String titre, String imgAlbum) {
-        super(destinataire, emetteur, nbLikes, nbAppuis);
+    public AlbumRecom(String destinataire, String emetteur, int nbLikes, int nbAppuis, String picture, String groupe, String nbTracks, String titre) {
+        super(destinataire, emetteur, nbLikes, nbAppuis, picture);
         this.groupe = groupe;
         this.nbTracks = nbTracks;
         this.titre = titre;
-        this.imgAlbum = imgAlbum;
         //rechercher les musiques de l'album en consultant la bdd grâce au titre et à l'artiste de l'album
     }
 
@@ -43,7 +41,7 @@ public class AlbumRecom extends Recommandation {
         ll[2].addView(tv2);
         ll[2].addView(tv3);
         ImageView imageView = new ImageView(c);
-        Picasso.with(c).load("http://i.imgur.com/DvpvklR.png").into(imageView);
+        Picasso.with(c).load(this.getPicture()).into(imageView);
         ll[1].addView(imageView,new LinearLayout.LayoutParams(size.x/5,size.y/5));
         ll[1].addView(ll[2]);
     }
@@ -60,10 +58,6 @@ public class AlbumRecom extends Recommandation {
         return titre;
     }
 
-    public String getImgAlbum() {
-        return imgAlbum;
-    }
-
     public String[] getTitresMusiques() {
         return titresMusiques;
     }
@@ -78,10 +72,6 @@ public class AlbumRecom extends Recommandation {
 
     public void setTitre(String titre) {
         this.titre = titre;
-    }
-
-    public void setImgAlbum(String imgAlbum) {
-        this.imgAlbum = imgAlbum;
     }
 
     public void setTitresMusiques(String[] titresMusiques) {

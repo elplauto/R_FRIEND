@@ -20,6 +20,7 @@ public abstract class Recommandation {
     private String emetteur;
     private int nbLikes;
     private int nbAppuis;
+    private String picture;
 
     private TextView tvLikes;
     private TextView tvAppuis;
@@ -27,13 +28,14 @@ public abstract class Recommandation {
     private boolean isSupported;
 
 
-    public Recommandation(String destinataire, String emetteur, int nbLikes, int nbAppuis) {
+    public Recommandation(String destinataire, String emetteur, int nbLikes, int nbAppuis, String picture) {
         this.destinataire = destinataire;
         this.emetteur = emetteur;
         this.nbLikes = nbLikes;
         this.nbAppuis = nbAppuis;
         this.isLiked = isLiked;
         this.isSupported = isSupported;
+        this.picture = picture;
     }
 
     public void espace(LinearLayout ll, MainActivity c) {
@@ -166,6 +168,10 @@ public abstract class Recommandation {
         return tvAppuis;
     }
 
+    public String getPicture() {
+        return picture;
+    }
+
     public boolean isLiked() {
         return isLiked;
     }
@@ -188,6 +194,10 @@ public abstract class Recommandation {
 
     public void setNbAppuis(int nbAppuis) {
         this.nbAppuis = nbAppuis;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
     }
 
     public void setTvLikes(TextView tvLikes) {
