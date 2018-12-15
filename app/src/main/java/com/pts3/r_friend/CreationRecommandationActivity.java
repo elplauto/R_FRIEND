@@ -47,6 +47,7 @@ public class CreationRecommandationActivity extends AppCompatActivity {
     Button btnRecommander;
     Object recommandable;
     FirebaseDatabase database;
+    DatabaseReference root;
     int selectedIndex;
 
     @Override
@@ -55,6 +56,7 @@ public class CreationRecommandationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_creer_recommandation);
 
         database = FirebaseDatabase.getInstance();
+        root = database.getReference();
 
         spinner = (Spinner) findViewById(R.id.spinner);
         String choix[] = {"Musique","Album","Artiste"};
@@ -262,7 +264,6 @@ public class CreationRecommandationActivity extends AppCompatActivity {
     }
 
     private void ajouterRecommandation() {
-        DatabaseReference root = database.getReference();
         DatabaseReference recommandation;
         if (spinner.getSelectedItem().toString().equals("Musique")) {
             Musique musique = (Musique) recommandable;
@@ -300,7 +301,7 @@ public class CreationRecommandationActivity extends AppCompatActivity {
     }
 
     public void ajouterMusique(Musique musique) {
-        DatabaseReference refMusique = database.getReference("musiques");
+        DatabaseReference refMusique = root.child("recommandables").child("musiques");
         DatabaseReference ref = refMusique.child(musique.getId());
         ref.child("artiste").setValue(musique.getArtiste());
         ref.child("duree").setValue(musique.getDuree());
@@ -310,8 +311,8 @@ public class CreationRecommandationActivity extends AppCompatActivity {
     }
 
     public void ajouterAlbum(Album album) {
-        DatabaseReference refMusiques = database.getReference("albums");
-        DatabaseReference ref = refMusiques.child(album.getId());
+        DatabaseReference refAlbums = root.child("recommandables").child("albums");
+        DatabaseReference ref = refAlbums.child(album.getId());
         ref.child("artiste").setValue(album.getArtiste());
         ref.child("titre").setValue(album.getTitre());
         ref.child("nbTrack").setValue(album.getNbTrack());
@@ -319,8 +320,8 @@ public class CreationRecommandationActivity extends AppCompatActivity {
     }
 
     public void ajouterArtiste(Artiste artiste) {
-        DatabaseReference refMusiques = database.getReference("artistes");
-        DatabaseReference ref = refMusiques.child(artiste.getId());
+        DatabaseReference refArtistes = root.child("recommandables").child("artistes");
+        DatabaseReference ref = refArtistes.child(artiste.getId());
         ref.child("nom").setValue(artiste.getNom());
         ref.child("nbAlbums").setValue(artiste.getNbAlbums());
         ref.child("pictureURL").setValue(artiste.getPictureURL());
