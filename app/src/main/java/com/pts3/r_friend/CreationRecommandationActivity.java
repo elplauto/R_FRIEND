@@ -129,7 +129,7 @@ public class CreationRecommandationActivity extends AppCompatActivity {
         searchAutoComplete = (android.support.v7.widget.SearchView.SearchAutoComplete)searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
         searchAutoComplete.setBackgroundColor(Color.parseColor("#403965"));
         searchAutoComplete.setTextColor(Color.parseColor("#B7D2E1"));
-        searchAutoComplete.setDropDownBackgroundResource(android.R.color.background_light);
+        searchAutoComplete.setDropDownBackgroundResource(android.R.color.holo_blue_bright);
 
         // Create a new ArrayAdapter and add data to search auto complete object.
         String dataArr[] = {};
