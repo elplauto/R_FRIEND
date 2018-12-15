@@ -1,15 +1,15 @@
 package com.pts3.r_friend;
 
-public class Musique {
+public class Morceau {
 
     private String id;
     private String titre;
-    private String duree;
+    private Integer duree;
     private String artiste;
     private String nomAlbum;
     private String pictureURL;
 
-    public Musique(String id, String titre, String duree, String artiste, String nomAlbum, String pictureURL) {
+    public Morceau(String id, String titre, Integer duree, String artiste, String nomAlbum, String pictureURL) {
         this.id=id;
         this.titre = titre;
         this.duree = duree;
@@ -50,11 +50,11 @@ public class Musique {
         this.titre = titre;
     }
 
-    public String getDuree() {
+    public Integer getDuree() {
         return duree;
     }
 
-    public void setDuree(String duree) {
+    public void setDuree(Integer duree) {
         this.duree = duree;
     }
 

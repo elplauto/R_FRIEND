@@ -1,19 +1,13 @@
 package com.pts3.r_friend;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
 import android.view.Display;
-import android.view.MenuInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -23,8 +17,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -32,7 +24,6 @@ import android.widget.ScrollView;
 import android.widget.SearchView;
 import android.widget.Space;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -43,7 +34,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
@@ -55,13 +45,11 @@ public class MainActivity extends AppCompatActivity
     Point size;
     SwitchCompat switchRecommandationsPersos;
     SwitchCompat switchAlbums;
-    SwitchCompat switchMusiques;
+    SwitchCompat switchMorceaux;
     SwitchCompat switchArtistes;
     SearchView userSearchView;
     SearchView mainSearchView;
-    DeezerManager deezerManager;
 
-    FirebaseDatabase database;
     DatabaseReference root;
     DataSnapshot dataSnapshotRecom;
     DataSnapshot dataSnapshotInfosSupp;
@@ -105,7 +93,7 @@ public class MainActivity extends AppCompatActivity
        // afficherRecommandation();
 
         switchRecommandationsPersos = findViewById(R.id.app_bar_switch_persos);
-        switchMusiques = findViewById(R.id.app_bar_switch_musiques);
+        switchMorceaux = findViewById(R.id.app_bar_switch_morceaux);
         switchAlbums = findViewById(R.id.app_bar_switch_albums);
         switchArtistes = findViewById(R.id.app_bar_switch_artistes);
         userSearchView = findViewById(R.id.app_bar_search);
@@ -151,43 +139,6 @@ public class MainActivity extends AppCompatActivity
         return super.onCreateOptionsMenu(menu);
     }
 
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        // Inflate the search menu action bar.
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.main, menu);
-
-        // Get the search menu.
-        MenuItem searchMenu = menu.findItem(R.id.action_search);
-
-        // Get SearchView object.
-        SearchView searchView = (SearchView) searchMenu.getActionView();
-
-        // Get SearchView autocomplete object.
-        final  SearchView.SearchAutoComplete searchAutoComplete = (SearchView.SearchAutoComplete)searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
-        searchAutoComplete.setBackgroundColor(Color.BLUE);
-        searchAutoComplete.setTextColor(Color.WHITE);
-        searchAutoComplete.setDropDownBackgroundResource(android.R.color.holo_blue_light);
-
-        // Create a new ArrayAdapter and add data to search auto complete object.
-        String dataArr[] = {"Apple" , "Amazon" , "Amd", "Microsoft", "Microwave", "MicroNews", "Intel", "Intelligence"};
-        ArrayAdapter<String> newsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, dataArr);
-        searchAutoComplete.setAdapter(newsAdapter);
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-
-        return super.onOptionsItemSelected(item);
-    }*/
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -195,7 +146,7 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
 
         switchRecommandationsPersos = findViewById(R.id.app_bar_switch_persos);
-        switchMusiques = findViewById(R.id.app_bar_switch_musiques);
+        switchMorceaux = findViewById(R.id.app_bar_switch_morceaux);
         switchAlbums = findViewById(R.id.app_bar_switch_albums);
         switchArtistes = findViewById(R.id.app_bar_switch_artistes);
         userSearchView = findViewById(R.id.app_bar_search);
@@ -215,7 +166,7 @@ public class MainActivity extends AppCompatActivity
                 afficherRecommandation();
             }
         });
-        switchMusiques.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        switchMorceaux.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 afficherRecommandation();
@@ -266,11 +217,11 @@ public class MainActivity extends AppCompatActivity
             }
         }
 
-        else if (id == R.id.app_bar_switch_musiques) {
-            if (switchMusiques.isChecked()) {
-                switchMusiques.setChecked(false);
+        else if (id == R.id.app_bar_switch_morceaux) {
+            if (switchMorceaux.isChecked()) {
+                switchMorceaux.setChecked(false);
             } else {
-                switchMusiques.setChecked(true);
+                switchMorceaux.setChecked(true);
             }
         }
 
@@ -323,9 +274,9 @@ public class MainActivity extends AppCompatActivity
         String infosSuppID = "";
         switch(type) {
             case "morceau":
-                recomChild = "recommandationsMusique";
-                infosSuppChild = "musiques";
-                infosSuppID = "idMusique";
+                recomChild = "recommandationsMorceau";
+                infosSuppChild = "morceaux";
+                infosSuppID = "idMorceau";
                 break;
             case "album":
                 recomChild = "recommandationsAlbum";
@@ -366,12 +317,12 @@ public class MainActivity extends AppCompatActivity
                             String titreMorceau = dataInfosSupp.child("titre").getValue(String.class);
                             String imgAlb = dataInfosSupp.child("pictureURL").getValue(String.class);
                             String nomAlbum = dataInfosSupp.child("album").getValue(String.class);
-                            recommandations.add(new MusiqueRecom(dest, emet, nbLikes, nbAppuis, imgAlb, artisteMorceau, dureeMinutes, titreMorceau, nomAlbum));
+                            recommandations.add(new MorceauRecom(dest, emet, nbLikes, nbAppuis, imgAlb, artisteMorceau, dureeMinutes, titreMorceau, nomAlbum));
                             Log.i("stp_marche", "Création recommandation morceau");
                             break;
 
                         case "album":
-                            String nbTracks = dataInfosSupp.child("nbTrack").getValue(String.class);
+                            Integer nbTracks = dataInfosSupp.child("nbTrack").getValue(Integer.class);
                             String artisteAlbum = dataInfosSupp.child("artiste").getValue(String.class);
                             String titreAlbum = dataInfosSupp.child("titre").getValue(String.class);
                             String imgAlbum = dataInfosSupp.child("pictureURL").getValue(String.class);
@@ -381,17 +332,15 @@ public class MainActivity extends AppCompatActivity
 
                         case "artiste":
                             String nom = dataInfosSupp.child("nom").getValue(String.class);
-                            String nbAlbums = dataInfosSupp.child("nbAlbums").getValue(String.class);
+                            Integer nbAlbums = dataInfosSupp.child("nbAlbums").getValue(Integer.class);
                             String picture = dataInfosSupp.child("pictureURL").getValue(String.class);
-                            recommandations.add(new GroupeRecom(dest, emet, nbLikes, nbAppuis, nom, nbAlbums, picture));
+                            recommandations.add(new ArtisteRecom(dest, emet, nbLikes, nbAppuis, picture, nom, nbAlbums));
                             Log.i("stp_marche", "Création recommandation artiste");
                             break;
 
                         default: Log.i("stp_marche", "Type inconnu : " + type);
                     }
                     break; //pour ne pas parcourir tous les autres infosSuppChildren
-                } else {
-                    //Log.i("stp_marche", "c'est pas le bon album");
                 }
             }
         }
@@ -401,8 +350,8 @@ public class MainActivity extends AppCompatActivity
     public void afficherRecommandation() {
         ll.removeAllViews();
         for (Recommandation recommandation : recommandations) {
-            if (recommandation instanceof MusiqueRecom && switchMusiques.isChecked()
-                    || recommandation instanceof GroupeRecom && switchArtistes.isChecked()
+            if (recommandation instanceof MorceauRecom && switchMorceaux.isChecked()
+                    || recommandation instanceof ArtisteRecom && switchArtistes.isChecked()
                     || recommandation instanceof AlbumRecom && switchAlbums.isChecked()
                     ){
                 ll.addView(new Space(this),new LinearLayout.LayoutParams(1,size.y/50));

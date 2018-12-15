@@ -44,7 +44,7 @@ public class DeezerManager {
         }
     }
 
-    public void jouerMusique(Track track) {
+    public void jouerMorceau(Track track) {
         TrackPlayer trackPlayer;
         try {
             trackPlayer = new TrackPlayer(context.getApplication(), deezerConnect, new WifiAndMobileNetworkStateChecker());
@@ -54,17 +54,17 @@ public class DeezerManager {
         }
     }
 
-    public void rechercheMusique(String nom) {
+    public void rechercheMorceau(String nom) {
 
         RequestListener listener = new JsonRequestListener() {
 
             public void onResult(Object result, Object requestId) {
-                final List<Musique> musiques = new ArrayList<>();
+                final List<Morceau> morceaux = new ArrayList<>();
                 List<Track> tracks = (List<Track>) result;
                 for (Track track : tracks) {
-                    musiques.add(new Musique(track.getId()+"",track.getTitle(),track.getDuration()+"s", track.getArtist().getName(), track.getAlbum().getTitle(), track.getAlbum().getBigImageUrl()));
+                    morceaux.add(new Morceau(track.getId()+"",track.getTitle(),track.getDuration(), track.getArtist().getName(), track.getAlbum().getTitle(), track.getAlbum().getBigImageUrl()));
                 }
-                context.rechercheMusiqueReponse(musiques);
+                context.rechercheMorceauReponse(morceaux);
             }
 
             public void onUnparsedResult(String requestResponse, Object requestId) {}
@@ -89,7 +89,7 @@ public class DeezerManager {
                 final List<com.pts3.r_friend.Album> listAlbums = new ArrayList<>();
                 List<Album> albums = (List<Album>) result;
                 for (Album album : albums) {
-                    listAlbums.add(new com.pts3.r_friend.Album(album.getId()+"",album.getTitle(),album.getArtist().getName(),album.getNbTracks()+"", album.getBigImageUrl()));
+                    listAlbums.add(new com.pts3.r_friend.Album(album.getId()+"",album.getTitle(),album.getArtist().getName(),album.getNbTracks(), album.getBigImageUrl()));
                 }
                 context.rechercheAlbumReponse(listAlbums);
             }
@@ -116,7 +116,7 @@ public class DeezerManager {
                 final List<Artiste> artistes = new ArrayList<>();
                 List<Artist> artists = (List<Artist>) result;
                 for (Artist artist : artists) {
-                    artistes.add(new Artiste(artist.getId()+"",artist.getName(), artist.getNbAlbums()+"", artist.getBigImageUrl()));
+                    artistes.add(new Artiste(artist.getId()+"",artist.getName(), artist.getNbAlbums(), artist.getBigImageUrl()));
                 }
                 context.rechercheArtisteReponse(artistes);
             }

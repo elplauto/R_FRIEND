@@ -29,8 +29,8 @@
                 android:title="Artistes"
                 app:actionViewClass="android.support.v7.widget.SwitchCompat" />
             <item
-                android:id="@+id/app_bar_switch_musiques"
-                android:title="Musiques"
+                android:id="@+id/app_bar_switch_morceaux"
+                android:title="Morceaux"
                 app:actionViewClass="android.support.v7.widget.SwitchCompat" />
         </menu>
     </item>
