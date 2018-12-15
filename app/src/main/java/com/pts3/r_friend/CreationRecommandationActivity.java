@@ -2,6 +2,7 @@ package com.pts3.r_friend;
 
 
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -109,6 +110,7 @@ public class CreationRecommandationActivity extends AppCompatActivity {
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("");
+        actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#26223C")));
     }
 
     @Override
@@ -125,9 +127,9 @@ public class CreationRecommandationActivity extends AppCompatActivity {
 
         // Get SearchView autocomplete object.
         searchAutoComplete = (android.support.v7.widget.SearchView.SearchAutoComplete)searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
-        searchAutoComplete.setBackgroundColor(Color.BLUE);
-        searchAutoComplete.setTextColor(Color.GREEN);
-        searchAutoComplete.setDropDownBackgroundResource(android.R.color.holo_blue_light);
+        searchAutoComplete.setBackgroundColor(Color.parseColor("#403965"));
+        searchAutoComplete.setTextColor(Color.parseColor("#B7D2E1"));
+        searchAutoComplete.setDropDownBackgroundResource(android.R.color.background_light);
 
         // Create a new ArrayAdapter and add data to search auto complete object.
         String dataArr[] = {};

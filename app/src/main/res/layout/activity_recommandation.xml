@@ -22,7 +22,8 @@
             <ImageView
                 android:id="@+id/photoAlbum"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/graychapter" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -80,8 +81,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
                     android:layout_marginRight="10dp"
-                    android:layout_weight="1"
-                    app:srcCompat="@drawable/coeur" />
+                    android:layout_weight="1" />
 
                 <TextView
                     android:id="@+id/nbCoeurs"
