@@ -35,7 +35,7 @@ public class MusiqueRecom extends Recommandation {
         ll[0].addView(tv);
         ll[0].addView(ll[1]);
         TextView tv2 = new TextView(c);
-        tv2.setText("Titre : " + this.getTitre() + "(" + this.getDuree() + ")");
+        tv2.setText("Titre : " + this.getTitre() + " (" + this.getDuree() + ")");
         TextView tv3 = new TextView(c);
         tv3.setText("Groupe : " + this.getGroupe());
         TextView tv4 = new TextView(c);
@@ -44,7 +44,7 @@ public class MusiqueRecom extends Recommandation {
         ll[2].addView(tv3);
         ll[2].addView(tv4);
         ImageView imageView = new ImageView(c);
-        Picasso.with(c).load("http://i.imgur.com/DvpvklR.png").into(imageView);
+        Picasso.with(c).load(this.getPicture()).into(imageView);
         ll[1].addView(imageView,new LinearLayout.LayoutParams(size.x/5,size.y/5));
         ll[1].addView(ll[2]);
     }

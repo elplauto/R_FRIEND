@@ -40,7 +40,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -323,9 +326,9 @@ public class MainActivity extends AppCompatActivity
         String infosSuppID = "";
         switch(type) {
             case "morceau":
-                recomChild = "recommandationsMusique";
-                infosSuppChild = "musiques";
-                infosSuppID = "idMusique";
+                recomChild = "recommandationsMorceau";
+                infosSuppChild = "morceaux";
+                infosSuppID = "idMorceau";
                 break;
             case "album":
                 recomChild = "recommandationsAlbum";
@@ -341,25 +344,41 @@ public class MainActivity extends AppCompatActivity
         }
         Iterator<DataSnapshot> i = dataSnapshotRecom.child(recomChild).getChildren().iterator();
         while (i.hasNext()) {
+            Log.i("maj", "1");
             DataSnapshot dataRecom = i.next();
             String dest = dataRecom.child("destinataire").getValue(String.class);
             String emet = dataRecom.child("emetteur").getValue(String.class);
             int nbLikes = dataRecom.child("nbLikes").getValue(Integer.class);
             int nbAppuis = dataRecom.child("nbAppuis").getValue(Integer.class);
+            Log.i("maj", "2");
+
+            Log.i("triDate", "Avant récupération");
+            String postDate = dataRecom.child("dateRecommandation").getValue(String.class);
+            Log.i("triDate", "date : " + postDate);
+            //marche pas
+            /*SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
+            try {
+                Log.i("triDate", "Et ca ca marche ?");
+                Date date1 = formatter.parse(postDate);
+                Log.i("triDate", "date 1 : " + date1);
+                Log.i("triDate", "date 2 : " + formatter.format(date1));
+            } catch (ParseException e) {
+                Log.i("error", "error : " + e);
+            }*/
 
             String idInfosSupp = dataRecom.child(infosSuppID).getValue(String.class);
             Log.i("stp_marche", "ID infos supp (pour " + type + ") : " + idInfosSupp);
+            Log.i("maj", "3");
 
             Iterator<DataSnapshot> j = dataSnapshotInfosSupp.child(infosSuppChild).getChildren().iterator();
             while (j.hasNext()) {
                 DataSnapshot dataInfosSupp = j.next();
-                Log.i("stp_marche", "data : " + dataInfosSupp);
                 Log.i("stp_marche", "trying to create recom");
                 if (dataInfosSupp.getKey().equals(idInfosSupp)) {
-                    Log.i("stp_marche", "c'est le bon album");
-                    Log.i("stp_marche", "type : " + type);
+                    Log.i("stp_marche", "c'est le bon " + type);
                     switch(type) {
                         case "morceau":
+                            Log.i("maj", "morceau 4");
                             String artisteMorceau = dataInfosSupp.child("artiste").getValue(String.class);
                             Integer dureeSecondes = dataInfosSupp.child("duree").getValue(Integer.class);
                             String dureeMinutes = dureeSecondes/60 + "min" + dureeSecondes%60 + "s";
@@ -367,24 +386,29 @@ public class MainActivity extends AppCompatActivity
                             String imgAlb = dataInfosSupp.child("pictureURL").getValue(String.class);
                             String nomAlbum = dataInfosSupp.child("album").getValue(String.class);
                             recommandations.add(new MusiqueRecom(dest, emet, nbLikes, nbAppuis, imgAlb, artisteMorceau, dureeMinutes, titreMorceau, nomAlbum));
-                            Log.i("stp_marche", "Création recommandation morceau");
+                            Log.i("stp_marche maj", "Création recommandation morceau");
                             break;
 
                         case "album":
-                            String nbTracks = dataInfosSupp.child("nbTrack").getValue(String.class);
+                            Log.i("maj", "album 4");
                             String artisteAlbum = dataInfosSupp.child("artiste").getValue(String.class);
+                            Log.i("maj", "album 4.1");
+                            String nbTracks = dataInfosSupp.child("nbTrack").getValue(Integer.class).toString();
+                            Log.i("maj", "album 5");
                             String titreAlbum = dataInfosSupp.child("titre").getValue(String.class);
                             String imgAlbum = dataInfosSupp.child("pictureURL").getValue(String.class);
+                            Log.i("maj", "album 6");
                             recommandations.add(new AlbumRecom(dest, emet, nbLikes, nbAppuis, imgAlbum, artisteAlbum, nbTracks, titreAlbum));
-                            Log.i("stp_marche", "Création recommandation album");
+                            Log.i("stp_marche maj", "Création recommandation album");
                             break;
 
                         case "artiste":
+                            Log.i("maj", "artiste 4");
                             String nom = dataInfosSupp.child("nom").getValue(String.class);
-                            String nbAlbums = dataInfosSupp.child("nbAlbums").getValue(String.class);
+                            String nbAlbums = dataInfosSupp.child("nbAlbums").getValue(Integer.class).toString();
                             String picture = dataInfosSupp.child("pictureURL").getValue(String.class);
-                            recommandations.add(new GroupeRecom(dest, emet, nbLikes, nbAppuis, nom, nbAlbums, picture));
-                            Log.i("stp_marche", "Création recommandation artiste");
+                            recommandations.add(new GroupeRecom(dest, emet, nbLikes, nbAppuis, picture, nom, nbAlbums));
+                            Log.i("stp_marche maj", "Création recommandation artiste");
                             break;
 
                         default: Log.i("stp_marche", "Type inconnu : " + type);

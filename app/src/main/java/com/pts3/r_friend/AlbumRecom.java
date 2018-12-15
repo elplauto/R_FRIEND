@@ -35,9 +35,9 @@ public class AlbumRecom extends Recommandation {
         ll[0].addView(tv);
         ll[0].addView(ll[1]);
         TextView tv2 = new TextView(c);
-        tv2.setText("Titre : " + this.getTitre() + " (" + this.getNbTracks() + " titres)");
+        tv2.setText("Titre : " + this.getTitre() + " (" + this.getNbTracks() + " titre" + (Integer.parseInt(this.getNbTracks()) > 1 ? "s" : "") + ")");
         TextView tv3 = new TextView(c);
-        tv3.setText("Groupe : " + this.getGroupe());
+        tv3.setText("Artiste : " + this.getGroupe());
         ll[2].addView(tv2);
         ll[2].addView(tv3);
         ImageView imageView = new ImageView(c);
