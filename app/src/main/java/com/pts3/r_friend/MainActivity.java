@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity
     SwitchCompat switchAlbums;
     SwitchCompat switchMorceaux;
     SwitchCompat switchArtistes;
-    SearchView userSearchView;
     SearchView mainSearchView;
 
     DatabaseReference root;
@@ -87,17 +86,7 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        remplirRecommandation();
         setScrollView();
-       // afficherRecommandation();
-
-        switchRecommandationsPersos = findViewById(R.id.app_bar_switch_persos);
-        switchMorceaux = findViewById(R.id.app_bar_switch_morceaux);
-        switchAlbums = findViewById(R.id.app_bar_switch_albums);
-        switchArtistes = findViewById(R.id.app_bar_switch_artistes);
-        userSearchView = findViewById(R.id.app_bar_search);
-
     }
 
     public Point getSize() {
@@ -136,30 +125,13 @@ public class MainActivity extends AppCompatActivity
             }
         });*/
 
-        return super.onCreateOptionsMenu(menu);
-    }
-
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-
         switchRecommandationsPersos = findViewById(R.id.app_bar_switch_persos);
         switchMorceaux = findViewById(R.id.app_bar_switch_morceaux);
         switchAlbums = findViewById(R.id.app_bar_switch_albums);
         switchArtistes = findViewById(R.id.app_bar_switch_artistes);
-        userSearchView = findViewById(R.id.app_bar_search);
-
-        ImageView paramsIcon = findViewById(R.id.imageView);
-        paramsIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                 Intent intent = new Intent(getApplicationContext(),ConnexionActivity.class);
-                 startActivity(intent);
-            }
-        });
-
+        switchArtistes.setChecked(true);
+        switchAlbums.setChecked(true);
+        switchMorceaux.setChecked(true);
         switchAlbums.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -178,18 +150,26 @@ public class MainActivity extends AppCompatActivity
                 afficherRecommandation();
             }
         });
-        userSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
+        remplirRecommandation();
 
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+
+        ImageView paramsIcon = findViewById(R.id.imageView);
+        paramsIcon.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
+            public void onClick(View v) {
+                 Intent intent = new Intent(getApplicationContext(),ConnexionActivity.class);
+                 startActivity(intent);
             }
         });
-
         int id = item.getItemId();
 
         if (id == R.id.app_bar_switch_persos) {
@@ -257,6 +237,7 @@ public class MainActivity extends AppCompatActivity
                 createRecommandation("morceau");
                 createRecommandation("album");
                 createRecommandation("artiste");
+                afficherRecommandation();
             }
 
             @Override
