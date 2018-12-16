@@ -13,15 +13,15 @@ import com.squareup.picasso.Picasso;
 
 public class AlbumRecom extends Recommandation {
 
-    private String groupe;
-    private String nbTracks;
+    private String artiste;
+    private Integer nbTracks;
     private String titre;
-    private String[] titresMusiques;
+    private String[] titresMorceaux;
 
 
-    public AlbumRecom(String destinataire, String emetteur, int nbLikes, int nbAppuis, String picture, String groupe, String nbTracks, String titre) {
+    public AlbumRecom(String destinataire, String emetteur, int nbLikes, int nbAppuis, String picture, String artiste, Integer nbTracks, String titre) {
         super(destinataire, emetteur, nbLikes, nbAppuis, picture);
-        this.groupe = groupe;
+        this.artiste = artiste;
         this.nbTracks = nbTracks;
         this.titre = titre;
         //rechercher les musiques de l'album en consultant la bdd grâce au titre et à l'artiste de l'album
@@ -35,9 +35,9 @@ public class AlbumRecom extends Recommandation {
         ll[0].addView(tv);
         ll[0].addView(ll[1]);
         TextView tv2 = new TextView(c);
-        tv2.setText("Titre : " + this.getTitre() + " (" + this.getNbTracks() + " titre" + (Integer.parseInt(this.getNbTracks()) > 1 ? "s" : "") + ")");
+        tv2.setText("Titre : " + this.getTitre() + " (" + this.getNbTracks() + " morceau" + (this.getNbTracks() > 1 ? "x" : "") + ")");
         TextView tv3 = new TextView(c);
-        tv3.setText("Artiste : " + this.getGroupe());
+        tv3.setText("Artiste : " + this.getArtiste());
         ll[2].addView(tv2);
         ll[2].addView(tv3);
         ImageView imageView = new ImageView(c);
@@ -46,11 +46,11 @@ public class AlbumRecom extends Recommandation {
         ll[1].addView(ll[2]);
     }
 
-    public String getGroupe() {
-        return groupe;
+    public String getArtiste() {
+        return artiste;
     }
 
-    public String getNbTracks() {
+    public Integer getNbTracks() {
         return nbTracks;
     }
 
@@ -58,15 +58,15 @@ public class AlbumRecom extends Recommandation {
         return titre;
     }
 
-    public String[] getTitresMusiques() {
-        return titresMusiques;
+    public String[] getTitresMorceaux() {
+        return titresMorceaux;
     }
 
-    public void setGroupe(String groupe) {
-        this.groupe = groupe;
+    public void setArtiste(String artiste) {
+        this.artiste = artiste;
     }
 
-    public void setNbTracks(String nbTracks) {
+    public void setNbTracks(Integer nbTracks) {
         this.nbTracks = nbTracks;
     }
 
@@ -74,7 +74,7 @@ public class AlbumRecom extends Recommandation {
         this.titre = titre;
     }
 
-    public void setTitresMusiques(String[] titresMusiques) {
-        this.titresMusiques = titresMusiques;
+    public void setTitresMorceaux(String[] titresMorceaux) {
+        this.titresMorceaux = titresMorceaux;
     }
 }

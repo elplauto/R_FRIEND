@@ -2,26 +2,22 @@ package com.pts3.r_friend;
 
 import android.graphics.Point;
 import android.graphics.Typeface;
-import android.util.Log;
-import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Space;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-public class MusiqueRecom extends Recommandation {
+public class MorceauRecom extends Recommandation {
 
-    private String groupe;
+    private String artiste;
     private String duree;
     private String titre;
     private String nomAlbum;
 
-    public MusiqueRecom(String destinataire, String emetteur, int nbLikes, int nbAppuis, String picture, String groupe, String duree, String titre, String nomAlbum) {
+    public MorceauRecom(String destinataire, String emetteur, int nbLikes, int nbAppuis, String picture, String artiste, String duree, String titre, String nomAlbum) {
         super(destinataire, emetteur, nbLikes, nbAppuis, picture);
-        this.groupe = groupe;
+        this.artiste = artiste;
         this.duree = duree;
         this.titre = titre;
         this.nomAlbum = nomAlbum;
@@ -30,14 +26,14 @@ public class MusiqueRecom extends Recommandation {
     public void displayCenterOfRecom(MainActivity c, LinearLayout[] ll) {
         Point size = c.getSize();
         TextView tv = new TextView(c);
-        tv.setText(this.getEmetteur() + " recommande une musique" + (getDestinataire().equals(getRecomendedToEveryone()) ? "" : " à "+this.getDestinataire()));
+        tv.setText(this.getEmetteur() + " recommande un morceau" + (getDestinataire().equals(getRecomendedToEveryone()) ? "" : " à "+this.getDestinataire()));
         tv.setTypeface(null, Typeface.BOLD_ITALIC);
         ll[0].addView(tv);
         ll[0].addView(ll[1]);
         TextView tv2 = new TextView(c);
         tv2.setText("Titre : " + this.getTitre() + " (" + this.getDuree() + ")");
         TextView tv3 = new TextView(c);
-        tv3.setText("Groupe : " + this.getGroupe());
+        tv3.setText("Artiste : " + this.getArtiste());
         TextView tv4 = new TextView(c);
         tv4.setText("Album : " + this.getNomAlbum());
         ll[2].addView(tv2);
@@ -49,8 +45,8 @@ public class MusiqueRecom extends Recommandation {
         ll[1].addView(ll[2]);
     }
 
-    public String getGroupe() {
-        return groupe;
+    public String getArtiste() {
+        return artiste;
     }
 
     public String getDuree() {
@@ -65,8 +61,8 @@ public class MusiqueRecom extends Recommandation {
         return nomAlbum;
     }
 
-    public void setGroupe(String groupe) {
-        this.groupe = groupe;
+    public void setArtiste(String artiste) {
+        this.artiste = artiste;
     }
 
     public void setDuree(String duree) {

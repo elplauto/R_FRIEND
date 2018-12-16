@@ -4,21 +4,21 @@ public class Artiste {
 
     private String id;
     private String nom;
-    private String nbAlbums;
+    private Integer nbAlbums;
     private String pictureURL;
 
-    public Artiste(String id, String nom, String nbAlbums, String pictureURL) {
+    public Artiste(String id, String nom, Integer nbAlbums, String pictureURL) {
         this.id=id;
         this.nom = nom;
         this.nbAlbums=nbAlbums;
         this.pictureURL=pictureURL;
     }
 
-    public String getNbAlbums() {
+    public Integer getNbAlbums() {
         return nbAlbums;
     }
 
-    public void setNbAlbums(String nbAlbums) {
+    public void setNbAlbums(Integer nbAlbums) {
         this.nbAlbums = nbAlbums;
     }
 

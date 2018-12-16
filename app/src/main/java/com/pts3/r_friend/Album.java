@@ -5,10 +5,10 @@ public class Album {
     private String id;
     private String titre;
     private String artiste;
-    private String nbTrack;
+    private Integer nbTrack;
     private String pictureURL;
 
-    public Album(String id, String titre, String artiste, String nbTrack, String pictureURL) {
+    public Album(String id, String titre, String artiste, Integer nbTrack, String pictureURL) {
         this.id=id;
         this.titre = titre;
         this.artiste = artiste;
@@ -48,11 +48,11 @@ public class Album {
         this.artiste = artiste;
     }
 
-    public String getNbTrack() {
+    public Integer getNbTrack() {
         return nbTrack;
     }
 
-    public void setNbTrack(String nbTrack) {
+    public void setNbTrack(Integer nbTrack) {
         this.nbTrack = nbTrack;
     }
 }

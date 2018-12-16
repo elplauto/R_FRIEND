@@ -1,14 +1,10 @@
 package com.pts3.r_friend;
 
 
-import android.app.AlertDialog;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,7 +13,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,10 +21,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -47,6 +39,7 @@ public class CreationRecommandationActivity extends AppCompatActivity {
     Button btnRecommander;
     Object recommandable;
     FirebaseDatabase database;
+    DatabaseReference root;
     int selectedIndex;
 
     @Override
@@ -55,9 +48,10 @@ public class CreationRecommandationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_creer_recommandation);
 
         database = FirebaseDatabase.getInstance();
+        root = database.getReference();
 
         spinner = (Spinner) findViewById(R.id.spinner);
-        String choix[] = {"Musique","Album","Artiste"};
+        String choix[] = {"Morceau","Album","Artiste"};
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1 ,choix);
         spinner.setAdapter(adapter);
 
@@ -87,7 +81,7 @@ public class CreationRecommandationActivity extends AppCompatActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (spinner.getSelectedItem().toString().equals("Musique")) {
+                if (spinner.getSelectedItem().toString().equals("Morceau")) {
                     tv1.setText("Titre : ---");
                     tv2.setText("Album : ---");
                     tv3.setText("Duree : ---");
@@ -149,8 +143,8 @@ public class CreationRecommandationActivity extends AppCompatActivity {
                 recherchePrecise = true;
                 String typeRecherche=spinner.getSelectedItem().toString();
                 selectedIndex = itemIndex;
-                if (typeRecherche.equals("Musique")) {
-                    deezerManager.rechercheMusique(queryString);
+                if (typeRecherche.equals("Morceau")) {
+                    deezerManager.rechercheMorceau(queryString);
                 } else if (typeRecherche.equals("Album")) {
                     deezerManager.rechercheAlbum(queryString);
                 } else if (typeRecherche.equals("Artiste")) {
@@ -169,8 +163,8 @@ public class CreationRecommandationActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String s) {
                 String typeRecherche=spinner.getSelectedItem().toString();
-                if (typeRecherche.equals("Musique")) {
-                    deezerManager.rechercheMusique(s);
+                if (typeRecherche.equals("Morceau")) {
+                    deezerManager.rechercheMorceau(s);
                 } else if (typeRecherche.equals("Album")) {
                     deezerManager.rechercheAlbum(s);
                 } else if (typeRecherche.equals("Artiste")) {
@@ -183,26 +177,26 @@ public class CreationRecommandationActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    public void rechercheMusiqueReponse(List<Musique> musiques) {
-        if (recherchePrecise && musiques.size()!=0) {
-            Musique musique = musiques.get(0);
-            for (Musique each : musiques) {
+    public void rechercheMorceauReponse(List<Morceau> morceaux) {
+        if (recherchePrecise && morceaux.size()!=0) {
+            Morceau morceau = morceaux.get(0);
+            for (Morceau each : morceaux) {
                 if (each.getTitre().equals(searchAutoComplete.getText().toString())) {
-                    musique=each;
+                    morceau=each;
                 }
             }
-            tv1.setText("Titre : " + musique.getTitre());
-            tv2.setText("Album : " + musique.getNomAlbum());
-            tv3.setText("Duree : " + musique.getDuree());
-            tv4.setText("Artiste : " + musique.getArtiste());
-            Picasso.with(this).load(musique.getPictureURL()).into(imageViewRecommandation);
+            tv1.setText("Titre : " + morceau.getTitre());
+            tv2.setText("Album : " + morceau.getNomAlbum());
+            tv3.setText("Duree : " + morceau.getDuree());
+            tv4.setText("Artiste : " + morceau.getArtiste());
+            Picasso.with(this).load(morceau.getPictureURL()).into(imageViewRecommandation);
             imageViewRecommandation.setVisibility(View.VISIBLE);
-            recommandable = musique;
+            recommandable = morceau;
             recherchePrecise=false;
         } else if (!recherchePrecise) {
             ArrayList<String> propositions = new ArrayList<>();
-            for (Musique musique : musiques) {
-                propositions.add(musique.getTitre());
+            for (Morceau morceau : morceaux) {
+                propositions.add(morceau.getTitre());
             }
             ArrayAdapter<String> newsAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_dropdown_item_1line, propositions);
             searchAutoComplete.setAdapter(newsAdapter);
@@ -262,15 +256,14 @@ public class CreationRecommandationActivity extends AppCompatActivity {
     }
 
     private void ajouterRecommandation() {
-        DatabaseReference root = database.getReference();
         DatabaseReference recommandation;
-        if (spinner.getSelectedItem().toString().equals("Musique")) {
-            Musique musique = (Musique) recommandable;
-            ajouterMusique(musique);
-            recommandation = root.child("recommandations").child("recommandationsMusique").push();
+        if (spinner.getSelectedItem().toString().equals("Morceau")) {
+            Morceau morceau = (Morceau) recommandable;
+            ajouterMorceau(morceau);
+            recommandation = root.child("recommandations").child("recommandationsMorceau").push();
             recommandation.child("emetteur").setValue("");
             recommandation.child("destinataire").setValue("");
-            recommandation.child("idMusique").setValue(musique.getId());
+            recommandation.child("idMorceau").setValue(morceau.getId());
             recommandation.child("nbLikes").setValue(0);
             recommandation.child("nbAppuis").setValue(0);
             recommandation.child("dateRecommandation").setValue(new GregorianCalendar().getTime().toString());
@@ -299,19 +292,19 @@ public class CreationRecommandationActivity extends AppCompatActivity {
         finish();
     }
 
-    public void ajouterMusique(Musique musique) {
-        DatabaseReference refMusique = database.getReference("musiques");
-        DatabaseReference ref = refMusique.child(musique.getId());
-        ref.child("artiste").setValue(musique.getArtiste());
-        ref.child("duree").setValue(musique.getDuree());
-        ref.child("titre").setValue(musique.getTitre());
-        ref.child("album").setValue(musique.getNomAlbum());
-        ref.child("pictureURL").setValue(musique.getPictureURL());
+    public void ajouterMorceau(Morceau morceau) {
+        DatabaseReference refMorceau = root.child("recommandables").child("morceaux");
+        DatabaseReference ref = refMorceau.child(morceau.getId());
+        ref.child("artiste").setValue(morceau.getArtiste());
+        ref.child("duree").setValue(morceau.getDuree());
+        ref.child("titre").setValue(morceau.getTitre());
+        ref.child("album").setValue(morceau.getNomAlbum());
+        ref.child("pictureURL").setValue(morceau.getPictureURL());
     }
 
     public void ajouterAlbum(Album album) {
-        DatabaseReference refMusiques = database.getReference("albums");
-        DatabaseReference ref = refMusiques.child(album.getId());
+        DatabaseReference refAlbums = root.child("recommandables").child("albums");
+        DatabaseReference ref = refAlbums.child(album.getId());
         ref.child("artiste").setValue(album.getArtiste());
         ref.child("titre").setValue(album.getTitre());
         ref.child("nbTrack").setValue(album.getNbTrack());
@@ -319,8 +312,8 @@ public class CreationRecommandationActivity extends AppCompatActivity {
     }
 
     public void ajouterArtiste(Artiste artiste) {
-        DatabaseReference refMusiques = database.getReference("artistes");
-        DatabaseReference ref = refMusiques.child(artiste.getId());
+        DatabaseReference refArtistes = root.child("recommandables").child("artistes");
+        DatabaseReference ref = refArtistes.child(artiste.getId());
         ref.child("nom").setValue(artiste.getNom());
         ref.child("nbAlbums").setValue(artiste.getNbAlbums());
         ref.child("pictureURL").setValue(artiste.getPictureURL());

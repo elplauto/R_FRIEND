@@ -40,10 +40,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -58,13 +55,10 @@ public class MainActivity extends AppCompatActivity
     Point size;
     SwitchCompat switchRecommandationsPersos;
     SwitchCompat switchAlbums;
-    SwitchCompat switchMusiques;
+    SwitchCompat switchMorceaux;
     SwitchCompat switchArtistes;
-    SearchView userSearchView;
     SearchView mainSearchView;
-    DeezerManager deezerManager;
 
-    FirebaseDatabase database;
     DatabaseReference root;
     DataSnapshot dataSnapshotRecom;
     DataSnapshot dataSnapshotInfosSupp;
@@ -102,17 +96,7 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        remplirRecommandation();
         setScrollView();
-       // afficherRecommandation();
-
-        switchRecommandationsPersos = findViewById(R.id.app_bar_switch_persos);
-        switchMusiques = findViewById(R.id.app_bar_switch_musiques);
-        switchAlbums = findViewById(R.id.app_bar_switch_albums);
-        switchArtistes = findViewById(R.id.app_bar_switch_artistes);
-        userSearchView = findViewById(R.id.app_bar_search);
-
     }
 
     public Point getSize() {
@@ -151,74 +135,20 @@ public class MainActivity extends AppCompatActivity
             }
         });*/
 
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        // Inflate the search menu action bar.
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.main, menu);
-
-        // Get the search menu.
-        MenuItem searchMenu = menu.findItem(R.id.action_search);
-
-        // Get SearchView object.
-        SearchView searchView = (SearchView) searchMenu.getActionView();
-
-        // Get SearchView autocomplete object.
-        final  SearchView.SearchAutoComplete searchAutoComplete = (SearchView.SearchAutoComplete)searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
-        searchAutoComplete.setBackgroundColor(Color.BLUE);
-        searchAutoComplete.setTextColor(Color.WHITE);
-        searchAutoComplete.setDropDownBackgroundResource(android.R.color.holo_blue_light);
-
-        // Create a new ArrayAdapter and add data to search auto complete object.
-        String dataArr[] = {"Apple" , "Amazon" , "Amd", "Microsoft", "Microwave", "MicroNews", "Intel", "Intelligence"};
-        ArrayAdapter<String> newsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, dataArr);
-        searchAutoComplete.setAdapter(newsAdapter);
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-
-        return super.onOptionsItemSelected(item);
-    }*/
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-
         switchRecommandationsPersos = findViewById(R.id.app_bar_switch_persos);
-        switchMusiques = findViewById(R.id.app_bar_switch_musiques);
+        switchMorceaux = findViewById(R.id.app_bar_switch_morceaux);
         switchAlbums = findViewById(R.id.app_bar_switch_albums);
         switchArtistes = findViewById(R.id.app_bar_switch_artistes);
-        userSearchView = findViewById(R.id.app_bar_search);
-
-        ImageView paramsIcon = findViewById(R.id.imageView);
-        paramsIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                 Intent intent = new Intent(getApplicationContext(),ConnexionActivity.class);
-                 startActivity(intent);
-            }
-        });
-
+        switchArtistes.setChecked(true);
+        switchAlbums.setChecked(true);
+        switchMorceaux.setChecked(true);
         switchAlbums.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 afficherRecommandation();
             }
         });
-        switchMusiques.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        switchMorceaux.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 afficherRecommandation();
@@ -230,18 +160,26 @@ public class MainActivity extends AppCompatActivity
                 afficherRecommandation();
             }
         });
-        userSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
+        remplirRecommandation();
 
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+
+        ImageView paramsIcon = findViewById(R.id.imageView);
+        paramsIcon.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
+            public void onClick(View v) {
+                 Intent intent = new Intent(getApplicationContext(),ConnexionActivity.class);
+                 startActivity(intent);
             }
         });
-
         int id = item.getItemId();
 
         if (id == R.id.app_bar_switch_persos) {
@@ -269,11 +207,11 @@ public class MainActivity extends AppCompatActivity
             }
         }
 
-        else if (id == R.id.app_bar_switch_musiques) {
-            if (switchMusiques.isChecked()) {
-                switchMusiques.setChecked(false);
+        else if (id == R.id.app_bar_switch_morceaux) {
+            if (switchMorceaux.isChecked()) {
+                switchMorceaux.setChecked(false);
             } else {
-                switchMusiques.setChecked(true);
+                switchMorceaux.setChecked(true);
             }
         }
 
@@ -309,6 +247,7 @@ public class MainActivity extends AppCompatActivity
                 createRecommandation("morceau");
                 createRecommandation("album");
                 createRecommandation("artiste");
+                afficherRecommandation();
             }
 
             @Override
@@ -344,13 +283,11 @@ public class MainActivity extends AppCompatActivity
         }
         Iterator<DataSnapshot> i = dataSnapshotRecom.child(recomChild).getChildren().iterator();
         while (i.hasNext()) {
-            Log.i("maj", "1");
             DataSnapshot dataRecom = i.next();
             String dest = dataRecom.child("destinataire").getValue(String.class);
             String emet = dataRecom.child("emetteur").getValue(String.class);
             int nbLikes = dataRecom.child("nbLikes").getValue(Integer.class);
             int nbAppuis = dataRecom.child("nbAppuis").getValue(Integer.class);
-            Log.i("maj", "2");
 
             Log.i("triDate", "Avant récupération");
             String postDate = dataRecom.child("dateRecommandation").getValue(String.class);
@@ -368,7 +305,6 @@ public class MainActivity extends AppCompatActivity
 
             String idInfosSupp = dataRecom.child(infosSuppID).getValue(String.class);
             Log.i("stp_marche", "ID infos supp (pour " + type + ") : " + idInfosSupp);
-            Log.i("maj", "3");
 
             Iterator<DataSnapshot> j = dataSnapshotInfosSupp.child(infosSuppChild).getChildren().iterator();
             while (j.hasNext()) {
@@ -378,44 +314,36 @@ public class MainActivity extends AppCompatActivity
                     Log.i("stp_marche", "c'est le bon " + type);
                     switch(type) {
                         case "morceau":
-                            Log.i("maj", "morceau 4");
                             String artisteMorceau = dataInfosSupp.child("artiste").getValue(String.class);
                             Integer dureeSecondes = dataInfosSupp.child("duree").getValue(Integer.class);
                             String dureeMinutes = dureeSecondes/60 + "min" + dureeSecondes%60 + "s";
                             String titreMorceau = dataInfosSupp.child("titre").getValue(String.class);
                             String imgAlb = dataInfosSupp.child("pictureURL").getValue(String.class);
                             String nomAlbum = dataInfosSupp.child("album").getValue(String.class);
-                            recommandations.add(new MusiqueRecom(dest, emet, nbLikes, nbAppuis, imgAlb, artisteMorceau, dureeMinutes, titreMorceau, nomAlbum));
-                            Log.i("stp_marche maj", "Création recommandation morceau");
+                            recommandations.add(new MorceauRecom(dest, emet, nbLikes, nbAppuis, imgAlb, artisteMorceau, dureeMinutes, titreMorceau, nomAlbum));
+                            Log.i("stp_marche", "Création recommandation morceau");
                             break;
 
                         case "album":
-                            Log.i("maj", "album 4");
+                            Integer nbTracks = dataInfosSupp.child("nbTrack").getValue(Integer.class);
                             String artisteAlbum = dataInfosSupp.child("artiste").getValue(String.class);
-                            Log.i("maj", "album 4.1");
-                            String nbTracks = dataInfosSupp.child("nbTrack").getValue(Integer.class).toString();
-                            Log.i("maj", "album 5");
                             String titreAlbum = dataInfosSupp.child("titre").getValue(String.class);
                             String imgAlbum = dataInfosSupp.child("pictureURL").getValue(String.class);
-                            Log.i("maj", "album 6");
                             recommandations.add(new AlbumRecom(dest, emet, nbLikes, nbAppuis, imgAlbum, artisteAlbum, nbTracks, titreAlbum));
-                            Log.i("stp_marche maj", "Création recommandation album");
+                            Log.i("stp_marche", "Création recommandation album");
                             break;
 
                         case "artiste":
-                            Log.i("maj", "artiste 4");
                             String nom = dataInfosSupp.child("nom").getValue(String.class);
-                            String nbAlbums = dataInfosSupp.child("nbAlbums").getValue(Integer.class).toString();
+                            Integer nbAlbums = dataInfosSupp.child("nbAlbums").getValue(Integer.class);
                             String picture = dataInfosSupp.child("pictureURL").getValue(String.class);
-                            recommandations.add(new GroupeRecom(dest, emet, nbLikes, nbAppuis, picture, nom, nbAlbums));
-                            Log.i("stp_marche maj", "Création recommandation artiste");
+                            recommandations.add(new ArtisteRecom(dest, emet, nbLikes, nbAppuis, picture, nom, nbAlbums));
+                            Log.i("stp_marche", "Création recommandation artiste");
                             break;
 
                         default: Log.i("stp_marche", "Type inconnu : " + type);
                     }
                     break; //pour ne pas parcourir tous les autres infosSuppChildren
-                } else {
-                    //Log.i("stp_marche", "c'est pas le bon album");
                 }
             }
         }
@@ -425,8 +353,8 @@ public class MainActivity extends AppCompatActivity
     public void afficherRecommandation() {
         ll.removeAllViews();
         for (Recommandation recommandation : recommandations) {
-            if (recommandation instanceof MusiqueRecom && switchMusiques.isChecked()
-                    || recommandation instanceof GroupeRecom && switchArtistes.isChecked()
+            if (recommandation instanceof MorceauRecom && switchMorceaux.isChecked()
+                    || recommandation instanceof ArtisteRecom && switchArtistes.isChecked()
                     || recommandation instanceof AlbumRecom && switchAlbums.isChecked()
                     ){
                 ll.addView(new Space(this),new LinearLayout.LayoutParams(1,size.y/50));

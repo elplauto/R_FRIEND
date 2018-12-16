@@ -4,14 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <item android:title="Rechercher un utilisateur">
-        <menu>
-            <item
-                android:id="@+id/app_bar_search"
-                android:title=""
-                app:actionViewClass="android.widget.SearchView" />
-        </menu>
-    </item>
     <item android:title="Filtrer les recommandations">
         <menu>
             <item
@@ -29,8 +21,8 @@
                 android:title="Artistes"
                 app:actionViewClass="android.support.v7.widget.SwitchCompat" />
             <item
-                android:id="@+id/app_bar_switch_musiques"
-                android:title="Musiques"
+                android:id="@+id/app_bar_switch_morceaux"
+                android:title="Morceaux"
                 app:actionViewClass="android.support.v7.widget.SwitchCompat" />
         </menu>
     </item>
