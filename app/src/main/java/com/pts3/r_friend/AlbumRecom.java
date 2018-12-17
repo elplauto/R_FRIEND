@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.Date;
+
 public class AlbumRecom extends Recommandation {
 
     private String artiste;
@@ -19,8 +21,8 @@ public class AlbumRecom extends Recommandation {
     private String[] titresMorceaux;
 
 
-    public AlbumRecom(String destinataire, String emetteur, int nbLikes, int nbAppuis, String picture, String artiste, Integer nbTracks, String titre) {
-        super(destinataire, emetteur, nbLikes, nbAppuis, picture);
+    public AlbumRecom(String destinataire, String emetteur, int nbLikes, int nbAppuis, String picture, Date date, String artiste, Integer nbTracks, String titre) {
+        super(destinataire, emetteur, nbLikes, nbAppuis, picture, date);
         this.artiste = artiste;
         this.nbTracks = nbTracks;
         this.titre = titre;

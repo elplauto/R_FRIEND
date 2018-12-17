@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.Date;
+
 public abstract class Recommandation {
 
     private static String RECOMENDED_TO_EVERYONE = "";
@@ -21,6 +23,7 @@ public abstract class Recommandation {
     private int nbLikes;
     private int nbAppuis;
     private String picture;
+    private Date date;
 
     private TextView tvLikes;
     private TextView tvAppuis;
@@ -28,11 +31,12 @@ public abstract class Recommandation {
     private boolean isSupported;
 
 
-    public Recommandation(String destinataire, String emetteur, int nbLikes, int nbAppuis, String picture) {
+    public Recommandation(String destinataire, String emetteur, int nbLikes, int nbAppuis, String picture, Date date) {
         this.destinataire = destinataire;
         this.emetteur = emetteur;
         this.nbLikes = nbLikes;
         this.nbAppuis = nbAppuis;
+        this.date = date;
         this.isLiked = isLiked;
         this.isSupported = isSupported;
         this.picture = picture;
@@ -160,6 +164,10 @@ public abstract class Recommandation {
         return nbAppuis;
     }
 
+    public Date getDate() {
+        return date;
+    }
+
     public TextView getTvLikes() {
         return tvLikes;
     }
@@ -198,6 +206,10 @@ public abstract class Recommandation {
 
     public void setPicture(String picture) {
         this.picture = picture;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public void setTvLikes(TextView tvLikes) {

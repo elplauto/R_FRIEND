@@ -41,6 +41,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -160,6 +161,7 @@ public class MainActivity extends AppCompatActivity
                 afficherRecommandation();
             }
         });
+
         remplirRecommandation();
 
         return super.onCreateOptionsMenu(menu);
@@ -247,6 +249,7 @@ public class MainActivity extends AppCompatActivity
                 createRecommandation("morceau");
                 createRecommandation("album");
                 createRecommandation("artiste");
+                sortRecommandations();
                 afficherRecommandation();
             }
 
@@ -289,19 +292,12 @@ public class MainActivity extends AppCompatActivity
             int nbLikes = dataRecom.child("nbLikes").getValue(Integer.class);
             int nbAppuis = dataRecom.child("nbAppuis").getValue(Integer.class);
 
-            Log.i("triDate", "Avant récupération");
-            String postDate = dataRecom.child("dateRecommandation").getValue(String.class);
-            Log.i("triDate", "date : " + postDate);
-            //marche pas
-            /*SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
-            try {
-                Log.i("triDate", "Et ca ca marche ?");
-                Date date1 = formatter.parse(postDate);
-                Log.i("triDate", "date 1 : " + date1);
-                Log.i("triDate", "date 2 : " + formatter.format(date1));
-            } catch (ParseException e) {
-                Log.i("error", "error : " + e);
-            }*/
+            //0 = nomJour ; 1 = mois ; 2 = numJour ; 3 = temps ; 4 = gmt ; 5 = an
+            String[] postDate = dataRecom.child("dateRecommandation").getValue(String.class).split(" ");
+            //0 = heures ; 1 = minutes ; 2 = secondes
+            String[] time = postDate[3].split(":");
+            //Date(int year, int month, int date, int hrs, int min, int sec)
+            Date date = new Date(Integer.parseInt(postDate[5])-1900, parseMounth(postDate[1]), Integer.parseInt(postDate[2]), Integer.parseInt(time[0]), Integer.parseInt(time[1]), Integer.parseInt(time[2]));
 
             String idInfosSupp = dataRecom.child(infosSuppID).getValue(String.class);
             Log.i("stp_marche", "ID infos supp (pour " + type + ") : " + idInfosSupp);
@@ -320,7 +316,7 @@ public class MainActivity extends AppCompatActivity
                             String titreMorceau = dataInfosSupp.child("titre").getValue(String.class);
                             String imgAlb = dataInfosSupp.child("pictureURL").getValue(String.class);
                             String nomAlbum = dataInfosSupp.child("album").getValue(String.class);
-                            recommandations.add(new MorceauRecom(dest, emet, nbLikes, nbAppuis, imgAlb, artisteMorceau, dureeMinutes, titreMorceau, nomAlbum));
+                            recommandations.add(new MorceauRecom(dest, emet, nbLikes, nbAppuis, imgAlb, date, artisteMorceau, dureeMinutes, titreMorceau, nomAlbum));
                             Log.i("stp_marche", "Création recommandation morceau");
                             break;
 
@@ -329,7 +325,7 @@ public class MainActivity extends AppCompatActivity
                             String artisteAlbum = dataInfosSupp.child("artiste").getValue(String.class);
                             String titreAlbum = dataInfosSupp.child("titre").getValue(String.class);
                             String imgAlbum = dataInfosSupp.child("pictureURL").getValue(String.class);
-                            recommandations.add(new AlbumRecom(dest, emet, nbLikes, nbAppuis, imgAlbum, artisteAlbum, nbTracks, titreAlbum));
+                            recommandations.add(new AlbumRecom(dest, emet, nbLikes, nbAppuis, imgAlbum, date, artisteAlbum, nbTracks, titreAlbum));
                             Log.i("stp_marche", "Création recommandation album");
                             break;
 
@@ -337,7 +333,7 @@ public class MainActivity extends AppCompatActivity
                             String nom = dataInfosSupp.child("nom").getValue(String.class);
                             Integer nbAlbums = dataInfosSupp.child("nbAlbums").getValue(Integer.class);
                             String picture = dataInfosSupp.child("pictureURL").getValue(String.class);
-                            recommandations.add(new ArtisteRecom(dest, emet, nbLikes, nbAppuis, picture, nom, nbAlbums));
+                            recommandations.add(new ArtisteRecom(dest, emet, nbLikes, nbAppuis, picture, date, nom, nbAlbums));
                             Log.i("stp_marche", "Création recommandation artiste");
                             break;
 
@@ -347,7 +343,53 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         }
+    }
 
+    public int parseMounth(String mois) {
+        switch(mois) {
+            case "Feb":
+                return 1;
+            case "Mar":
+                return 2;
+            case "Apr":
+                return 3;
+            case "May":
+                return 4;
+            case "Jun":
+                return 5;
+            case "Jul":
+                return 6;
+            case "Aug":
+                return 7;
+            case "Sep":
+                return 8;
+            case "Oct":
+                return 9;
+            case "Nov":
+                return 10;
+            case "Dec":
+                return 11;
+            case "Jan":
+            default:
+                return 0;
+        }
+    }
+
+    public void sortRecommandations() {
+        List<Recommandation> temp = new ArrayList<>(recommandations);
+        recommandations.clear();
+        while (!temp.isEmpty()) {
+            Iterator<Recommandation> i = temp.iterator();
+            Recommandation plusRecente = temp.get(0);
+            while (i.hasNext()) {
+                Recommandation currentRecom = i.next();
+                if (currentRecom.getDate().compareTo(plusRecente.getDate()) > 0) {
+                    plusRecente = currentRecom;
+                }
+            }
+            temp.remove(plusRecente);
+            recommandations.add(plusRecente);
+        }
     }
 
     public void afficherRecommandation() {
