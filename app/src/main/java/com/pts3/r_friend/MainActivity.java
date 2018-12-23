@@ -1,6 +1,8 @@
 package com.pts3.r_friend;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -74,6 +76,7 @@ public class MainActivity extends AppCompatActivity
         toolbar.setBackground(new ColorDrawable(Color.parseColor("#26223C")));
         setSupportActionBar(toolbar);
 
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,6 +85,7 @@ public class MainActivity extends AppCompatActivity
                 startActivity(intent);
             }
         });
+        
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -92,6 +96,7 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         setScrollView();
+
     }
 
     public Point getSize() {
@@ -134,9 +139,15 @@ public class MainActivity extends AppCompatActivity
         switchMorceaux = findViewById(R.id.app_bar_switch_morceaux);
         switchAlbums = findViewById(R.id.app_bar_switch_albums);
         switchArtistes = findViewById(R.id.app_bar_switch_artistes);
+
         switchArtistes.setChecked(true);
         switchAlbums.setChecked(true);
         switchMorceaux.setChecked(true);
+
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        TextView username = findViewById(R.id.username);
+        username.setText(sharedPref.getString("pseudo","Non connecté"));
+
         switchAlbums.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -349,7 +360,8 @@ public class MainActivity extends AppCompatActivity
             TextView aucuneRecommandation = new TextView(this);
             aucuneRecommandation.setText("Aucune recommandation à afficher");
             ll.addView(aucuneRecommandation);
-
+        } else {
+            ll.addView(new Space(this),new LinearLayout.LayoutParams(1,getNavBarHeight()+getActionBarHeight()));
         }
     }
 
@@ -363,6 +375,19 @@ public class MainActivity extends AppCompatActivity
         ll.setOrientation(LinearLayout.VERTICAL);
         ll.setX((size.x-size.x*95/100)/2);
     }
+
+    public int getNavBarHeight() {
+        int resourceId = this.getResources().getIdentifier("navigation_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            return this.getResources().getDimensionPixelSize(resourceId);
+        }
+        return 0;
+    }
+
+    public int getActionBarHeight() {
+        return getSupportActionBar().getHeight();
+    }
+
 
     public void debug(String s) {
         Log.e("-----",s);

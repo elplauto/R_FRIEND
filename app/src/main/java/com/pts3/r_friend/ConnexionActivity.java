@@ -1,6 +1,8 @@
 package com.pts3.r_friend;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -106,6 +108,10 @@ public class ConnexionActivity extends AppCompatActivity {
     private void connexion(boolean connexionReussie, String msg) {
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
         if (connexionReussie) {
+            SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString("pseudo",pseudo);
+            editor.apply();
             finish();
         }
     }

@@ -17,6 +17,7 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                     <action android:name="android.intent.action.MAIN" />
@@ -24,13 +25,17 @@
                   <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ConnexionActivity">
-        </activity>
-        <activity android:name=".MdpOublieActivity" />
-        <activity android:name=".CreationCompteActivity" />
-        <activity android:name=".CreationRecommandationActivity"></activity>
 
-        <activity android:name=".RecommandationActivity"></activity>
+        <activity android:name=".ConnexionActivity" android:screenOrientation="portrait"/>
+
+        <activity android:name=".MdpOublieActivity" android:screenOrientation="portrait"/>
+
+        <activity android:name=".CreationCompteActivity" android:screenOrientation="portrait"/>
+
+        <activity android:name=".CreationRecommandationActivity" android:screenOrientation="portrait"></activity>
+
+        <activity android:name=".RecommandationActivity" android:screenOrientation="portrait"></activity>
+
     </application>
 
 </manifest>
