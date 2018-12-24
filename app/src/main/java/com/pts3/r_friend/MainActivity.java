@@ -87,8 +87,14 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent =new Intent(getApplicationContext(),CreationRecommandationActivity.class);
-                startActivity(intent);
+                if (!userMail.getText().toString().equals("")) {
+                    Intent intent =new Intent(getApplicationContext(),CreationRecommandationActivity.class);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Vous devez être connecté pour créer une recommandation", Toast.LENGTH_SHORT).show();
+                    Intent intent =new Intent(getApplicationContext(),ConnexionActivity.class);
+                    startActivity(intent);
+                }
             }
         });
         
@@ -190,6 +196,22 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 afficherRecommandation();
+            }
+        });
+
+        switchRecommandationsPersos.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (switchRecommandationsPersos.isChecked() && userMail.getText().toString().equals("")) {
+                    switchRecommandationsPersos.setChecked(false);
+                    Toast.makeText(getApplicationContext(), "Vous devez être connecté pour voir vos recommandations personelles", Toast.LENGTH_SHORT).show();
+                    Intent intent =new Intent(getApplicationContext(),ConnexionActivity.class);
+                    startActivity(intent);
+                }
+                else {
+                    afficherRecommandation();
+                }
+
             }
         });
 
@@ -400,10 +422,11 @@ public class MainActivity extends AppCompatActivity
         userMail.setText("");
         Toast.makeText(getApplicationContext(), "Déconnexion réussie", Toast.LENGTH_SHORT).show();
 
-            navigationView.getMenu().findItem(R.id.buttonCompte).setVisible(false);
-            navigationView.getMenu().findItem(R.id.buttonDeconnexion).setVisible(false);
-            navigationView.getMenu().findItem(R.id.buttonConnexion).setVisible(true);
+        navigationView.getMenu().findItem(R.id.buttonCompte).setVisible(false);
+        navigationView.getMenu().findItem(R.id.buttonDeconnexion).setVisible(false);
+        navigationView.getMenu().findItem(R.id.buttonConnexion).setVisible(true);
 
+        switchRecommandationsPersos.setChecked(false);
     }
 
     public int getNavBarHeight() {

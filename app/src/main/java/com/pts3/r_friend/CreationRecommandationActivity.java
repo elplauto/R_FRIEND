@@ -1,9 +1,11 @@
 package com.pts3.r_friend;
 
 
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -42,6 +44,7 @@ public class CreationRecommandationActivity extends AppCompatActivity {
     FirebaseDatabase database;
     DatabaseReference root;
     int selectedIndex;
+    String emetteur;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +53,9 @@ public class CreationRecommandationActivity extends AppCompatActivity {
 
         database = FirebaseDatabase.getInstance();
         root = database.getReference();
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        emetteur = prefs.getString("pseudo","");
 
         spinner = (Spinner) findViewById(R.id.spinner);
         String choix[] = {"Morceau","Album","Artiste"};
@@ -263,7 +269,7 @@ public class CreationRecommandationActivity extends AppCompatActivity {
             Morceau morceau = (Morceau) recommandable;
             ajouterMorceau(morceau);
             recommandation = root.child("recommandations").child("recommandationsMorceau").push();
-            recommandation.child("emetteur").setValue("");
+            recommandation.child("emetteur").setValue(emetteur);
             recommandation.child("destinataire").setValue("");
             recommandation.child("idMorceau").setValue(morceau.getId());
             recommandation.child("nbLikes").setValue(0);
@@ -273,7 +279,7 @@ public class CreationRecommandationActivity extends AppCompatActivity {
             Album album = (Album) recommandable;
             ajouterAlbum(album);
             recommandation = root.child("recommandations").child("recommandationsAlbum").push();
-            recommandation.child("emetteur").setValue("");
+            recommandation.child("emetteur").setValue(emetteur);
             recommandation.child("destinataire").setValue("");
             recommandation.child("idAlbum").setValue(album.getId());
             recommandation.child("nbLikes").setValue(0);
@@ -283,7 +289,7 @@ public class CreationRecommandationActivity extends AppCompatActivity {
             Artiste artiste = (Artiste) recommandable;
             ajouterArtiste(artiste);
             recommandation = root.child("recommandations").child("recommandationsArtiste").push();
-            recommandation.child("emetteur").setValue("");
+            recommandation.child("emetteur").setValue(emetteur);
             recommandation.child("destinataire").setValue("");
             recommandation.child("idArtiste").setValue(artiste.getId());
             recommandation.child("nbLikes").setValue(0);
