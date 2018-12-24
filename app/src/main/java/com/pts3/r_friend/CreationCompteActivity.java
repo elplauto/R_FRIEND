@@ -79,7 +79,7 @@ public class CreationCompteActivity extends AppCompatActivity {
         else if (pseudo.equals("")) {
             Toast.makeText(getApplicationContext(), "Veuillez saisir un pseudo",Toast.LENGTH_SHORT).show();
         }
-        else if(!pseudoDispo) {
+        else if(!pseudoDispo || pseudo.equals("Non connecté")) {
             Toast.makeText(getApplicationContext(), "Pseudo indisponible",Toast.LENGTH_SHORT).show();
         }
         else if (mdp.equals("")) {

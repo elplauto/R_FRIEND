@@ -1,6 +1,7 @@
 package com.pts3.r_friend;
 
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -8,20 +9,29 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -45,6 +55,8 @@ public class CreationRecommandationActivity extends AppCompatActivity {
     DatabaseReference root;
     int selectedIndex;
     String emetteur;
+    EditText destinataire;
+    Boolean destinataireExistant;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,10 +74,55 @@ public class CreationRecommandationActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1 ,choix);
         spinner.setAdapter(adapter);
 
+        destinataireExistant = true;
+
         tv1 = findViewById(R.id.tv1);
         tv2 = findViewById(R.id.tv2);
         tv3 = findViewById(R.id.tv3);
         tv4 = findViewById(R.id.tv4);
+
+        destinataire = (EditText) findViewById(R.id.editTextDestinataire);
+        destinataire.setTextColor(Color.argb(255,255,255,255));
+        destinataire.setHintTextColor(Color.argb(255,255,255,255));
+
+        destinataire.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(final CharSequence s, int start, int before, int count) {
+                root.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.hasChild(s.toString())) {
+                            destinataire.setTextColor(Color.argb(255,13, 224, 55));
+                            destinataireExistant = true;
+                        }
+                        else {
+                            destinataire.setTextColor(Color.argb(255,224, 13, 13));
+                            destinataireExistant=false;
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError error) {
+                        // Failed to read value
+                    }
+                });
+                if (s.toString().equals("")) {
+                    destinataireExistant = true;
+                } else if (s.toString().equals(emetteur)){
+                    destinataire.setTextColor(Color.argb(255,224, 13, 13));
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
         imageViewRecommandation = findViewById(R.id.imageViewRecommandation);
         imageViewRecommandation.setVisibility(View.INVISIBLE);
@@ -77,6 +134,10 @@ public class CreationRecommandationActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (tv1.getText().equals("Titre : ---") || tv1.getText().equals("Nom : ---")) {
                     Toast.makeText(getApplicationContext(), "Veuillez choisir un objet à recommander", Toast.LENGTH_SHORT).show();
+                } else if(!destinataireExistant) {
+                    Toast.makeText(getApplicationContext(), "Destinataire inexistant", Toast.LENGTH_SHORT).show();
+                } else if(destinataire.getText().toString().equals(emetteur)) {
+                    Toast.makeText(getApplicationContext(), "Vous ne pouvez pas faire de recommandation à vous-même", Toast.LENGTH_SHORT).show();
                 } else {
                     ajouterRecommandation();
                 }
@@ -146,6 +207,7 @@ public class CreationRecommandationActivity extends AppCompatActivity {
         searchAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int itemIndex, long id) {
+                closeKeyboard();
                 String queryString=(String)adapterView.getItemAtPosition(itemIndex);
                 searchAutoComplete.setText(queryString);
                 recherchePrecise = true;
@@ -270,7 +332,7 @@ public class CreationRecommandationActivity extends AppCompatActivity {
             ajouterMorceau(morceau);
             recommandation = root.child("recommandations").child("recommandationsMorceau").push();
             recommandation.child("emetteur").setValue(emetteur);
-            recommandation.child("destinataire").setValue("");
+            recommandation.child("destinataire").setValue(destinataire.getText().toString());
             recommandation.child("idMorceau").setValue(morceau.getId());
             recommandation.child("nbLikes").setValue(0);
             recommandation.child("nbAppuis").setValue(0);
@@ -280,7 +342,7 @@ public class CreationRecommandationActivity extends AppCompatActivity {
             ajouterAlbum(album);
             recommandation = root.child("recommandations").child("recommandationsAlbum").push();
             recommandation.child("emetteur").setValue(emetteur);
-            recommandation.child("destinataire").setValue("");
+            recommandation.child("destinataire").setValue(destinataire.getText().toString());
             recommandation.child("idAlbum").setValue(album.getId());
             recommandation.child("nbLikes").setValue(0);
             recommandation.child("nbAppuis").setValue(0);
@@ -290,7 +352,7 @@ public class CreationRecommandationActivity extends AppCompatActivity {
             ajouterArtiste(artiste);
             recommandation = root.child("recommandations").child("recommandationsArtiste").push();
             recommandation.child("emetteur").setValue(emetteur);
-            recommandation.child("destinataire").setValue("");
+            recommandation.child("destinataire").setValue(destinataire.getText().toString());
             recommandation.child("idArtiste").setValue(artiste.getId());
             recommandation.child("nbLikes").setValue(0);
             recommandation.child("nbAppuis").setValue(0);
@@ -325,5 +387,13 @@ public class CreationRecommandationActivity extends AppCompatActivity {
         ref.child("nom").setValue(artiste.getNom());
         ref.child("nbAlbums").setValue(artiste.getNbAlbums());
         ref.child("pictureURL").setValue(artiste.getPictureURL());
+    }
+
+    private void closeKeyboard() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 }
