@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity
     TextView username;
     TextView userMail;
     NavigationView navigationView;
-
+    DeezerMusicPlayer deezerMusicPlayer;
 
     DatabaseReference root;
     DataSnapshot dataSnapshotRecom;
@@ -97,7 +97,8 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
-        
+
+        deezerMusicPlayer = new DeezerMusicPlayer(this,getResources().getString(R.string.app_id));
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -350,7 +351,8 @@ public class MainActivity extends AppCompatActivity
                             String titreMorceau = dataInfosSupp.child("titre").getValue(String.class);
                             String imgAlb = dataInfosSupp.child("pictureURL").getValue(String.class);
                             String nomAlbum = dataInfosSupp.child("album").getValue(String.class);
-                            recommandations.add(new MorceauRecom(dest, emet, nbLikes, nbAppuis, imgAlb, artisteMorceau, dureeMinutes, titreMorceau, nomAlbum));
+                            String idMorceau = dataInfosSupp.getKey().toString();
+                            recommandations.add(new MorceauRecom(dest, emet, nbLikes, nbAppuis, imgAlb, artisteMorceau, dureeMinutes, titreMorceau, nomAlbum,idMorceau));
                             Log.i("stp_marche", "Création recommandation morceau");
                             break;
 
@@ -359,7 +361,8 @@ public class MainActivity extends AppCompatActivity
                             String artisteAlbum = dataInfosSupp.child("artiste").getValue(String.class);
                             String titreAlbum = dataInfosSupp.child("titre").getValue(String.class);
                             String imgAlbum = dataInfosSupp.child("pictureURL").getValue(String.class);
-                            recommandations.add(new AlbumRecom(dest, emet, nbLikes, nbAppuis, imgAlbum, artisteAlbum, nbTracks, titreAlbum));
+                            String idAlbum = dataInfosSupp.getKey().toString();
+                            recommandations.add(new AlbumRecom(dest, emet, nbLikes, nbAppuis, imgAlbum, artisteAlbum, nbTracks, titreAlbum, idAlbum));
                             Log.i("stp_marche", "Création recommandation album");
                             break;
 
@@ -397,6 +400,7 @@ public class MainActivity extends AppCompatActivity
             aucuneRecommandation.setText("Aucune recommandation à afficher");
             ll.addView(aucuneRecommandation);
         } else {
+            //Ajoute un espace afin de pouvoir scroller jusqu'à la dernière recommandation
             ll.addView(new Space(this),new LinearLayout.LayoutParams(1,getNavBarHeight()+getActionBarHeight()));
         }
     }

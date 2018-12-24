@@ -11,8 +11,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -40,7 +38,7 @@ import java.util.List;
 
 public class CreationRecommandationActivity extends AppCompatActivity {
 
-    DeezerManager deezerManager;
+    DeezerDataSearcher deezerDataSearcher;
     Spinner spinner;
     android.support.v7.widget.SearchView.SearchAutoComplete searchAutoComplete;
     TextView tv1;
@@ -87,9 +85,7 @@ public class CreationRecommandationActivity extends AppCompatActivity {
 
         destinataire.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
             @Override
             public void onTextChanged(final CharSequence s, int start, int before, int count) {
@@ -119,9 +115,7 @@ public class CreationRecommandationActivity extends AppCompatActivity {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
-
-            }
+            public void afterTextChanged(Editable s) { }
         });
 
         imageViewRecommandation = findViewById(R.id.imageViewRecommandation);
@@ -173,7 +167,7 @@ public class CreationRecommandationActivity extends AppCompatActivity {
             }
         });
 
-        deezerManager = new DeezerManager(this,getResources().getString(R.string.app_id));
+        deezerDataSearcher = new DeezerDataSearcher(this,getResources().getString(R.string.app_id));
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("");
@@ -214,11 +208,11 @@ public class CreationRecommandationActivity extends AppCompatActivity {
                 String typeRecherche=spinner.getSelectedItem().toString();
                 selectedIndex = itemIndex;
                 if (typeRecherche.equals("Morceau")) {
-                    deezerManager.rechercheMorceau(queryString);
+                    deezerDataSearcher.rechercheMorceau(queryString);
                 } else if (typeRecherche.equals("Album")) {
-                    deezerManager.rechercheAlbum(queryString);
+                    deezerDataSearcher.rechercheAlbum(queryString);
                 } else if (typeRecherche.equals("Artiste")) {
-                    deezerManager.rechercheArtiste(queryString);
+                    deezerDataSearcher.rechercheArtiste(queryString);
                 }
             }
         });
@@ -234,11 +228,11 @@ public class CreationRecommandationActivity extends AppCompatActivity {
             public boolean onQueryTextChange(String s) {
                 String typeRecherche=spinner.getSelectedItem().toString();
                 if (typeRecherche.equals("Morceau")) {
-                    deezerManager.rechercheMorceau(s);
+                    deezerDataSearcher.rechercheMorceau(s);
                 } else if (typeRecherche.equals("Album")) {
-                    deezerManager.rechercheAlbum(s);
+                    deezerDataSearcher.rechercheAlbum(s);
                 } else if (typeRecherche.equals("Artiste")) {
-                    deezerManager.rechercheArtiste(s);
+                    deezerDataSearcher.rechercheArtiste(s);
                 }
                 return false;
             }

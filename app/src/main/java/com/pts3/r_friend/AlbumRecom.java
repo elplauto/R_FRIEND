@@ -2,6 +2,7 @@ package com.pts3.r_friend;
 
 import android.graphics.Point;
 import android.graphics.Typeface;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -14,17 +15,19 @@ public class AlbumRecom extends Recommandation {
     private Integer nbTracks;
     private String titre;
     private String[] titresMorceaux;
+    private String idAlbum;
 
 
-    public AlbumRecom(String destinataire, String emetteur, int nbLikes, int nbAppuis, String picture, String artiste, Integer nbTracks, String titre) {
+    public AlbumRecom(String destinataire, String emetteur, int nbLikes, int nbAppuis, String picture, String artiste, Integer nbTracks, String titre, String idAlbum) {
         super(destinataire, emetteur, nbLikes, nbAppuis, picture);
         this.artiste = artiste;
         this.nbTracks = nbTracks;
         this.titre = titre;
+        this.idAlbum=idAlbum;
         //rechercher les musiques de l'album en consultant la bdd grâce au titre et à l'artiste de l'album
     }
 
-    public void displayCenterOfRecom(MainActivity c, LinearLayout[] ll) {
+    public void displayCenterOfRecom(final MainActivity c, LinearLayout[] ll) {
         Point size = c.getSize();
         TextView tv = new TextView(c);
         tv.setText(this.getEmetteur() + " recommande un album" + (getDestinataire().equals(getRecomendedToEveryone()) ? "" : " à "+this.getDestinataire()));
@@ -39,6 +42,14 @@ public class AlbumRecom extends Recommandation {
         ll[2].addView(tv3);
         ImageView imageView = new ImageView(c);
         Picasso.with(c).load(this.getPicture()).into(imageView);
+
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                c.deezerMusicPlayer.jouerAlbum(Integer.parseInt(idAlbum));
+            }
+        });
+
         ll[1].addView(imageView,new LinearLayout.LayoutParams(size.x/5,size.y/5));
         ll[1].addView(ll[2]);
     }

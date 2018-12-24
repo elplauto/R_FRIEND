@@ -20,38 +20,40 @@ import com.deezer.sdk.player.networkcheck.WifiAndMobileNetworkStateChecker;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DeezerManager {
+public class DeezerDataSearcher {
 
     CreationRecommandationActivity context;
     DeezerConnect deezerConnect;
 
-    public DeezerManager(CreationRecommandationActivity context, String appId) {
+    AlbumPlayer albumPlayer;
+    TrackPlayer trackPlayer;
+
+    public DeezerDataSearcher(CreationRecommandationActivity context, String appId) {
         this.context = context;
         deezerConnect = new DeezerConnect(context, appId);
         String[] permissions = new String[] {
                 Permissions.BASIC_ACCESS,
                 Permissions.MANAGE_LIBRARY,
                 Permissions.LISTENING_HISTORY };
-    }
-
-    public void jouerAlbum(Album album) {
-        AlbumPlayer albumPlayer;
         try {
             albumPlayer = new AlbumPlayer(context.getApplication(), deezerConnect, new WifiAndMobileNetworkStateChecker());
-            albumPlayer.playAlbum(album.getId());
-        } catch (TooManyPlayersExceptions | DeezerError tooManyPlayersExceptions) {
-            tooManyPlayersExceptions.printStackTrace();
+        } catch (DeezerError | TooManyPlayersExceptions deezerError) {
+            deezerError.printStackTrace();
+        }
+        try {
+            trackPlayer = new TrackPlayer(context.getApplication(), deezerConnect, new WifiAndMobileNetworkStateChecker());
+        } catch (DeezerError | TooManyPlayersExceptions deezerError) {
+            deezerError.printStackTrace();
         }
     }
 
-    public void jouerMorceau(Track track) {
-        TrackPlayer trackPlayer;
-        try {
-            trackPlayer = new TrackPlayer(context.getApplication(), deezerConnect, new WifiAndMobileNetworkStateChecker());
-            trackPlayer.playTrack(track.getId());
-        } catch (TooManyPlayersExceptions | DeezerError tooManyPlayersExceptions) {
-            tooManyPlayersExceptions.printStackTrace();
-        }
+    public void jouerAlbum(int albumId) {
+        albumPlayer.playAlbum(albumId);
+    }
+
+
+    public void jouerMorceau(int trackId) {
+        trackPlayer.playTrack(trackId);
     }
 
     public void rechercheMorceau(String nom) {
