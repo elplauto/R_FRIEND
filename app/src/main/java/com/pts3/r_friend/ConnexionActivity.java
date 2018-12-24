@@ -1,8 +1,8 @@
 package com.pts3.r_friend;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -51,10 +51,10 @@ public class ConnexionActivity extends AppCompatActivity {
                 pseudo = editTextPseudo.getText().toString();
                 mdp = editTextMDP.getText().toString();
                 if (pseudo.equals("")) {
-                    connexion(false, "Veuillez saisir un pseudo");
+                    tentativeDeConnexion(false, "Veuillez saisir un pseudo");
                 }
                 else if (mdp.equals("")){
-                    connexion(false, "Veuillez saisir un mot de passe");
+                    tentativeDeConnexion(false, "Veuillez saisir un mot de passe");
                 }
                 else {
                     verification();
@@ -88,12 +88,12 @@ public class ConnexionActivity extends AppCompatActivity {
                 boolean pseudoExistant=dataSnapshot.hasChild(pseudo);
                 if (pseudoExistant) {
                     if (mdp.equals(dataSnapshot.child(pseudo).child("mdp").getValue().toString())) {
-                        connexion(true, "Connexion réussie");
+                        tentativeDeConnexion(true, "Connexion réussie");
                     } else {
-                        connexion(false, "Le pseudo et le mot de passe ne correspondent pas");
+                        tentativeDeConnexion(false, "Le pseudo et le mot de passe ne correspondent pas");
                     }
                 } else {
-                    connexion(false, "Pseudo inexistant");
+                    tentativeDeConnexion(false, "Pseudo inexistant");
                 }
             }
 
@@ -105,16 +105,34 @@ public class ConnexionActivity extends AppCompatActivity {
         });
     }
 
-    private void connexion(boolean connexionReussie, String msg) {
+    private void tentativeDeConnexion(boolean connexionReussie, String msg) {
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
         if (connexionReussie) {
-            SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putString("pseudo",pseudo);
-            editor.apply();
-            finish();
+           connexion();
         }
     }
+
+    private void connexion () {
+        root.child("users").child(pseudo).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString("pseudo",pseudo);
+                editor.putString("email",dataSnapshot.child("adresseMail").getValue().toString());
+                editor.commit();
+                finish();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                debug("erreur");
+            }
+        });
+    }
+
+
 
     public void debug(String s) {
         Log.e("-----",s);

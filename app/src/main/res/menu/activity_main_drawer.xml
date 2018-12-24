@@ -4,6 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
+    <item
+        android:id="@+id/buttonCompte"
+        android:title="Compte"
+        android:icon="@drawable/compte"></item>
+
+    <item
+        android:id="@+id/buttonConnexion"
+        android:title="Connexion"
+        android:icon="@drawable/login"></item>
+
     <item android:title="Filtrer les recommandations">
         <menu>
             <item
@@ -26,4 +36,10 @@
                 app:actionViewClass="android.support.v7.widget.SwitchCompat" />
         </menu>
     </item>
+
+    <item
+        android:id="@+id/buttonDeconnexion"
+        android:title="Déconnexion"
+        android:icon="@drawable/logout"></item>
+
 </menu>

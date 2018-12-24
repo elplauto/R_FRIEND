@@ -9,6 +9,7 @@ import android.graphics.Point;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.SwitchCompat;
@@ -30,6 +31,7 @@ import android.widget.ScrollView;
 import android.widget.SearchView;
 import android.widget.Space;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -54,6 +56,10 @@ public class MainActivity extends AppCompatActivity
     SwitchCompat switchMorceaux;
     SwitchCompat switchArtistes;
     SearchView mainSearchView;
+    TextView username;
+    TextView userMail;
+    NavigationView navigationView;
+
 
     DatabaseReference root;
     DataSnapshot dataSnapshotRecom;
@@ -93,14 +99,27 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         setScrollView();
 
     }
 
-    public Point getSize() {
-        return size;
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (username != null && userMail != null) {
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            username.setText(sharedPref.getString("pseudo","Non connecté"));
+            userMail.setText(sharedPref.getString("email",""));
+        }
+
+        if (navigationView.getMenu() != null && userMail != null) {
+            Boolean connected = !userMail.getText().toString().equals("");
+            navigationView.getMenu().findItem(R.id.buttonCompte).setVisible(connected);
+            navigationView.getMenu().findItem(R.id.buttonDeconnexion).setVisible(connected);
+            navigationView.getMenu().findItem(R.id.buttonConnexion).setVisible(!connected);
+        }
     }
 
     @Override
@@ -144,9 +163,16 @@ public class MainActivity extends AppCompatActivity
         switchAlbums.setChecked(true);
         switchMorceaux.setChecked(true);
 
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        TextView username = findViewById(R.id.username);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        username = findViewById(R.id.username);
+        userMail = findViewById(R.id.user_email);
         username.setText(sharedPref.getString("pseudo","Non connecté"));
+        userMail.setText(sharedPref.getString("email",""));
+
+        Boolean connected = !userMail.getText().toString().equals("");
+        navigationView.getMenu().findItem(R.id.buttonCompte).setVisible(connected);
+        navigationView.getMenu().findItem(R.id.buttonDeconnexion).setVisible(connected);
+        navigationView.getMenu().findItem(R.id.buttonConnexion).setVisible(!connected);
 
         switchAlbums.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -166,6 +192,7 @@ public class MainActivity extends AppCompatActivity
                 afficherRecommandation();
             }
         });
+
         remplirRecommandation();
 
         return super.onCreateOptionsMenu(menu);
@@ -178,49 +205,36 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
 
-        ImageView paramsIcon = findViewById(R.id.imageView);
-        paramsIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                 Intent intent = new Intent(getApplicationContext(),ConnexionActivity.class);
-                 startActivity(intent);
-            }
-        });
         int id = item.getItemId();
 
         if (id == R.id.app_bar_switch_persos) {
-
-            if (switchRecommandationsPersos.isChecked()) {
-                switchRecommandationsPersos.setChecked(false);
-            } else {
-                switchRecommandationsPersos.setChecked(true);
-            }
+            switchRecommandationsPersos.setChecked(!switchRecommandationsPersos.isChecked());
         }
 
         else if (id == R.id.app_bar_switch_albums) {
-            if (switchAlbums.isChecked()) {
-                switchAlbums.setChecked(false);
-            } else {
-                switchAlbums.setChecked(true);
-            }
+            switchAlbums.setChecked(!switchAlbums.isChecked());
         }
 
         else if (id == R.id.app_bar_switch_artistes) {
-            if (switchArtistes.isChecked()) {
-                switchArtistes.setChecked(false);
-            } else {
-                switchArtistes.setChecked(true);
-            }
+            switchArtistes.setChecked(!switchArtistes.isChecked());
         }
 
         else if (id == R.id.app_bar_switch_morceaux) {
-            if (switchMorceaux.isChecked()) {
-                switchMorceaux.setChecked(false);
-            } else {
-                switchMorceaux.setChecked(true);
-            }
+            switchMorceaux.setChecked(!switchMorceaux.isChecked());
         }
 
+        else if (id == R.id.buttonConnexion) {
+            Intent intent = new Intent(getApplicationContext(),ConnexionActivity.class);
+            startActivity(intent);
+        }
+
+        else if (id == R.id.buttonDeconnexion) {
+            deconnexion();
+        }
+
+        else if (id == R.id.buttonCompte) {
+
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
        // drawer.closeDrawer(GravityCompat.START);
@@ -376,6 +390,22 @@ public class MainActivity extends AppCompatActivity
         ll.setX((size.x-size.x*95/100)/2);
     }
 
+    public void deconnexion() {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.remove("pseudo");
+        editor.remove("email");
+        editor.commit();
+        username.setText("Non connecté");
+        userMail.setText("");
+        Toast.makeText(getApplicationContext(), "Déconnexion réussie", Toast.LENGTH_SHORT).show();
+
+            navigationView.getMenu().findItem(R.id.buttonCompte).setVisible(false);
+            navigationView.getMenu().findItem(R.id.buttonDeconnexion).setVisible(false);
+            navigationView.getMenu().findItem(R.id.buttonConnexion).setVisible(true);
+
+    }
+
     public int getNavBarHeight() {
         int resourceId = this.getResources().getIdentifier("navigation_bar_height", "dimen", "android");
         if (resourceId > 0) {
@@ -388,6 +418,9 @@ public class MainActivity extends AppCompatActivity
         return getSupportActionBar().getHeight();
     }
 
+    public Point getSize() {
+        return size;
+    }
 
     public void debug(String s) {
         Log.e("-----",s);
