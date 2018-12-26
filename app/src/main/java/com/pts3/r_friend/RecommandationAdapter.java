@@ -106,7 +106,7 @@ public class RecommandationAdapter extends ArrayAdapter<Recommandation> {
             viewHolder.titre.setText("Nom : " + ((ArtisteRecom) recommandation).getNom());
             viewHolder.nom_artiste.setText("Nombre d'album : "+ ((ArtisteRecom) recommandation).getNbAlbums());
             viewHolder.album.setText("");
-            viewHolder.image_play = null;
+            viewHolder.image_play.setVisibility(View.INVISIBLE);
         }
 
         viewHolder.nombre_plus_un.setText("0");

@@ -15,17 +15,11 @@ import com.squareup.picasso.Picasso;
 
 public abstract class Recommandation {
 
-    private static String RECOMENDED_TO_EVERYONE = "";
     private String destinataire;
     private String emetteur;
     private int nbLikes;
     private int nbAppuis;
     private String picture;
-
-    private TextView tvLikes;
-    private TextView tvAppuis;
-    private boolean isLiked;        //il faudra enregistrer une liste de tous les utilisateurs qui ont likés la recom
-    private boolean isSupported;
 
 
     public Recommandation(String destinataire, String emetteur, int nbLikes, int nbAppuis, String picture) {
@@ -33,8 +27,6 @@ public abstract class Recommandation {
         this.emetteur = emetteur;
         this.nbLikes = nbLikes;
         this.nbAppuis = nbAppuis;
-        this.isLiked = isLiked;
-        this.isSupported = isSupported;
         this.picture = picture;
     }
 
@@ -91,22 +83,6 @@ public abstract class Recommandation {
             }
         });*/
 
-
-    public void displayNbLikes() {
-        tvLikes.setText(""+this.getNbLikes());
-    }
-
-    public void displayNbAppuis() {
-        tvAppuis.setText(""+this.getNbAppuis());
-    }
-
-    //public abstract LinearLayout toLinearLayout(MainActivity c);
-
-
-    public static String getRecomendedToEveryone() {
-        return RECOMENDED_TO_EVERYONE;
-    }
-
     public String getDestinataire() {
         return destinataire;
     }
@@ -123,24 +99,8 @@ public abstract class Recommandation {
         return nbAppuis;
     }
 
-    public TextView getTvLikes() {
-        return tvLikes;
-    }
-
-    public TextView getTvAppuis() {
-        return tvAppuis;
-    }
-
     public String getPicture() {
         return picture;
-    }
-
-    public boolean isLiked() {
-        return isLiked;
-    }
-
-    public boolean isSupported() {
-        return isSupported;
     }
 
     public void setDestinataire(String destinataire) {
@@ -159,23 +119,4 @@ public abstract class Recommandation {
         this.nbAppuis = nbAppuis;
     }
 
-    public void setPicture(String picture) {
-        this.picture = picture;
-    }
-
-    public void setTvLikes(TextView tvLikes) {
-        this.tvLikes = tvLikes;
-    }
-
-    public void setTvAppuis(TextView tvAppuis) {
-        this.tvAppuis = tvAppuis;
-    }
-
-    public void setLiked(boolean liked) {
-        isLiked = liked;
-    }
-
-    public void setSupported(boolean supported) {
-        isSupported = supported;
-    }
 }

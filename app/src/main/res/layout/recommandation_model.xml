@@ -9,13 +9,41 @@
         android:textStyle="bold"
         android:text="X recommmande Y à Z" />
 
-    <ImageView android:id="@+id/imageRecommandation" android:layout_width="100dp" android:layout_height="100dp" android:layout_below="@id/emetteur_destinataire"  tools:background="#AAA" />
+    <ImageView
+        android:id="@+id/imageRecommandation"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/emetteur_destinataire"
+        tools:background="#AAA" />
 
-    <TextView android:id="@+id/titre" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="@android:color/black" android:layout_marginLeft="10dp" android:layout_toRightOf="@+id/imageRecommandation" android:layout_alignTop="@+id/imageRecommandation" tools:text="Titre" />
+    <TextView
+        android:id="@+id/titre"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/imageRecommandation"
+        android:layout_alignTop="@+id/imageRecommandation"
+        tools:text="Titre" />
 
-    <TextView android:id="@+id/nom_artiste" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="@android:color/black" android:layout_alignLeft="@+id/titre" android:layout_below="@+id/titre" tools:text="Artiste" />
+    <TextView
+        android:id="@+id/nom_artiste"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        android:layout_alignLeft="@+id/titre"
+        android:layout_below="@+id/titre"
+        tools:text="Artiste" />
 
-    <TextView android:id="@+id/album" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="@android:color/black" android:layout_alignLeft="@+id/titre" android:layout_below="@+id/nom_artiste" tools:text="Album" />
+    <TextView
+        android:id="@+id/album"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        android:layout_alignLeft="@+id/titre"
+        android:layout_below="@+id/nom_artiste"
+        tools:text="Album" />
 
     <ImageButton
         android:id="@+id/image_play"
@@ -48,6 +76,7 @@
         android:id="@+id/nombre_coeur"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="2dp"
         android:layout_toRightOf="@id/image_button_coeur"
         android:layout_alignTop="@+id/image_button_coeur"
         android:layout_below="@id/imageRecommandation"
@@ -57,6 +86,7 @@
         android:id="@+id/nombre_plus_un"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="2dp"
         android:layout_toRightOf="@id/image_button_plus_un"
         android:layout_below="@id/imageRecommandation"
         android:layout_alignTop="@+id/image_button_coeur"

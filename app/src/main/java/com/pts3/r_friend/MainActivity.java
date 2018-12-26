@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
 import android.view.Display;
@@ -22,11 +24,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.CompoundButton;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ScrollView;
 import android.widget.SearchView;
-import android.widget.Space;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,7 +40,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener{
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     List<Recommandation> recommandations;
     ConstraintLayout fenetrePrincipale;
@@ -62,6 +61,7 @@ public class MainActivity extends AppCompatActivity
     DataSnapshot dataSnapshotRecom;
     DataSnapshot dataSnapshotInfosSupp;
 
+    SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +81,16 @@ public class MainActivity extends AppCompatActivity
 
         listView = (ListView) findViewById(R.id.listView);
 
+        swipeRefreshLayout = new SwipeRefreshLayout(this);
+        fenetrePrincipale.removeAllViews();
+        fenetrePrincipale.addView(swipeRefreshLayout);
+        swipeRefreshLayout.addView(listView);
+        swipeRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refresh();
+            }
+        });
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -113,6 +123,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
+
+        refresh();
+
         if (username != null && userMail != null) {
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
             username.setText(sharedPref.getString("pseudo","Non connecté"));
@@ -149,21 +162,6 @@ public class MainActivity extends AppCompatActivity
         getMenuInflater().inflate(R.menu.main, menu);
 
         final MenuItem searchItem = menu.findItem(R.id.action_search);
-
-     //   mainSearchView =( SearchView) searchItem.getActionView();
-
-        /*searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                //votre code ici
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String s) {
-                return false;
-            }
-        });*/
 
         switchRecommandationsRecues = findViewById(R.id.app_bar_switch_recomRecues);
         switchRecommandationsEffectuees = findViewById(R.id.app_bar_switch_recomEffectuees);
@@ -283,6 +281,37 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId()==R.id.menu_refresh) {
+            refresh();
+        } else if (item.getItemId()==R.id.action_search) {
+
+        }
+
+        //   mainSearchView =( SearchView) searchItem.getActionView();
+
+        /*searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                //votre code ici
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                return false;
+            }
+        });*/
+
+        // Log.e("----",findViewById(R.id.menu_refresh).toString());
+
+
+        return super.onOptionsItemSelected(item);
+
+    }
+
     public void remplirRecommandation() {
 
         root.child("recommandations").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -310,6 +339,7 @@ public class MainActivity extends AppCompatActivity
                 createRecommandation("album");
                 createRecommandation("artiste");
                 afficherRecommandation();
+                swipeRefreshLayout.setRefreshing(false);
             }
 
             @Override
@@ -458,5 +488,10 @@ public class MainActivity extends AppCompatActivity
         Log.e("-----",s);
     }
 
+    public void refresh() {
+        recommandations.clear();
+        afficherRecommandation();
+        remplirRecommandation();
+    }
 }
 
