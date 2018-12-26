@@ -27,33 +27,6 @@ public class AlbumRecom extends Recommandation {
         //rechercher les musiques de l'album en consultant la bdd grâce au titre et à l'artiste de l'album
     }
 
-    public void displayCenterOfRecom(final MainActivity c, LinearLayout[] ll) {
-        Point size = c.getSize();
-        TextView tv = new TextView(c);
-        tv.setText(this.getEmetteur() + " recommande un album" + (getDestinataire().equals(getRecomendedToEveryone()) ? "" : " à "+this.getDestinataire()));
-        tv.setTypeface(null, Typeface.BOLD_ITALIC);
-        ll[0].addView(tv);
-        ll[0].addView(ll[1]);
-        TextView tv2 = new TextView(c);
-        tv2.setText("Titre : " + this.getTitre() + " (" + this.getNbTracks() + " morceaux)");
-        TextView tv3 = new TextView(c);
-        tv3.setText("Artiste : " + this.getArtiste());
-        ll[2].addView(tv2);
-        ll[2].addView(tv3);
-        ImageView imageView = new ImageView(c);
-        Picasso.with(c).load(this.getPicture()).into(imageView);
-
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                c.deezerMusicPlayer.jouerAlbum(Integer.parseInt(idAlbum));
-            }
-        });
-
-        ll[1].addView(imageView,new LinearLayout.LayoutParams(size.x/5,size.y/5));
-        ll[1].addView(ll[2]);
-    }
-
     public String getArtiste() {
         return artiste;
     }
@@ -84,5 +57,9 @@ public class AlbumRecom extends Recommandation {
 
     public void setTitresMorceaux(String[] titresMorceaux) {
         this.titresMorceaux = titresMorceaux;
+    }
+
+    public String getIdAlbum() {
+        return idAlbum;
     }
 }

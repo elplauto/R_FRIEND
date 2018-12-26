@@ -18,31 +18,15 @@ public class Artiste {
         return nbAlbums;
     }
 
-    public void setNbAlbums(Integer nbAlbums) {
-        this.nbAlbums = nbAlbums;
-    }
-
     public String getPictureURL() {
         return pictureURL;
-    }
-
-    public void setPictureURL(String pictureURL) {
-        this.pictureURL = pictureURL;
     }
 
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public String getNom() {
         return nom;
-    }
-
-    public void setNom(String nom) {
-        this.nom = nom;
     }
 }

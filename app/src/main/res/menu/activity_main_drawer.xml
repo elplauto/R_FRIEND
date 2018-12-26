@@ -17,8 +17,14 @@
     <item android:title="Filtrer les recommandations">
         <menu>
             <item
-                android:id="@+id/app_bar_switch_persos"
-                android:title="Recommandations persos"
+                android:id="@+id/app_bar_switch_recomEffectuees"
+                android:title="J'ai recommandé"
+                app:actionViewClass="android.support.v7.widget.SwitchCompat"
+                />
+
+            <item
+                android:id="@+id/app_bar_switch_recomRecues"
+                android:title="On m'a recommandé"
                 app:actionViewClass="android.support.v7.widget.SwitchCompat"
                 />
 

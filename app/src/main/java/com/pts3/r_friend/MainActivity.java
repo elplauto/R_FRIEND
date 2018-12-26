@@ -1,12 +1,9 @@
 package com.pts3.r_friend;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Point;
-import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -25,8 +22,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.SearchView;
 import android.widget.Space;
@@ -48,13 +45,13 @@ public class MainActivity extends AppCompatActivity
 
     List<Recommandation> recommandations;
     ConstraintLayout fenetrePrincipale;
-    ScrollView sv;
-    LinearLayout ll;
     Point size;
-    SwitchCompat switchRecommandationsPersos;
+    ListView listView;
+    SwitchCompat switchRecommandationsRecues;
     SwitchCompat switchAlbums;
     SwitchCompat switchMorceaux;
     SwitchCompat switchArtistes;
+    SwitchCompat switchRecommandationsEffectuees;
     SearchView mainSearchView;
     TextView username;
     TextView userMail;
@@ -82,6 +79,8 @@ public class MainActivity extends AppCompatActivity
         toolbar.setBackground(new ColorDrawable(Color.parseColor("#26223C")));
         setSupportActionBar(toolbar);
 
+        listView = (ListView) findViewById(R.id.listView);
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -108,7 +107,6 @@ public class MainActivity extends AppCompatActivity
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        setScrollView();
 
     }
 
@@ -126,6 +124,12 @@ public class MainActivity extends AppCompatActivity
             navigationView.getMenu().findItem(R.id.buttonCompte).setVisible(connected);
             navigationView.getMenu().findItem(R.id.buttonDeconnexion).setVisible(connected);
             navigationView.getMenu().findItem(R.id.buttonConnexion).setVisible(!connected);
+            navigationView.getMenu().findItem(R.id.app_bar_switch_recomEffectuees).setVisible(connected);
+            navigationView.getMenu().findItem(R.id.app_bar_switch_recomRecues).setVisible(connected);
+            if (!connected) {
+                switchRecommandationsRecues.setChecked(false);
+                switchRecommandationsEffectuees.setChecked(false);
+            }
         }
     }
 
@@ -161,7 +165,8 @@ public class MainActivity extends AppCompatActivity
             }
         });*/
 
-        switchRecommandationsPersos = findViewById(R.id.app_bar_switch_persos);
+        switchRecommandationsRecues = findViewById(R.id.app_bar_switch_recomRecues);
+        switchRecommandationsEffectuees = findViewById(R.id.app_bar_switch_recomEffectuees);
         switchMorceaux = findViewById(R.id.app_bar_switch_morceaux);
         switchAlbums = findViewById(R.id.app_bar_switch_albums);
         switchArtistes = findViewById(R.id.app_bar_switch_artistes);
@@ -169,6 +174,8 @@ public class MainActivity extends AppCompatActivity
         switchArtistes.setChecked(true);
         switchAlbums.setChecked(true);
         switchMorceaux.setChecked(true);
+        switchRecommandationsRecues.setChecked(false);
+        switchRecommandationsEffectuees.setChecked(false);
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         username = findViewById(R.id.username);
@@ -180,6 +187,9 @@ public class MainActivity extends AppCompatActivity
         navigationView.getMenu().findItem(R.id.buttonCompte).setVisible(connected);
         navigationView.getMenu().findItem(R.id.buttonDeconnexion).setVisible(connected);
         navigationView.getMenu().findItem(R.id.buttonConnexion).setVisible(!connected);
+        navigationView.getMenu().findItem(R.id.app_bar_switch_recomEffectuees).setVisible(connected);
+        navigationView.getMenu().findItem(R.id.app_bar_switch_recomRecues).setVisible(connected);
+
 
         switchAlbums.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -200,19 +210,24 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        switchRecommandationsPersos.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        switchRecommandationsRecues.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (switchRecommandationsPersos.isChecked() && userMail.getText().toString().equals("")) {
-                    switchRecommandationsPersos.setChecked(false);
-                    Toast.makeText(getApplicationContext(), "Vous devez être connecté pour voir vos recommandations personelles", Toast.LENGTH_SHORT).show();
-                    Intent intent =new Intent(getApplicationContext(),ConnexionActivity.class);
-                    startActivity(intent);
-                }
-                else {
                     afficherRecommandation();
-                }
+                    if (switchRecommandationsRecues.isChecked()) {
+                        switchRecommandationsEffectuees.setChecked(false);
+                    }
 
+            }
+        });
+
+        switchRecommandationsEffectuees.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                afficherRecommandation();
+                if (switchRecommandationsEffectuees.isChecked()) {
+                    switchRecommandationsRecues.setChecked(false);
+                }
             }
         });
 
@@ -230,8 +245,12 @@ public class MainActivity extends AppCompatActivity
 
         int id = item.getItemId();
 
-        if (id == R.id.app_bar_switch_persos) {
-            switchRecommandationsPersos.setChecked(!switchRecommandationsPersos.isChecked());
+        if (id == R.id.app_bar_switch_recomRecues) {
+            switchRecommandationsRecues.setChecked(!switchRecommandationsRecues.isChecked());
+        }
+
+        else if (id == R.id.app_bar_switch_recomEffectuees) {
+            switchRecommandationsEffectuees.setChecked(!switchRecommandationsEffectuees.isChecked());
         }
 
         else if (id == R.id.app_bar_switch_albums) {
@@ -384,36 +403,18 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void afficherRecommandation() {
-        ll.removeAllViews();
+        List<Recommandation> temp = new ArrayList<>();
         for (Recommandation recommandation : recommandations) {
             if (recommandation instanceof MorceauRecom && switchMorceaux.isChecked()
                     || recommandation instanceof ArtisteRecom && switchArtistes.isChecked()
                     || recommandation instanceof AlbumRecom && switchAlbums.isChecked()
                     ){
-                ll.addView(new Space(this),new LinearLayout.LayoutParams(1,size.y/50));
-                Log.i("llcenter", "0");
-                ll.addView(recommandation.toLinearLayout(this));
+                temp.add(recommandation);
             }
         }
-        if (ll.getChildCount()==0) {
-            TextView aucuneRecommandation = new TextView(this);
-            aucuneRecommandation.setText("Aucune recommandation à afficher");
-            ll.addView(aucuneRecommandation);
-        } else {
-            //Ajoute un espace afin de pouvoir scroller jusqu'à la dernière recommandation
-            ll.addView(new Space(this),new LinearLayout.LayoutParams(1,getNavBarHeight()+getActionBarHeight()));
-        }
-    }
 
-    public void setScrollView() {
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(size.x*95/100,size.y);
-        sv = new ScrollView(this);
-        fenetrePrincipale.addView(sv,new LinearLayout.LayoutParams(size.x,size.y));
-        ll = new LinearLayout(this);
-        ll.setLayoutParams(params);
-        sv.addView(ll);
-        ll.setOrientation(LinearLayout.VERTICAL);
-        ll.setX((size.x-size.x*95/100)/2);
+        RecommandationAdapter adapter = new RecommandationAdapter(MainActivity.this, temp);
+        listView.setAdapter(adapter);
     }
 
     public void deconnexion() {
@@ -429,8 +430,12 @@ public class MainActivity extends AppCompatActivity
         navigationView.getMenu().findItem(R.id.buttonCompte).setVisible(false);
         navigationView.getMenu().findItem(R.id.buttonDeconnexion).setVisible(false);
         navigationView.getMenu().findItem(R.id.buttonConnexion).setVisible(true);
+        navigationView.getMenu().findItem(R.id.app_bar_switch_recomRecues).setVisible(false);
+        navigationView.getMenu().findItem(R.id.app_bar_switch_recomEffectuees).setVisible(false);
+        switchRecommandationsRecues.setChecked(false);
+        switchRecommandationsEffectuees.setChecked(false);
 
-        switchRecommandationsPersos.setChecked(false);
+        afficherRecommandation();
     }
 
     public int getNavBarHeight() {

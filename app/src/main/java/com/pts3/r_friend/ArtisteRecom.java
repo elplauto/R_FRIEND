@@ -23,25 +23,6 @@ public class ArtisteRecom extends Recommandation {
         this.nbAlbums = nbAlbums;
     }
 
-    public void displayCenterOfRecom(MainActivity context, LinearLayout[] ll) {
-        Point size = context.getSize();
-        TextView tv = new TextView(context);
-        tv.setText(this.getEmetteur() + " recommande un artiste" + (getDestinataire().equals(getRecomendedToEveryone()) ? "" : " à "+this.getDestinataire()));
-        tv.setTypeface(null, Typeface.BOLD_ITALIC);
-        ll[0].addView(tv);
-        ll[0].addView(ll[1]);
-        TextView tv2 = new TextView(context);
-        tv2.setText("Nom : " + this.getNom());
-        TextView tv3 = new TextView(context);
-        tv3.setText("Nombre d'albums : " + this.getNbAlbums());
-        ll[2].addView(tv2);
-        ll[2].addView(tv3);
-        ImageView imageView = new ImageView(context);
-        Picasso.with(context).load(this.getPicture()).into(imageView);
-        ll[1].addView(imageView,new LinearLayout.LayoutParams(size.x/5,size.y/5));
-        ll[1].addView(ll[2]);
-    }
-
     public String getNom() {
         return nom;
     }

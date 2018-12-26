@@ -20,39 +20,19 @@ public class Album {
         return pictureURL;
     }
 
-    public void setPictureURL(String pictureURL) {
-        this.pictureURL = pictureURL;
-    }
-
     public String getId() {
         return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getTitre() {
         return titre;
     }
 
-    public void setTitre(String titre) {
-        this.titre = titre;
-    }
-
     public String getArtiste() {
         return artiste;
     }
 
-    public void setArtiste(String artiste) {
-        this.artiste = artiste;
-    }
-
     public Integer getNbTrack() {
         return nbTrack;
-    }
-
-    public void setNbTrack(Integer nbTrack) {
-        this.nbTrack = nbTrack;
     }
 }
