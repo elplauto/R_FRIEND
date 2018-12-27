@@ -216,21 +216,20 @@ public class MainActivity extends AppCompatActivity
         switchRecommandationsRecues.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    afficherRecommandation();
-                    if (switchRecommandationsRecues.isChecked()) {
-                        switchRecommandationsEffectuees.setChecked(false);
-                    }
-
+                if (switchRecommandationsRecues.isChecked()) {
+                    switchRecommandationsEffectuees.setChecked(false);
+                }
+                afficherRecommandation();
             }
         });
 
         switchRecommandationsEffectuees.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                afficherRecommandation();
                 if (switchRecommandationsEffectuees.isChecked()) {
                     switchRecommandationsRecues.setChecked(false);
                 }
+                afficherRecommandation();
             }
         });
 
@@ -281,8 +280,6 @@ public class MainActivity extends AppCompatActivity
 
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-       // drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
@@ -446,7 +443,16 @@ public class MainActivity extends AppCompatActivity
                     || recommandation instanceof ArtisteRecom && switchArtistes.isChecked()
                     || recommandation instanceof AlbumRecom && switchAlbums.isChecked()
                     ){
-                temp.add(recommandation);
+                if (switchRecommandationsEffectuees.isChecked()) {
+                    if (recommandation.getEmetteur().equals(username.getText().toString())) temp.add(recommandation);
+                }
+                else if (switchRecommandationsRecues.isChecked()) {
+                    if (recommandation.getDestinataire().equals(username.getText().toString())) temp.add(recommandation);
+                }
+                else {
+                    temp.add(recommandation);
+                }
+
             }
         }
 
