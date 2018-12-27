@@ -1,15 +1,5 @@
 package com.pts3.r_friend;
 
-import android.graphics.Point;
-import android.graphics.Typeface;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
-import com.squareup.picasso.Picasso;
-
 import java.util.List;
 
 public class MorceauRecom extends Recommandation {
@@ -48,21 +38,4 @@ public class MorceauRecom extends Recommandation {
     public String getNomAlbum() {
         return nomAlbum;
     }
-
-    public void setArtiste(String artiste) {
-        this.artiste = artiste;
-    }
-
-    public void setDuree(String duree) {
-        this.duree = duree;
-    }
-
-    public void setTitre(String titre) {
-        this.titre = titre;
-    }
-
-    public void setNomAlbum(String nomAlbum) {
-        this.nomAlbum = nomAlbum;
-    }
-
 }

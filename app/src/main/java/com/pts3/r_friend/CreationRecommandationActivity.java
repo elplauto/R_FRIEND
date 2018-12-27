@@ -162,9 +162,7 @@ public class CreationRecommandationActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
+            public void onNothingSelected(AdapterView<?> parent) { }
         });
 
         deezerDataSearcher = new DeezerDataSearcher(this,getResources().getString(R.string.app_id));
@@ -338,8 +336,8 @@ public class CreationRecommandationActivity extends AppCompatActivity {
             recommandation.child("emetteur").setValue(emetteur);
             recommandation.child("destinataire").setValue(destinataire.getText().toString());
             recommandation.child("idAlbum").setValue(album.getId());
-            recommandation.child("nbLikes").setValue(0);
-            recommandation.child("nbAppuis").setValue(0);
+            recommandation.child("likingUsers");
+            recommandation.child("supportingUsers");
             recommandation.child("dateRecommandation").setValue(new GregorianCalendar().getTime().toString());
         } else if (spinner.getSelectedItem().toString().equals("Artiste")) {
             Artiste artiste = (Artiste) recommandable;
@@ -348,8 +346,8 @@ public class CreationRecommandationActivity extends AppCompatActivity {
             recommandation.child("emetteur").setValue(emetteur);
             recommandation.child("destinataire").setValue(destinataire.getText().toString());
             recommandation.child("idArtiste").setValue(artiste.getId());
-            recommandation.child("nbLikes").setValue(0);
-            recommandation.child("nbAppuis").setValue(0);
+            recommandation.child("likingUsers");
+            recommandation.child("supportingUsers");
             recommandation.child("dateRecommandation").setValue(new GregorianCalendar().getTime().toString());
         }
         Toast.makeText(getApplicationContext(), "Votre recommandation a bien été créée", Toast.LENGTH_SHORT).show();

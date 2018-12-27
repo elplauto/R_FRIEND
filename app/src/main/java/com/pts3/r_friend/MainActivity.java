@@ -395,16 +395,11 @@ public class MainActivity extends AppCompatActivity
             }
 
             String idInfosSupp = dataRecom.child(infosSuppID).getValue(String.class);
-            Log.i("stp_marche", "ID infos supp (pour " + type + ") : " + idInfosSupp);
 
             Iterator<DataSnapshot> j = dataSnapshotInfosSupp.child(infosSuppChild).getChildren().iterator();
             while (j.hasNext()) {
                 DataSnapshot dataInfosSupp = j.next();
-                Log.i("stp_marche", "data : " + dataInfosSupp);
-                Log.i("stp_marche", "trying to create recom");
                 if (dataInfosSupp.getKey().equals(idInfosSupp)) {
-                    Log.i("stp_marche", "c'est le bon album");
-                    Log.i("stp_marche", "type : " + type);
                     switch(type) {
                         case "morceau":
                             String artisteMorceau = dataInfosSupp.child("artiste").getValue(String.class);
@@ -415,7 +410,6 @@ public class MainActivity extends AppCompatActivity
                             String nomAlbum = dataInfosSupp.child("album").getValue(String.class);
                             String idMorceau = dataInfosSupp.getKey().toString();
                             recommandations.add(new MorceauRecom(idRecommandation, dest, emet, imgAlb, likingUsers, supportingUsers,artisteMorceau, dureeMinutes, titreMorceau, nomAlbum,idMorceau));
-                            Log.i("stp_marche", "Création recommandation morceau");
                             break;
 
                         case "album":
@@ -425,7 +419,6 @@ public class MainActivity extends AppCompatActivity
                             String imgAlbum = dataInfosSupp.child("pictureURL").getValue(String.class);
                             String idAlbum = dataInfosSupp.getKey().toString();
                             recommandations.add(new AlbumRecom(idRecommandation, dest, emet, imgAlbum, likingUsers, supportingUsers, artisteAlbum, nbTracks, titreAlbum, idAlbum));
-                            Log.i("stp_marche", "Création recommandation album");
                             break;
 
                         case "artiste":
@@ -433,10 +426,7 @@ public class MainActivity extends AppCompatActivity
                             Integer nbAlbums = dataInfosSupp.child("nbAlbums").getValue(Integer.class);
                             String picture = dataInfosSupp.child("pictureURL").getValue(String.class);
                             recommandations.add(new ArtisteRecom(idRecommandation, dest, emet, picture, likingUsers, supportingUsers, nom, nbAlbums));
-                            Log.i("stp_marche", "Création recommandation artiste");
                             break;
-
-                        default: Log.i("stp_marche", "Type inconnu : " + type);
                     }
                     break; //pour ne pas parcourir tous les autres infosSuppChildren
                 }

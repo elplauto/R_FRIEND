@@ -132,7 +132,7 @@ public class RecommandationAdapter extends ArrayAdapter<Recommandation> {
             @Override
             public void onClick(View v) {
                 final String pseudo = context.username.getText().toString();
-                if (pseudo.equals("")) {
+                if (pseudo.equals("Non connecté")) {
                     Toast.makeText(context, "Vous devez être connecté pour interragir avec les recommandations", Toast.LENGTH_SHORT).show();
                     Intent intent =new Intent(context,ConnexionActivity.class);
                     context.startActivity(intent);
@@ -147,7 +147,7 @@ public class RecommandationAdapter extends ArrayAdapter<Recommandation> {
                     alertDialogBuilder.setPositiveButton("Aimer", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            recommandation.addNewLikingUser(context.userMail.toString());
+                            recommandation.addNewLikingUser(context.username.getText().toString());
                             finalViewHolder.image_button_coeur.setBackgroundResource(R.drawable.coeur_rouge);
                             finalViewHolder.nombre_coeur.setText(recommandation.getLikingUsers().size()+"");
                             addNewLikingUserToDatabase(recommandation,pseudo);
@@ -168,7 +168,13 @@ public class RecommandationAdapter extends ArrayAdapter<Recommandation> {
             @Override
             public void onClick(View v) {
                 final String pseudo = context.username.getText().toString();
-                if (pseudo.equals("")) {
+                Log.e("---", "-----------------");
+                Log.e("---", pseudo);
+                for (String each : recommandation.getSupportingUsers()) {
+                    Log.e("---", each);
+                }
+                Log.e("---", "-----------------");
+                if (pseudo.equals("Non connecté")) {
                     Toast.makeText(context, "Vous devez être connecté pour interragir avec les recommandations", Toast.LENGTH_SHORT).show();
                     Intent intent =new Intent(context,ConnexionActivity.class);
                     context.startActivity(intent);
@@ -183,7 +189,7 @@ public class RecommandationAdapter extends ArrayAdapter<Recommandation> {
                     alertDialogBuilder.setPositiveButton("Appuyer", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            recommandation.addNewSupportingUser(context.userMail.toString());
+                            recommandation.addNewSupportingUser(context.username.getText().toString());
                             finalViewHolder.image_button_plus_un.setBackgroundResource(R.drawable.one_green);
                             finalViewHolder.nombre_plus_un.setText(recommandation.getSupportingUsers().size()+"");
                             addNewSupportingUserToDatabase(recommandation,pseudo);
