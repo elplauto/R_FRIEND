@@ -49,7 +49,6 @@ public class CommentaireAdapter extends ArrayAdapter<Commentaire> {
         viewHolder.message_commentaire.setText(commentaire.message);
         viewHolder.date_commentaire.setText(getDate(commentaire.date));
 
-
         return convertView;
     }
 

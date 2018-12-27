@@ -6,10 +6,26 @@
     android:layout_height="match_parent"
     android:padding="10dp">
 
+    <TextView
+        android:id="@+id/emetteur_destinataire_details"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:text="X recommande Y à Z" />
+
+    <TextView
+        android:id="@+id/date_details"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/emetteur_destinataire_details"
+        android:text="Il y a 10min" />
+
     <ImageView
         android:id="@+id/image_detailsRecom"
         android:layout_width="100dp"
         android:layout_height="100dp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/date_details"
         tools:background="#AAA" />
 
     <TextView
@@ -19,6 +35,7 @@
         android:layout_alignTop="@id/image_detailsRecom"
         android:layout_marginLeft="10dp"
         android:layout_toRightOf="@id/image_detailsRecom"
+        android:layout_below="@id/date_details"
         android:text="Champ1" />
 
     <TextView
@@ -39,37 +56,29 @@
         android:layout_toRightOf="@id/image_detailsRecom"
         android:text="Champ3" />
 
-    <ImageButton
-        android:id="@+id/play_detailsRecom"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_below="@id/champ3_detailsRecom"
-        android:layout_alignLeft="@id/champ1_detailsRecom"
-        android:background="@drawable/play" />
-
     <ImageView
         android:id="@+id/coeur_detailsRecom"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_below="@id/image_detailsRecom"
         android:layout_marginTop="10dp"
-        android:background="@drawable/coeur_vide" />
+        android:background="@drawable/coeur_rouge" />
 
     <ImageView
-        android:id="@+id/image_button_plus_un"
+        android:id="@+id/plus_un_detailsRecom"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_below="@id/imageRecommandation"
         android:layout_alignTop="@+id/coeur_detailsRecom"
         android:layout_marginLeft="20dp"
         android:layout_toRightOf="@id/nombre_coeur"
-        android:background="@drawable/one_white" />
+        android:background="@drawable/one_green" />
 
     <TextView
         android:id="@+id/nombre_coeur"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/imageRecommandation"
+        android:layout_below="@id/image_detailsRecom"
         android:layout_alignTop="@+id/coeur_detailsRecom"
         android:layout_marginLeft="2dp"
         android:layout_toRightOf="@id/coeur_detailsRecom"
@@ -79,10 +88,10 @@
         android:id="@+id/nombre_plus_un"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/imageRecommandation"
+        android:layout_below="@id/image_detailsRecom"
         android:layout_alignTop="@+id/coeur_detailsRecom"
         android:layout_marginLeft="2dp"
-        android:layout_toRightOf="@id/image_button_plus_un"
+        android:layout_toRightOf="@id/plus_un_detailsRecom"
         android:text="0" />
 
     <TextView

@@ -7,14 +7,17 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,7 +46,18 @@ public class DetailsRecommandationActivity extends AppCompatActivity {
 
     List<Commentaire> commentaires;
 
+    ImageView imageRecommandation;
     ImageButton btnSend;
+    ImageView coeur;
+    ImageView plusUn;
+    TextView nbLikes;
+    TextView nbAppuis;
+
+    TextView intro;
+    TextView dateRecom;
+    TextView champ1;
+    TextView champ2;
+    TextView champ3;
 
 
     @Override
@@ -65,14 +79,22 @@ public class DetailsRecommandationActivity extends AppCompatActivity {
         commentaires = new ArrayList<>();
 
         final TextInputEditText nouveauCommentaire = (TextInputEditText) findViewById(R.id.nouveauCommentaire);
+        imageRecommandation = (ImageView) findViewById(R.id.image_detailsRecom);
+        nbLikes = (TextView) findViewById(R.id.nombre_coeur);
+        nbAppuis = (TextView) findViewById(R.id.nombre_plus_un);
+        coeur = (ImageView) findViewById(R.id.coeur_detailsRecom);
+        plusUn = (ImageView) findViewById(R.id.plus_un_detailsRecom);
+        intro = (TextView) findViewById(R.id.emetteur_destinataire_details);
+        dateRecom = (TextView) findViewById(R.id.date_details);
+        champ1 = (TextView) findViewById(R.id.champ1_detailsRecom);
+        champ2 = (TextView) findViewById(R.id.champ2_detailsRecom);
+        champ3 = (TextView) findViewById(R.id.champ3_detailsRecom);
 
         btnSend = (ImageButton) findViewById(R.id.send);
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (nouveauCommentaire.getText().toString().equals("")) {
-
-                } else {
+                if (!nouveauCommentaire.getText().toString().equals("")) {
                     DatabaseReference newComment =  root.child("recommandations").child(recomChild).child(idRecommandation).child("commentaires").push();
                     newComment.child("redacteur").setValue(redacteur);
                     newComment.child("message").setValue(nouveauCommentaire.getText().toString());
@@ -159,34 +181,52 @@ public class DetailsRecommandationActivity extends AppCompatActivity {
                     temp.child("date").getValue(Long.class)));
         }
 
-            /*switch(typeRecommandation) {
+        dateRecom.setText(getDate((Long) recomData.child("dateRecommandation").getValue(Long.class)));
+        nbAppuis.setText(supportingUsers.size()+"");
+        nbLikes.setText(likingUsers.size()+"");
+
+        Picasso.with(this).load(oeuvreData.child("pictureURL").getValue().toString()).into(imageRecommandation);
+
+        String emetteur = recomData.child("emetteur").getValue().toString();
+        String destinataire = recomData.child("destinataire").getValue().toString();
+
+
+            switch(typeRecommandation) {
                         case "MorceauRecom":
-                            String artisteMorceau = dataInfosSupp.child("artiste").getValue(String.class);
-                            Integer dureeSecondes = dataInfosSupp.child("duree").getValue(Integer.class);
+                            String artisteMorceau = oeuvreData.child("artiste").getValue(String.class);
+                            Integer dureeSecondes = oeuvreData.child("duree").getValue(Integer.class);
                             String dureeMinutes = dureeSecondes/60 + "min" + dureeSecondes%60 + "s";
-                            String titreMorceau = dataInfosSupp.child("titre").getValue(String.class);
-                            String imgAlb = dataInfosSupp.child("pictureURL").getValue(String.class);
-                            String nomAlbum = dataInfosSupp.child("album").getValue(String.class);
-                            String idMorceau = dataInfosSupp.getKey().toString();
+                            String titreMorceau = oeuvreData.child("titre").getValue(String.class);
+                            String nomAlbum = oeuvreData.child("album").getValue(String.class);
+                            intro.setText(emetteur + " recommande un morceau" + (destinataire.equals("")?"":" à " + destinataire));
+                            champ1.setText("Titre : " + titreMorceau + " (" + dureeMinutes + ")");
+                            champ2.setText("Album : " + nomAlbum);
+                            champ3.setText("Artiste : " + artisteMorceau);
                             break;
 
                         case "AlbumRecom":
-                            Integer nbTracks = dataInfosSupp.child("nbTrack").getValue(Integer.class);
-                            String artisteAlbum = dataInfosSupp.child("artiste").getValue(String.class);
-                            String titreAlbum = dataInfosSupp.child("titre").getValue(String.class);
-                            String imgAlbum = dataInfosSupp.child("pictureURL").getValue(String.class);
-                            String idAlbum = dataInfosSupp.getKey().toString();
-                            recommandations.add(new AlbumRecom(idRecommandation, date, dest, emet, imgAlbum, likingUsers, supportingUsers, artisteAlbum, nbTracks, titreAlbum, idAlbum));
+                            Integer nbTracks = oeuvreData.child("nbTrack").getValue(Integer.class);
+                            String artisteAlbum = oeuvreData.child("artiste").getValue(String.class);
+                            String titreAlbum = oeuvreData.child("titre").getValue(String.class);
+                            intro.setText(emetteur + " recommande un album" + (destinataire.equals("")?"":" à " + destinataire));
+                            champ1.setText("Titre : " + titreAlbum);
+                            champ2.setText("Artiste : " +  artisteAlbum);
+                            champ3.setText("Nombre de morceaux : " + nbTracks);
                             break;
 
                         case "ArtisteRecom":
-                            String nom = dataInfosSupp.child("nom").getValue(String.class);
-                            Integer nbAlbums = dataInfosSupp.child("nbAlbums").getValue(Integer.class);
-                            String picture = dataInfosSupp.child("pictureURL").getValue(String.class);
-                            recommandations.add(new ArtisteRecom(idRecommandation, date, dest, emet, picture, likingUsers, supportingUsers, nom, nbAlbums));
+                            String nom = oeuvreData.child("nom").getValue(String.class);
+                            Integer nbAlbums = oeuvreData.child("nbAlbums").getValue(Integer.class);
+                            intro.setText(emetteur + " recommande un artiste" + (destinataire.equals("")?"":" à " + destinataire));
+                            champ1.setText("Nom : " + nom);
+                            champ2.setText("Nombre d'album : " +  nbAlbums);
+                            champ3.setText("");
+
                             break;
-                    }
-                }*/
+
+            }
+
+
         ordonnerCommentaire();
         CommentaireAdapter adapter = new CommentaireAdapter(this, commentaires);
         listView.setAdapter(adapter);
@@ -204,6 +244,23 @@ public class DetailsRecommandationActivity extends AppCompatActivity {
             }
         };
         Collections.sort(commentaires,comparator);
+    }
+
+    private String getDate(Long dateRecom) {
+        Long dateActuelle = System.currentTimeMillis();
+        Long differenceTemps = dateActuelle - dateRecom;
+        if (differenceTemps < 60 * 1000) {
+            return "Il y a " + differenceTemps /1000 + " s";
+        } else if (differenceTemps < 60 * 60 * 1000) {
+            return "Il y a " + differenceTemps / (60 * 1000) + " min";
+        } else if (differenceTemps < 24 * 60 * 60 * 1000) {
+            return "Il y a " + differenceTemps / (60 * 60 * 1000) + " h";
+        } else if (differenceTemps < 30.5 *24 * 60 * 60 * 1000) {
+            return "Il y a " + differenceTemps / (24 * 60 * 60 * 1000) + " j";
+        } else if (differenceTemps <  365 *24 * 60 * 60 * 1000) {
+            return "Il y a " + differenceTemps / ( 30.5 * 24 * 60 * 60 * 1000) + " mois";
+        }
+        return "Il y a " + differenceTemps / ( 365 * 24 * 60 * 60 * 1000) + " ans";
     }
 }
 
