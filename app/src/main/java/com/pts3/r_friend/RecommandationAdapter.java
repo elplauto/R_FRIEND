@@ -36,6 +36,7 @@ public class RecommandationAdapter extends ArrayAdapter<Recommandation> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
+
         //getItem(position) va récupérer l'item [position] de la List<Recommandation> recomandations
         final Recommandation recommandation = getItem(position);
 
@@ -250,6 +251,17 @@ public class RecommandationAdapter extends ArrayAdapter<Recommandation> {
         viewHolder.date.setText(getDate(recommandation.getDateRecommandation()));
 
         Picasso.with(context).load(recommandation.getPicture()).into(viewHolder.imageRecommandation);
+
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent =new Intent(context,DetailsRecommandationActivity.class);
+                intent.putExtra("idRecommandation", recommandation.getIdRecommandation());
+                intent.putExtra("type", recommandation.getClass().getSimpleName());
+                intent.putExtra("redacteur", context.username.getText().toString());
+                context.startActivity(intent);
+            }
+        });
 
         return convertView;
     }
