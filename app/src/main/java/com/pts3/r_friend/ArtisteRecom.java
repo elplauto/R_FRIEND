@@ -40,4 +40,14 @@ public class ArtisteRecom extends Recommandation {
     public void setNbAlbums(Integer nbAlbums) {
         this.nbAlbums = nbAlbums;
     }
+
+    @Override
+    public boolean contains(String text) {
+        text = text.toLowerCase();
+        if (getDestinataire().toLowerCase().contains(text)
+                || getNom().toLowerCase().contains(text)
+                || getEmetteur().toLowerCase().contains(text))
+            return true;
+        return false;
+    }
 }

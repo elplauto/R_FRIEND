@@ -70,5 +70,5 @@ public abstract class Recommandation {
         return supportingUsers.add(pseudo);
     }
 
-
+    public abstract boolean contains(String text);
 }

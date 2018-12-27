@@ -64,4 +64,15 @@ public class AlbumRecom extends Recommandation {
     public String getIdAlbum() {
         return idAlbum;
     }
+
+    @Override
+    public boolean contains(String text) {
+        text=text.toLowerCase();
+        if (getDestinataire().toLowerCase().contains(text)
+                || getArtiste().toLowerCase().contains(text)
+                || getTitre().toLowerCase().contains(text)
+                || getEmetteur().toLowerCase().contains(text))
+            return true;
+        return false;
+    }
 }

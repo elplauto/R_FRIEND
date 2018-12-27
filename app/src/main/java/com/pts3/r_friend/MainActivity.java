@@ -25,7 +25,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.CompoundButton;
 import android.widget.ListView;
-import android.widget.SearchView;
+import android.support.v7.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -64,6 +64,8 @@ public class MainActivity extends AppCompatActivity
     DataSnapshot dataSnapshotInfosSupp;
 
     SwipeRefreshLayout swipeRefreshLayout;
+
+    String filtreSearchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,6 +122,8 @@ public class MainActivity extends AppCompatActivity
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        filtreSearchView="";
+
     }
 
     @Override
@@ -167,6 +171,24 @@ public class MainActivity extends AppCompatActivity
         getMenuInflater().inflate(R.menu.main, menu);
 
         final MenuItem searchItem = menu.findItem(R.id.action_search);
+        mainSearchView =(SearchView) searchItem.getActionView();
+        mainSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                filtreSearchView = query;
+                afficherRecommandation();
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                if (s.equals("")) {
+                    filtreSearchView = "";
+                    afficherRecommandation();
+                }
+                return false;
+            }
+        });
 
         switchRecommandationsRecues = findViewById(R.id.app_bar_switch_recomRecues);
         switchRecommandationsEffectuees = findViewById(R.id.app_bar_switch_recomEffectuees);
@@ -286,29 +308,13 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
+        debug(item.getItemId()+"");
+
         if (item.getItemId()==R.id.menu_refresh) {
             refresh();
         } else if (item.getItemId()==R.id.action_search) {
 
         }
-
-        //   mainSearchView =( SearchView) searchItem.getActionView();
-
-        /*searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                //votre code ici
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String s) {
-                return false;
-            }
-        });*/
-
-        // Log.e("----",findViewById(R.id.menu_refresh).toString());
-
 
         return super.onOptionsItemSelected(item);
 
@@ -439,20 +445,22 @@ public class MainActivity extends AppCompatActivity
     public void afficherRecommandation() {
         List<Recommandation> temp = new ArrayList<>();
         for (Recommandation recommandation : recommandations) {
-            if (recommandation instanceof MorceauRecom && switchMorceaux.isChecked()
-                    || recommandation instanceof ArtisteRecom && switchArtistes.isChecked()
-                    || recommandation instanceof AlbumRecom && switchAlbums.isChecked()
-                    ){
-                if (switchRecommandationsEffectuees.isChecked()) {
-                    if (recommandation.getEmetteur().equals(username.getText().toString())) temp.add(recommandation);
-                }
-                else if (switchRecommandationsRecues.isChecked()) {
-                    if (recommandation.getDestinataire().equals(username.getText().toString())) temp.add(recommandation);
-                }
-                else {
-                    temp.add(recommandation);
-                }
+            if (filtreSearchView.equals("") || recommandation.contains(filtreSearchView)) {
+                if (recommandation instanceof MorceauRecom && switchMorceaux.isChecked()
+                        || recommandation instanceof ArtisteRecom && switchArtistes.isChecked()
+                        || recommandation instanceof AlbumRecom && switchAlbums.isChecked()
+                        ){
+                    if (switchRecommandationsEffectuees.isChecked()) {
+                        if (recommandation.getEmetteur().equals(username.getText().toString())) temp.add(recommandation);
+                    }
+                    else if (switchRecommandationsRecues.isChecked()) {
+                        if (recommandation.getDestinataire().equals(username.getText().toString())) temp.add(recommandation);
+                    }
+                    else {
+                        temp.add(recommandation);
+                    }
 
+                }
             }
         }
 
@@ -521,5 +529,6 @@ public class MainActivity extends AppCompatActivity
         };
         Collections.sort(recommandations,comparator);
     }
+
 }
 

@@ -38,4 +38,16 @@ public class MorceauRecom extends Recommandation {
     public String getNomAlbum() {
         return nomAlbum;
     }
+
+    @Override
+    public boolean contains(String text) {
+        text = text.toLowerCase();
+        if (getDestinataire().toLowerCase().contains(text)
+                || getArtiste().toLowerCase().contains(text)
+                || getTitre().toLowerCase().contains(text)
+                || getEmetteur().toLowerCase().contains(text)
+                || getNomAlbum().toLowerCase().contains(text))
+            return true;
+        return false;
+    }
 }
