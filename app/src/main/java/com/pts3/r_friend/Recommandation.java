@@ -1,33 +1,23 @@
 package com.pts3.r_friend;
 
-import android.content.Context;
-import android.graphics.Point;
-import android.graphics.Typeface;
-import android.util.Log;
-import android.view.View;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.Space;
-import android.widget.TextView;
-
-import com.squareup.picasso.Picasso;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Recommandation {
 
     private String destinataire;
     private String emetteur;
-    private int nbLikes;
-    private int nbAppuis;
     private String picture;
+    private List<String> likingUsers;
+    private List<String> supportingUsers;
 
 
-    public Recommandation(String destinataire, String emetteur, int nbLikes, int nbAppuis, String picture) {
+    public Recommandation(String destinataire, String emetteur, String picture, List<String> likingUsers, List<String> supportingUsers) {
         this.destinataire = destinataire;
         this.emetteur = emetteur;
-        this.nbLikes = nbLikes;
-        this.nbAppuis = nbAppuis;
         this.picture = picture;
+        this.likingUsers=likingUsers;
+        this.supportingUsers=supportingUsers;
     }
 
         /*final ImageButton imageButton = new ImageButton(c);
@@ -91,32 +81,35 @@ public abstract class Recommandation {
         return emetteur;
     }
 
-    public int getNbLikes() {
-        return nbLikes;
-    }
-
-    public int getNbAppuis() {
-        return nbAppuis;
-    }
-
     public String getPicture() {
         return picture;
     }
 
-    public void setDestinataire(String destinataire) {
-        this.destinataire = destinataire;
+
+    public List<String> getLikingUsers() {
+        if (likingUsers == null)
+            return new ArrayList<>();
+        return likingUsers;
     }
 
-    public void setEmetteur(String emetteur) {
-        this.emetteur = emetteur;
+    public List<String> getSupportingUsers() {
+        if (supportingUsers == null)
+            return new ArrayList<>();
+        return supportingUsers;
     }
 
-    public void setNbLikes(int nbLikes) {
-        this.nbLikes = nbLikes;
+    public boolean addNewLikingUser(String pseudo) {
+        if (likingUsers.contains(pseudo))
+            return false;
+        return likingUsers.add(pseudo);
     }
 
-    public void setNbAppuis(int nbAppuis) {
-        this.nbAppuis = nbAppuis;
+    public boolean addNewSupportingUser(String pseudo) {
+        if (supportingUsers.contains(pseudo))
+            return false;
+        return supportingUsers.add(pseudo);
     }
+
+
 
 }

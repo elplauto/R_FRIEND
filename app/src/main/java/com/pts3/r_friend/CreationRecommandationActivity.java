@@ -328,8 +328,8 @@ public class CreationRecommandationActivity extends AppCompatActivity {
             recommandation.child("emetteur").setValue(emetteur);
             recommandation.child("destinataire").setValue(destinataire.getText().toString());
             recommandation.child("idMorceau").setValue(morceau.getId());
-            recommandation.child("nbLikes").setValue(0);
-            recommandation.child("nbAppuis").setValue(0);
+            recommandation.child("likingUsers");
+            recommandation.child("supportingUsers");
             recommandation.child("dateRecommandation").setValue(new GregorianCalendar().getTime().toString());
         } else if (spinner.getSelectedItem().toString().equals("Album")) {
             Album album = (Album) recommandable;

@@ -12,13 +12,15 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.List;
+
 public class ArtisteRecom extends Recommandation {
 
     private String nom;
     private Integer nbAlbums;
 
-    public ArtisteRecom(String destinataire, String emetteur, int nbLikes, int nbAppuis, String picture, String nom, Integer nbAlbums) {
-        super(destinataire, emetteur, nbLikes, nbAppuis, picture);
+    public ArtisteRecom(String destinataire, String emetteur, String picture, List<String> likingUsers, List<String> supportingUsers, String nom, Integer nbAlbums) {
+        super(destinataire, emetteur, picture, likingUsers, supportingUsers);
         this.nom = nom;
         this.nbAlbums = nbAlbums;
     }

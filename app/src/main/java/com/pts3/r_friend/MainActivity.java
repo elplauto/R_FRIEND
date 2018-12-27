@@ -151,7 +151,10 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
+        } else if (listView.getChildAt(0).getTop() != 0) {
+            listView.smoothScrollToPosition(0);
+        }
+        else {
             super.onBackPressed();
         }
     }
@@ -335,6 +338,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onDataChange(DataSnapshot ds) {
                 dataSnapshotInfosSupp = ds;
+                recommandations.clear();
                 createRecommandation("morceau");
                 createRecommandation("album");
                 createRecommandation("artiste");
@@ -378,8 +382,16 @@ public class MainActivity extends AppCompatActivity
             DataSnapshot dataRecom = i.next();
             String dest = dataRecom.child("destinataire").getValue(String.class);
             String emet = dataRecom.child("emetteur").getValue(String.class);
-            int nbLikes = dataRecom.child("nbLikes").getValue(Integer.class);
-            int nbAppuis = dataRecom.child("nbAppuis").getValue(Integer.class);
+            List<String> likingUsers = new ArrayList<>();
+            List<String> supportingUsers = new ArrayList<>();
+            Iterator<DataSnapshot> it = dataRecom.child("likingUsers").getChildren().iterator();
+            while (it.hasNext()) {
+                likingUsers.add(it.next().toString());
+            }
+            it = dataRecom.child("supportingUsers").getChildren().iterator();
+            while (it.hasNext()) {
+                supportingUsers.add(it.next().toString());
+            }
 
             String idInfosSupp = dataRecom.child(infosSuppID).getValue(String.class);
             Log.i("stp_marche", "ID infos supp (pour " + type + ") : " + idInfosSupp);
@@ -401,7 +413,7 @@ public class MainActivity extends AppCompatActivity
                             String imgAlb = dataInfosSupp.child("pictureURL").getValue(String.class);
                             String nomAlbum = dataInfosSupp.child("album").getValue(String.class);
                             String idMorceau = dataInfosSupp.getKey().toString();
-                            recommandations.add(new MorceauRecom(dest, emet, nbLikes, nbAppuis, imgAlb, artisteMorceau, dureeMinutes, titreMorceau, nomAlbum,idMorceau));
+                            recommandations.add(new MorceauRecom(dest, emet, imgAlb, likingUsers, supportingUsers,artisteMorceau, dureeMinutes, titreMorceau, nomAlbum,idMorceau));
                             Log.i("stp_marche", "Création recommandation morceau");
                             break;
 
@@ -411,7 +423,7 @@ public class MainActivity extends AppCompatActivity
                             String titreAlbum = dataInfosSupp.child("titre").getValue(String.class);
                             String imgAlbum = dataInfosSupp.child("pictureURL").getValue(String.class);
                             String idAlbum = dataInfosSupp.getKey().toString();
-                            recommandations.add(new AlbumRecom(dest, emet, nbLikes, nbAppuis, imgAlbum, artisteAlbum, nbTracks, titreAlbum, idAlbum));
+                            recommandations.add(new AlbumRecom(dest, emet, imgAlbum, likingUsers, supportingUsers, artisteAlbum, nbTracks, titreAlbum, idAlbum));
                             Log.i("stp_marche", "Création recommandation album");
                             break;
 
@@ -419,7 +431,7 @@ public class MainActivity extends AppCompatActivity
                             String nom = dataInfosSupp.child("nom").getValue(String.class);
                             Integer nbAlbums = dataInfosSupp.child("nbAlbums").getValue(Integer.class);
                             String picture = dataInfosSupp.child("pictureURL").getValue(String.class);
-                            recommandations.add(new ArtisteRecom(dest, emet, nbLikes, nbAppuis, picture, nom, nbAlbums));
+                            recommandations.add(new ArtisteRecom(dest, emet, picture, likingUsers, supportingUsers, nom, nbAlbums));
                             Log.i("stp_marche", "Création recommandation artiste");
                             break;
 
@@ -492,6 +504,8 @@ public class MainActivity extends AppCompatActivity
         recommandations.clear();
         afficherRecommandation();
         remplirRecommandation();
+        deezerMusicPlayer.stopMorceau();
+        deezerMusicPlayer.stopAlbum();
     }
 }
 

@@ -1,5 +1,8 @@
 package com.pts3.r_friend;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -17,9 +21,8 @@ public class RecommandationAdapter extends ArrayAdapter<Recommandation> {
 
     MainActivity context;
 
-    //tweets est la liste des models à afficher
-    public RecommandationAdapter(MainActivity context, List<Recommandation> tweets) {
-        super(context, 0, tweets);
+    public RecommandationAdapter(MainActivity context, List<Recommandation> recommandations) {
+        super(context, 0, recommandations);
         this.context=context;
     }
 
@@ -51,7 +54,6 @@ public class RecommandationAdapter extends ArrayAdapter<Recommandation> {
 
         //getItem(position) va récupérer l'item [position] de la List<Tweet> tweets
         final Recommandation recommandation = getItem(position);
-
 
         //il ne reste plus qu'à remplir notre vue
 
@@ -109,8 +111,81 @@ public class RecommandationAdapter extends ArrayAdapter<Recommandation> {
             viewHolder.image_play.setVisibility(View.INVISIBLE);
         }
 
-        viewHolder.nombre_plus_un.setText("0");
-        viewHolder.nombre_coeur.setText("0");
+        final RecommandationViewHolder finalViewHolder = viewHolder;
+
+        viewHolder.image_button_coeur.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String pseudo = context.userMail.toString();
+                if (pseudo.equals("")) {
+                    Toast.makeText(context, "Vous devez être connecté pour interragir avec les recommandations", Toast.LENGTH_SHORT).show();
+                    Intent intent =new Intent(context,ConnexionActivity.class);
+                    context.startActivity(intent);
+                } else if(recommandation.getLikingUsers().contains(pseudo)) {
+                    Toast.makeText(context, "Vous avez déja aimé cette recommandation", Toast.LENGTH_SHORT).show();
+                } else if (recommandation.getSupportingUsers().contains(pseudo)) {
+                    Toast.makeText(context, "Vous ne pouvez pas aimer une recommandation que vous avez appuyé", Toast.LENGTH_SHORT).show();
+                } else {
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+                    alertDialogBuilder.setTitle("Confirmation");
+                    alertDialogBuilder.setMessage("Êtes-vous certain de vouloir aimer cette recommandation ?");
+                    alertDialogBuilder.setPositiveButton("Aimer", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            recommandation.addNewLikingUser(context.userMail.toString());
+                            finalViewHolder.image_button_coeur.setBackgroundResource(R.drawable.coeur_rouge);
+                            finalViewHolder.nombre_coeur.setText(recommandation.getLikingUsers().size()+"");
+                        }
+                    });
+
+                    alertDialogBuilder.setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    });
+                    alertDialogBuilder.create().show();
+                }
+            }
+        });
+
+        viewHolder.image_button_plus_un.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String pseudo = context.userMail.toString();
+                if (pseudo.equals("")) {
+                    Toast.makeText(context, "Vous devez être connecté pour interragir avec les recommandations", Toast.LENGTH_SHORT).show();
+                    Intent intent =new Intent(context,ConnexionActivity.class);
+                    context.startActivity(intent);
+                } else if(recommandation.getSupportingUsers().contains(pseudo)) {
+                    Toast.makeText(context, "Vous avez déja appuyé cette recommandation", Toast.LENGTH_SHORT).show();
+                } else if (recommandation.getLikingUsers().contains(pseudo)) {
+                    Toast.makeText(context, "Vous ne pouvez pas appuyer une recommandation que vous avez aimé", Toast.LENGTH_SHORT).show();
+                } else {
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+                    alertDialogBuilder.setTitle("Confirmation");
+                    alertDialogBuilder.setMessage("Êtes-vous certain de vouloir appuyer cette recommandation ?");
+                    alertDialogBuilder.setPositiveButton("Appuyer", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            recommandation.addNewSupportingUser(context.userMail.toString());
+                            finalViewHolder.image_button_plus_un.setBackgroundResource(R.drawable.one_green);
+                            finalViewHolder.nombre_plus_un.setText(recommandation.getSupportingUsers().size()+"");
+                        }
+                    });
+
+                    alertDialogBuilder.setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    });
+                    alertDialogBuilder.create().show();
+                }
+            }
+        });
+
+        viewHolder.nombre_plus_un.setText(recommandation.getSupportingUsers().size()+"");
+        viewHolder.nombre_coeur.setText(recommandation.getLikingUsers().size()+"");
+
         Picasso.with(context).load(recommandation.getPicture()).into(viewHolder.imageRecommandation);
 
         return convertView;

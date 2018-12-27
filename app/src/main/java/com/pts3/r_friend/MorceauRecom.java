@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.List;
+
 public class MorceauRecom extends Recommandation {
 
     private String artiste;
@@ -18,8 +20,8 @@ public class MorceauRecom extends Recommandation {
     private String nomAlbum;
     private String idMorceau;
 
-    public MorceauRecom(String destinataire, String emetteur, int nbLikes, int nbAppuis, String picture, String artiste, String duree, String titre, String nomAlbum, String idMorceau) {
-        super(destinataire, emetteur, nbLikes, nbAppuis, picture);
+    public MorceauRecom(String destinataire, String emetteur, String picture, List<String> likingUsers, List<String> supportingUsers, String artiste, String duree, String titre, String nomAlbum, String idMorceau) {
+        super(destinataire, emetteur, picture, likingUsers, supportingUsers);
         this.artiste = artiste;
         this.duree = duree;
         this.titre = titre;
