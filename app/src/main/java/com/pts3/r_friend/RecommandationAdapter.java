@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -20,14 +22,21 @@ import java.util.List;
 public class RecommandationAdapter extends ArrayAdapter<Recommandation> {
 
     MainActivity context;
+    FirebaseDatabase database;
+    DatabaseReference root;
 
     public RecommandationAdapter(MainActivity context, List<Recommandation> recommandations) {
         super(context, 0, recommandations);
         this.context=context;
+        database = FirebaseDatabase.getInstance();
+        root = database.getReference();
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+
+        //getItem(position) va récupérer l'item [position] de la List<Recommandation> recomandations
+        final Recommandation recommandation = getItem(position);
 
         if(convertView == null){
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.recommandation_model,parent, false);
@@ -49,11 +58,17 @@ public class RecommandationAdapter extends ArrayAdapter<Recommandation> {
             viewHolder.image_button_coeur = (ImageButton) convertView.findViewById(R.id.image_button_coeur);
             viewHolder.image_button_plus_un = (ImageButton) convertView.findViewById(R.id.image_button_plus_un);
 
+            if (!context.userMail.getText().toString().equals("") && recommandation.getLikingUsers().contains(context.username.getText().toString())) {
+                viewHolder.image_button_coeur.setBackgroundResource(R.drawable.coeur_rouge);
+            }
+            if (!context.userMail.getText().toString().equals("") && recommandation.getSupportingUsers().contains(context.username.getText().toString())) {
+                viewHolder.image_button_plus_un.setBackgroundResource(R.drawable.one_green);
+            }
+
             convertView.setTag(viewHolder);
         }
 
-        //getItem(position) va récupérer l'item [position] de la List<Tweet> tweets
-        final Recommandation recommandation = getItem(position);
+
 
         //il ne reste plus qu'à remplir notre vue
 
@@ -116,7 +131,7 @@ public class RecommandationAdapter extends ArrayAdapter<Recommandation> {
         viewHolder.image_button_coeur.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String pseudo = context.userMail.toString();
+                final String pseudo = context.username.getText().toString();
                 if (pseudo.equals("")) {
                     Toast.makeText(context, "Vous devez être connecté pour interragir avec les recommandations", Toast.LENGTH_SHORT).show();
                     Intent intent =new Intent(context,ConnexionActivity.class);
@@ -135,6 +150,7 @@ public class RecommandationAdapter extends ArrayAdapter<Recommandation> {
                             recommandation.addNewLikingUser(context.userMail.toString());
                             finalViewHolder.image_button_coeur.setBackgroundResource(R.drawable.coeur_rouge);
                             finalViewHolder.nombre_coeur.setText(recommandation.getLikingUsers().size()+"");
+                            addNewLikingUserToDatabase(recommandation,pseudo);
                         }
                     });
 
@@ -151,7 +167,7 @@ public class RecommandationAdapter extends ArrayAdapter<Recommandation> {
         viewHolder.image_button_plus_un.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String pseudo = context.userMail.toString();
+                final String pseudo = context.username.getText().toString();
                 if (pseudo.equals("")) {
                     Toast.makeText(context, "Vous devez être connecté pour interragir avec les recommandations", Toast.LENGTH_SHORT).show();
                     Intent intent =new Intent(context,ConnexionActivity.class);
@@ -170,6 +186,7 @@ public class RecommandationAdapter extends ArrayAdapter<Recommandation> {
                             recommandation.addNewSupportingUser(context.userMail.toString());
                             finalViewHolder.image_button_plus_un.setBackgroundResource(R.drawable.one_green);
                             finalViewHolder.nombre_plus_un.setText(recommandation.getSupportingUsers().size()+"");
+                            addNewSupportingUserToDatabase(recommandation,pseudo);
                         }
                     });
 
@@ -189,6 +206,30 @@ public class RecommandationAdapter extends ArrayAdapter<Recommandation> {
         Picasso.with(context).load(recommandation.getPicture()).into(viewHolder.imageRecommandation);
 
         return convertView;
+    }
+
+    public void addNewSupportingUserToDatabase(Recommandation recommandation, String pseudo) {
+        String type = "";
+        if (recommandation instanceof MorceauRecom) {
+            type = "recommandationsMorceau";
+        } else if (recommandation instanceof AlbumRecom) {
+            type = "recommandationsAlbum";
+        } else if (recommandation instanceof AlbumRecom) {
+            type = "recommandationsArtiste";
+        }
+        root.child("recommandations").child(type).child(recommandation.getIdRecommandation()).child("supportingUsers").child(pseudo).setValue(pseudo);
+    }
+
+    public void addNewLikingUserToDatabase(Recommandation recommandation, String pseudo) {
+        String type = "";
+        if (recommandation instanceof MorceauRecom) {
+            type = "recommandationsMorceau";
+        } else if (recommandation instanceof AlbumRecom) {
+            type = "recommandationsAlbum";
+        } else if (recommandation instanceof AlbumRecom) {
+            type = "recommandationsArtiste";
+        }
+        root.child("recommandations").child(type).child(recommandation.getIdRecommandation()).child("likingUsers").child(pseudo).setValue(pseudo);
     }
 
     private class RecommandationViewHolder {
