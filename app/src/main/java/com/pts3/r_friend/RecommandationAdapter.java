@@ -203,6 +203,48 @@ public class RecommandationAdapter extends ArrayAdapter<Recommandation> {
             }
         });
 
+        viewHolder.image_button_coeur.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+                alertDialogBuilder.setTitle("Liste des utilisateurs qui aiment cette recommandation");
+                String message ="";
+                for (String each : recommandation.getLikingUsers()) {
+                   message += each + "\n";
+                }
+                alertDialogBuilder.setMessage(message);
+                alertDialogBuilder.setNegativeButton("Fermer", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+                alertDialogBuilder.create().show();
+
+                return true;
+            }
+        });
+
+        viewHolder.image_button_plus_un.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+                alertDialogBuilder.setTitle("Liste des utilisateurs qui appuient cette recommandation");
+                String message ="";
+                for (String each : recommandation.getSupportingUsers()) {
+                    message += each + "\n";
+                }
+                alertDialogBuilder.setMessage(message);
+                alertDialogBuilder.setNegativeButton("Fermer", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+                alertDialogBuilder.create().show();
+
+                return true;
+            }
+        });
+
         viewHolder.nombre_plus_un.setText(recommandation.getSupportingUsers().size()+"");
         viewHolder.nombre_coeur.setText(recommandation.getLikingUsers().size()+"");
         viewHolder.date.setText(getDate(recommandation.getDateRecommandation()));
@@ -218,7 +260,7 @@ public class RecommandationAdapter extends ArrayAdapter<Recommandation> {
             type = "recommandationsMorceau";
         } else if (recommandation instanceof AlbumRecom) {
             type = "recommandationsAlbum";
-        } else if (recommandation instanceof AlbumRecom) {
+        } else if (recommandation instanceof ArtisteRecom) {
             type = "recommandationsArtiste";
         }
         root.child("recommandations").child(type).child(recommandation.getIdRecommandation()).child("supportingUsers").child(pseudo).setValue(pseudo);
@@ -230,7 +272,7 @@ public class RecommandationAdapter extends ArrayAdapter<Recommandation> {
             type = "recommandationsMorceau";
         } else if (recommandation instanceof AlbumRecom) {
             type = "recommandationsAlbum";
-        } else if (recommandation instanceof AlbumRecom) {
+        } else if (recommandation instanceof ArtisteRecom) {
             type = "recommandationsArtiste";
         }
         root.child("recommandations").child(type).child(recommandation.getIdRecommandation()).child("likingUsers").child(pseudo).setValue(pseudo);
