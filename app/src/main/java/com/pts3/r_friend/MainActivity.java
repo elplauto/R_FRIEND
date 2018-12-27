@@ -36,6 +36,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -133,7 +134,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         if (navigationView.getMenu() != null && userMail != null) {
-            Boolean connected = !userMail.getText().toString().equals("");
+            Boolean connected = !username.getText().toString().equals("Non connecté");
             navigationView.getMenu().findItem(R.id.buttonCompte).setVisible(connected);
             navigationView.getMenu().findItem(R.id.buttonDeconnexion).setVisible(connected);
             navigationView.getMenu().findItem(R.id.buttonConnexion).setVisible(!connected);
@@ -184,7 +185,7 @@ public class MainActivity extends AppCompatActivity
         username.setText(sharedPref.getString("pseudo","Non connecté"));
         userMail.setText(sharedPref.getString("email",""));
 
-        Boolean connected = !userMail.getText().toString().equals("");
+        Boolean connected = !username.getText().toString().equals("Non connecté");
         navigationView.getMenu().findItem(R.id.buttonCompte).setVisible(connected);
         navigationView.getMenu().findItem(R.id.buttonDeconnexion).setVisible(connected);
         navigationView.getMenu().findItem(R.id.buttonConnexion).setVisible(!connected);
@@ -342,6 +343,7 @@ public class MainActivity extends AppCompatActivity
                 createRecommandation("morceau");
                 createRecommandation("album");
                 createRecommandation("artiste");
+                ordonnerRecommandation();
                 afficherRecommandation();
                 swipeRefreshLayout.setRefreshing(false);
             }
@@ -381,6 +383,7 @@ public class MainActivity extends AppCompatActivity
         while (i.hasNext()) {
             DataSnapshot dataRecom = i.next();
             String idRecommandation = dataRecom.getKey();
+            Long date = dataRecom.child("dateRecommandation").getValue(Long.class);
             String dest = dataRecom.child("destinataire").getValue(String.class);
             String emet = dataRecom.child("emetteur").getValue(String.class);
             List<String> likingUsers = new ArrayList<>();
@@ -409,7 +412,7 @@ public class MainActivity extends AppCompatActivity
                             String imgAlb = dataInfosSupp.child("pictureURL").getValue(String.class);
                             String nomAlbum = dataInfosSupp.child("album").getValue(String.class);
                             String idMorceau = dataInfosSupp.getKey().toString();
-                            recommandations.add(new MorceauRecom(idRecommandation, dest, emet, imgAlb, likingUsers, supportingUsers,artisteMorceau, dureeMinutes, titreMorceau, nomAlbum,idMorceau));
+                            recommandations.add(new MorceauRecom(idRecommandation, date, dest, emet, imgAlb, likingUsers, supportingUsers,artisteMorceau, dureeMinutes, titreMorceau, nomAlbum,idMorceau));
                             break;
 
                         case "album":
@@ -418,14 +421,14 @@ public class MainActivity extends AppCompatActivity
                             String titreAlbum = dataInfosSupp.child("titre").getValue(String.class);
                             String imgAlbum = dataInfosSupp.child("pictureURL").getValue(String.class);
                             String idAlbum = dataInfosSupp.getKey().toString();
-                            recommandations.add(new AlbumRecom(idRecommandation, dest, emet, imgAlbum, likingUsers, supportingUsers, artisteAlbum, nbTracks, titreAlbum, idAlbum));
+                            recommandations.add(new AlbumRecom(idRecommandation, date, dest, emet, imgAlbum, likingUsers, supportingUsers, artisteAlbum, nbTracks, titreAlbum, idAlbum));
                             break;
 
                         case "artiste":
                             String nom = dataInfosSupp.child("nom").getValue(String.class);
                             Integer nbAlbums = dataInfosSupp.child("nbAlbums").getValue(Integer.class);
                             String picture = dataInfosSupp.child("pictureURL").getValue(String.class);
-                            recommandations.add(new ArtisteRecom(idRecommandation, dest, emet, picture, likingUsers, supportingUsers, nom, nbAlbums));
+                            recommandations.add(new ArtisteRecom(idRecommandation, date, dest, emet, picture, likingUsers, supportingUsers, nom, nbAlbums));
                             break;
                     }
                     break; //pour ne pas parcourir tous les autres infosSuppChildren
@@ -497,6 +500,19 @@ public class MainActivity extends AppCompatActivity
         remplirRecommandation();
         deezerMusicPlayer.stopMorceau();
         deezerMusicPlayer.stopAlbum();
+    }
+
+    public void ordonnerRecommandation() {
+        Comparator<Recommandation> comparator = new Comparator<Recommandation>() {
+            @Override
+            public int compare(Recommandation o1, Recommandation o2) {
+                if (o1.getDateRecommandation() < o2.getDateRecommandation()) {
+                    return 1;
+                }
+                return -1;
+            }
+        };
+        recommandations.sort(comparator);
     }
 }
 

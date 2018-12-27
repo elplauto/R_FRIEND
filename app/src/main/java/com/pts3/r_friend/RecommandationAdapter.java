@@ -17,6 +17,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
+import java.util.GregorianCalendar;
 import java.util.List;
 
 public class RecommandationAdapter extends ArrayAdapter<Recommandation> {
@@ -51,6 +52,7 @@ public class RecommandationAdapter extends ArrayAdapter<Recommandation> {
             viewHolder.album = (TextView) convertView.findViewById(R.id.album);
             viewHolder.nombre_coeur = (TextView) convertView.findViewById(R.id.nombre_coeur);
             viewHolder.nombre_plus_un = (TextView) convertView.findViewById(R.id.nombre_plus_un);
+            viewHolder.date = (TextView) convertView.findViewById(R.id.date);
 
             viewHolder.imageRecommandation = (ImageView) convertView.findViewById(R.id.imageRecommandation);
 
@@ -67,6 +69,7 @@ public class RecommandationAdapter extends ArrayAdapter<Recommandation> {
 
             convertView.setTag(viewHolder);
         }
+
 
 
 
@@ -168,12 +171,6 @@ public class RecommandationAdapter extends ArrayAdapter<Recommandation> {
             @Override
             public void onClick(View v) {
                 final String pseudo = context.username.getText().toString();
-                Log.e("---", "-----------------");
-                Log.e("---", pseudo);
-                for (String each : recommandation.getSupportingUsers()) {
-                    Log.e("---", each);
-                }
-                Log.e("---", "-----------------");
                 if (pseudo.equals("Non connecté")) {
                     Toast.makeText(context, "Vous devez être connecté pour interragir avec les recommandations", Toast.LENGTH_SHORT).show();
                     Intent intent =new Intent(context,ConnexionActivity.class);
@@ -208,6 +205,7 @@ public class RecommandationAdapter extends ArrayAdapter<Recommandation> {
 
         viewHolder.nombre_plus_un.setText(recommandation.getSupportingUsers().size()+"");
         viewHolder.nombre_coeur.setText(recommandation.getLikingUsers().size()+"");
+        viewHolder.date.setText(getDate(recommandation.getDateRecommandation()));
 
         Picasso.with(context).load(recommandation.getPicture()).into(viewHolder.imageRecommandation);
 
@@ -238,6 +236,23 @@ public class RecommandationAdapter extends ArrayAdapter<Recommandation> {
         root.child("recommandations").child(type).child(recommandation.getIdRecommandation()).child("likingUsers").child(pseudo).setValue(pseudo);
     }
 
+    private String getDate(Long dateRecom) {
+        Long dateActuelle = System.currentTimeMillis();
+        Long differenceTemps = dateActuelle - dateRecom;
+        if (differenceTemps < 60 * 1000) {
+            return "Il y a " + differenceTemps /1000 + " s";
+        } else if (differenceTemps < 60 * 60 * 1000) {
+            return "Il y a " + differenceTemps / (60 * 1000) + " min";
+        } else if (differenceTemps < 24 * 60 * 60 * 1000) {
+            return "Il y a " + differenceTemps / (60 * 60 * 1000) + " h";
+        } else if (differenceTemps < 30.5 *24 * 60 * 60 * 1000) {
+            return "Il y a " + differenceTemps / (24 * 60 * 60 * 1000) + " j";
+        } else if (differenceTemps <  365 *24 * 60 * 60 * 1000) {
+            return "Il y a " + differenceTemps / ( 30.5 * 24 * 60 * 60 * 1000) + " mois";
+        }
+        return "Il y a " + differenceTemps / ( 365 * 24 * 60 * 60 * 1000) + " ans";
+    }
+
     private class RecommandationViewHolder {
 
         public TextView emetteur_destinataire;
@@ -246,6 +261,7 @@ public class RecommandationAdapter extends ArrayAdapter<Recommandation> {
         public TextView album;
         public TextView nombre_coeur;
         public TextView nombre_plus_un;
+        public TextView date;
 
         public ImageView imageRecommandation;
 

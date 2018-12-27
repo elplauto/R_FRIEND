@@ -328,7 +328,7 @@ public class CreationRecommandationActivity extends AppCompatActivity {
             recommandation.child("idMorceau").setValue(morceau.getId());
             recommandation.child("likingUsers");
             recommandation.child("supportingUsers");
-            recommandation.child("dateRecommandation").setValue(new GregorianCalendar().getTime().toString());
+            recommandation.child("dateRecommandation").setValue(System.currentTimeMillis());
         } else if (spinner.getSelectedItem().toString().equals("Album")) {
             Album album = (Album) recommandable;
             ajouterAlbum(album);
@@ -338,7 +338,7 @@ public class CreationRecommandationActivity extends AppCompatActivity {
             recommandation.child("idAlbum").setValue(album.getId());
             recommandation.child("likingUsers");
             recommandation.child("supportingUsers");
-            recommandation.child("dateRecommandation").setValue(new GregorianCalendar().getTime().toString());
+            recommandation.child("dateRecommandation").setValue(System.currentTimeMillis());
         } else if (spinner.getSelectedItem().toString().equals("Artiste")) {
             Artiste artiste = (Artiste) recommandable;
             ajouterArtiste(artiste);
@@ -348,7 +348,7 @@ public class CreationRecommandationActivity extends AppCompatActivity {
             recommandation.child("idArtiste").setValue(artiste.getId());
             recommandation.child("likingUsers");
             recommandation.child("supportingUsers");
-            recommandation.child("dateRecommandation").setValue(new GregorianCalendar().getTime().toString());
+            recommandation.child("dateRecommandation").setValue(System.currentTimeMillis());
         }
         Toast.makeText(getApplicationContext(), "Votre recommandation a bien été créée", Toast.LENGTH_SHORT).show();
         finish();

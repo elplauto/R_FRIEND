@@ -10,8 +10,8 @@ public class MorceauRecom extends Recommandation {
     private String nomAlbum;
     private String idMorceau;
 
-    public MorceauRecom(String idRecommandation,String destinataire, String emetteur, String picture, List<String> likingUsers, List<String> supportingUsers, String artiste, String duree, String titre, String nomAlbum, String idMorceau) {
-        super(idRecommandation, destinataire, emetteur, picture, likingUsers, supportingUsers);
+    public MorceauRecom(String idRecommandation,  Long dateRecommandation, String destinataire, String emetteur, String picture, List<String> likingUsers, List<String> supportingUsers, String artiste, String duree, String titre, String nomAlbum, String idMorceau) {
+        super(idRecommandation, dateRecommandation, destinataire, emetteur, picture, likingUsers, supportingUsers);
         this.artiste = artiste;
         this.duree = duree;
         this.titre = titre;

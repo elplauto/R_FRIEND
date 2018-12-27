@@ -6,6 +6,7 @@ import java.util.List;
 public abstract class Recommandation {
 
     private String idRecommandation;
+    private Long dateRecommandation;
     private String destinataire;
     private String emetteur;
     private String picture;
@@ -13,8 +14,10 @@ public abstract class Recommandation {
     private List<String> supportingUsers;
 
 
-    public Recommandation(String idRecommandation, String destinataire, String emetteur, String picture, List<String> likingUsers, List<String> supportingUsers) {
+
+    public Recommandation(String idRecommandation, Long dateRecommandation, String destinataire, String emetteur, String picture, List<String> likingUsers, List<String> supportingUsers) {
         this.idRecommandation=idRecommandation;
+        this.dateRecommandation = dateRecommandation;
         this.destinataire = destinataire;
         this.emetteur = emetteur;
         this.picture = picture;
@@ -51,6 +54,10 @@ public abstract class Recommandation {
         return idRecommandation;
     }
 
+    public Long getDateRecommandation() {
+        return dateRecommandation;
+    }
+
     public boolean addNewLikingUser(String pseudo) {
         if (likingUsers.contains(pseudo))
             return false;
@@ -62,4 +69,6 @@ public abstract class Recommandation {
             return false;
         return supportingUsers.add(pseudo);
     }
+
+
 }

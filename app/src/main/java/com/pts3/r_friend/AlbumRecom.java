@@ -20,8 +20,8 @@ public class AlbumRecom extends Recommandation {
     private String idAlbum;
 
 
-    public AlbumRecom(String idRecommandation, String destinataire, String emetteur, String picture, List<String> likingUsers, List<String> supportingUsers, String artiste, Integer nbTracks, String titre, String idAlbum) {
-        super(idRecommandation, destinataire, emetteur, picture, likingUsers, supportingUsers);
+    public AlbumRecom(String idRecommandation,  Long dateRecommandation, String destinataire, String emetteur, String picture, List<String> likingUsers, List<String> supportingUsers, String artiste, Integer nbTracks, String titre, String idAlbum) {
+        super(idRecommandation, dateRecommandation, destinataire, emetteur, picture, likingUsers, supportingUsers);
         this.artiste = artiste;
         this.nbTracks = nbTracks;
         this.titre = titre;

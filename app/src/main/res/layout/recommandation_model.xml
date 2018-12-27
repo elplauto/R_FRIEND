@@ -2,19 +2,27 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent" android:layout_height="match_parent" android:padding="10dp" >
 
     <TextView
-        android:id="@+id/emetteur_destinataire"
+    android:id="@+id/emetteur_destinataire"
+    android:textColor="@android:color/black"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textStyle="bold"
+    android:text="X recommmande Y à Z" />
+
+    <TextView
+        android:id="@+id/date"
         android:textColor="@android:color/black"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:text="X recommmande Y à Z" />
+        android:layout_below="@+id/emetteur_destinataire"
+        android:text="Il y a 10min" />
 
     <ImageView
         android:id="@+id/imageRecommandation"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginTop="10dp"
-        android:layout_below="@id/emetteur_destinataire"
+        android:layout_below="@id/date"
         tools:background="#AAA" />
 
     <TextView
