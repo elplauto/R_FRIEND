@@ -40,12 +40,10 @@ public class RecommandationAdapter extends ArrayAdapter<Recommandation> {
         //getItem(position) va récupérer l'item [position] de la List<Recommandation> recomandations
         final Recommandation recommandation = getItem(position);
 
-        if(convertView == null){
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.recommandation_model,parent, false);
-        }
+        convertView = LayoutInflater.from(getContext()).inflate(R.layout.recommandation_model,parent, false);
 
         RecommandationViewHolder viewHolder = (RecommandationViewHolder) convertView.getTag();
-        if(viewHolder == null){
+
             viewHolder = new RecommandationViewHolder();
             viewHolder.emetteur_destinataire = (TextView) convertView.findViewById(R.id.emetteur_destinataire);
             viewHolder.titre = (TextView) convertView.findViewById(R.id.titre);
@@ -61,20 +59,21 @@ public class RecommandationAdapter extends ArrayAdapter<Recommandation> {
             viewHolder.image_button_coeur = (ImageButton) convertView.findViewById(R.id.image_button_coeur);
             viewHolder.image_button_plus_un = (ImageButton) convertView.findViewById(R.id.image_button_plus_un);
 
-            if (!context.userMail.getText().toString().equals("") && recommandation.getLikingUsers().contains(context.username.getText().toString())) {
-                viewHolder.image_button_coeur.setBackgroundResource(R.drawable.coeur_rouge);
-            }
-            if (!context.userMail.getText().toString().equals("") && recommandation.getSupportingUsers().contains(context.username.getText().toString())) {
-                viewHolder.image_button_plus_un.setBackgroundResource(R.drawable.one_green);
-            }
-
             convertView.setTag(viewHolder);
-        }
-
-
-
-
+            
         //il ne reste plus qu'à remplir notre vue
+
+        if (!context.userMail.getText().toString().equals("") && recommandation.getLikingUsers().contains(context.username.getText().toString())) {
+            viewHolder.image_button_coeur.setBackgroundResource(R.drawable.coeur_rouge);
+        }
+        else {
+            viewHolder.image_button_coeur.setBackgroundResource(R.drawable.coeur_vide);
+        }
+        if (!context.userMail.getText().toString().equals("") && recommandation.getSupportingUsers().contains(context.username.getText().toString())) {
+            viewHolder.image_button_plus_un.setBackgroundResource(R.drawable.one_green);
+        } else {
+            viewHolder.image_button_coeur.setBackgroundResource(R.drawable.one_white);
+        }
 
         if (recommandation instanceof MorceauRecom) {
             viewHolder.emetteur_destinataire.setText(recommandation.getEmetteur() + " recommande un morceau" + (recommandation.getDestinataire().equals("")?"":" à " + recommandation.getDestinataire()));
