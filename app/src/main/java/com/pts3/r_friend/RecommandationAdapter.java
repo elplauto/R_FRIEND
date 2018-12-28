@@ -72,7 +72,7 @@ public class RecommandationAdapter extends ArrayAdapter<Recommandation> {
         if (!context.userMail.getText().toString().equals("") && recommandation.getSupportingUsers().contains(context.username.getText().toString())) {
             viewHolder.image_button_plus_un.setBackgroundResource(R.drawable.one_green);
         } else {
-            viewHolder.image_button_coeur.setBackgroundResource(R.drawable.one_white);
+            viewHolder.image_button_plus_un.setBackgroundResource(R.drawable.one_white);
         }
 
         if (recommandation instanceof MorceauRecom) {
