@@ -7,10 +7,12 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,6 +20,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -34,6 +37,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.util.List;
 
 public class CreationRecommandationActivity extends AppCompatActivity {
@@ -53,8 +57,10 @@ public class CreationRecommandationActivity extends AppCompatActivity {
     DatabaseReference root;
     int selectedIndex;
     String emetteur;
-    EditText destinataire;
+    AutoCompleteTextView destinataire;
     Boolean destinataireExistant;
+
+    List<String> pseudos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,16 +79,17 @@ public class CreationRecommandationActivity extends AppCompatActivity {
         spinner.setAdapter(adapter);
 
         destinataireExistant = true;
+        pseudos = new ArrayList<>();
 
         tv1 = findViewById(R.id.tv1);
         tv2 = findViewById(R.id.tv2);
         tv3 = findViewById(R.id.tv3);
         tv4 = findViewById(R.id.tv4);
 
-        destinataire = (EditText) findViewById(R.id.editTextDestinataire);
+        destinataire = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView);
         destinataire.setTextColor(Color.argb(255,255,255,255));
         destinataire.setHintTextColor(Color.argb(255,255,255,255));
-
+        destinataire.setHint("Destinataire");
         destinataire.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
@@ -116,6 +123,13 @@ public class CreationRecommandationActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) { }
+        });
+
+        destinataire.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                closeKeyboard();
+            }
         });
 
         imageViewRecommandation = findViewById(R.id.imageViewRecommandation);
@@ -159,6 +173,7 @@ public class CreationRecommandationActivity extends AppCompatActivity {
                     tv3.setText("");
                     tv4.setText("");
                 }
+                imageViewRecommandation.setVisibility(View.INVISIBLE);
             }
 
             @Override
@@ -166,6 +181,10 @@ public class CreationRecommandationActivity extends AppCompatActivity {
         });
 
         deezerDataSearcher = new DeezerDataSearcher(this,getResources().getString(R.string.app_id));
+
+
+
+        recuperationPseudos();
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("");
@@ -201,7 +220,14 @@ public class CreationRecommandationActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int itemIndex, long id) {
                 closeKeyboard();
                 String queryString=(String)adapterView.getItemAtPosition(itemIndex);
-                searchAutoComplete.setText(queryString);
+                int sautDeLigne = queryString.indexOf("\n");
+                String text;
+                if (sautDeLigne == -1) {
+                    text=queryString;
+                } else {
+                    text = queryString.subSequence(0,sautDeLigne).toString();
+                }
+                searchAutoComplete.setText(text);
                 recherchePrecise = true;
                 String typeRecherche=spinner.getSelectedItem().toString();
                 selectedIndex = itemIndex;
@@ -214,6 +240,7 @@ public class CreationRecommandationActivity extends AppCompatActivity {
                 }
             }
         });
+
 
         // Below event is triggered when submit search query.
         searchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
@@ -258,9 +285,9 @@ public class CreationRecommandationActivity extends AppCompatActivity {
         } else if (!recherchePrecise) {
             ArrayList<String> propositions = new ArrayList<>();
             for (Morceau morceau : morceaux) {
-                propositions.add(morceau.getTitre());
+                propositions.add(morceau.getTitre() + "\n" + morceau.getArtiste());
             }
-            ArrayAdapter<String> newsAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_dropdown_item_1line, propositions);
+            ArrayAdapter<String> newsAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_expandable_list_item_1, propositions);
             searchAutoComplete.setAdapter(newsAdapter);
         }
     }
@@ -284,9 +311,9 @@ public class CreationRecommandationActivity extends AppCompatActivity {
         } else if (!recherchePrecise) {
             ArrayList<String> propositions = new ArrayList<>();
             for (com.pts3.r_friend.Album album : albums) {
-                propositions.add(album.getTitre());
+                propositions.add(album.getTitre() + "\n" + album.getArtiste());
             }
-            ArrayAdapter<String> newsAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_dropdown_item_1line, propositions);
+            ArrayAdapter<String> newsAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_expandable_list_item_1, propositions);
             searchAutoComplete.setAdapter(newsAdapter);
         }
     }
@@ -312,7 +339,7 @@ public class CreationRecommandationActivity extends AppCompatActivity {
             for (Artiste artiste : artistes) {
                 propositions.add(artiste.getNom());
             }
-            ArrayAdapter<String> newsAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_dropdown_item_1line, propositions);
+            ArrayAdapter<String> newsAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_expandable_list_item_1, propositions);
             searchAutoComplete.setAdapter(newsAdapter);
         }
     }
@@ -387,5 +414,24 @@ public class CreationRecommandationActivity extends AppCompatActivity {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
+    }
+
+    private void recuperationPseudos() {
+        root.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Iterator<DataSnapshot> it = dataSnapshot.getChildren().iterator();
+                while (it.hasNext()) {
+                    pseudos.add(it.next().getKey().toString());
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>
+                            (getApplicationContext(), android.R.layout.select_dialog_item, pseudos);
+                    destinataire.setThreshold(1); //will start working from first character
+                    destinataire.setAdapter(adapter);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
+        });
     }
 }
