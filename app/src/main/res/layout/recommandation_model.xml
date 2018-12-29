@@ -3,6 +3,11 @@
     android:layout_width="match_parent" android:layout_height="match_parent" android:padding="10dp"
     android:background="#534C74">
 
+    <RelativeLayout
+        android:id="@+id/contenuPrincipal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
     <TextView
     android:id="@+id/emetteur_destinataire"
     android:textColor="@android:color/white"
@@ -64,46 +69,52 @@
         android:layout_alignLeft="@id/titre"
         android:background="@drawable/play" />
 
-    <ImageButton
-        android:id="@+id/image_button_coeur"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/button"
         android:layout_marginTop="10dp"
-        android:layout_below="@id/imageRecommandation"
-        android:layout_marginLeft="85dp"
-        android:background="@drawable/coeur_vide" />
-
-    <ImageButton
-        android:id="@+id/image_button_plus_un"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_toRightOf="@id/nombre_coeur"
-        android:layout_alignTop="@+id/image_button_coeur"
-        android:layout_below="@id/imageRecommandation"
-        android:layout_marginLeft="85dp"
-        android:background="@drawable/one_white" />
-
-    <TextView
-        android:id="@+id/nombre_coeur"
+        android:layout_below="@id/contenuPrincipal"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
-        android:layout_marginLeft="2dp"
-        android:layout_toRightOf="@id/image_button_coeur"
-        android:layout_alignTop="@+id/image_button_coeur"
-        android:layout_below="@id/imageRecommandation"
-        android:text="0"/>
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/nombre_plus_un"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
-        android:layout_marginLeft="2dp"
-        android:layout_toRightOf="@id/image_button_plus_un"
-        android:layout_below="@id/imageRecommandation"
-        android:layout_alignTop="@+id/image_button_coeur"
-        android:text="0"/>
+        <ImageButton
+            android:id="@+id/image_button_coeur"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="85dp"
+            android:background="@drawable/coeur_vide" />
+
+        <ImageButton
+            android:id="@+id/image_button_plus_un"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_toRightOf="@id/nombre_coeur"
+            android:layout_alignTop="@+id/image_button_coeur"
+            android:layout_marginLeft="85dp"
+            android:background="@drawable/one_white" />
+
+        <TextView
+            android:id="@+id/nombre_coeur"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:layout_marginLeft="2dp"
+            android:layout_toRightOf="@id/image_button_coeur"
+            android:layout_alignTop="@+id/image_button_coeur"
+            android:text="0"/>
+
+        <TextView
+            android:id="@+id/nombre_plus_un"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:layout_marginLeft="2dp"
+            android:layout_toRightOf="@id/image_button_plus_un"
+            android:layout_alignTop="@+id/image_button_coeur"
+            android:text="0"/>
+
+    </RelativeLayout>
 
 
 </RelativeLayout>
