@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent" android:layout_height="match_parent" android:padding="10dp" >
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent" android:layout_height="match_parent" android:padding="10dp"
+    android:background="#534C74">
 
     <TextView
     android:id="@+id/emetteur_destinataire"
-    android:textColor="@android:color/black"
+    android:textColor="@android:color/white"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:textStyle="bold"
+
     android:text="X recommmande Y à Z" />
 
     <TextView
         android:id="@+id/date"
-        android:textColor="@android:color/black"
+        android:textColor="#cccccc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/emetteur_destinataire"
@@ -29,7 +32,7 @@
         android:id="@+id/titre"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/black"
+        android:textColor="@android:color/white"
         android:layout_marginLeft="10dp"
         android:layout_toRightOf="@+id/imageRecommandation"
         android:layout_alignTop="@+id/imageRecommandation"
@@ -39,7 +42,7 @@
         android:id="@+id/nom_artiste"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/black"
+        android:textColor="#cccccc"
         android:layout_alignLeft="@+id/titre"
         android:layout_below="@+id/titre"
         tools:text="Artiste" />
@@ -48,7 +51,7 @@
         android:id="@+id/album"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/black"
+        android:textColor="#cccccc"
         android:layout_alignLeft="@+id/titre"
         android:layout_below="@+id/nom_artiste"
         tools:text="Album" />
@@ -84,6 +87,7 @@
         android:id="@+id/nombre_coeur"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
         android:layout_marginLeft="2dp"
         android:layout_toRightOf="@id/image_button_coeur"
         android:layout_alignTop="@+id/image_button_coeur"
@@ -94,6 +98,7 @@
         android:id="@+id/nombre_plus_un"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
         android:layout_marginLeft="2dp"
         android:layout_toRightOf="@id/image_button_plus_un"
         android:layout_below="@id/imageRecommandation"

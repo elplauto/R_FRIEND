@@ -76,6 +76,7 @@ public class CreationRecommandationActivity extends AppCompatActivity {
         spinner = (Spinner) findViewById(R.id.spinner);
         String choix[] = {"Morceau","Album","Artiste"};
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1 ,choix);
+        adapter.setDropDownViewResource(R.layout.spinner_item);
         spinner.setAdapter(adapter);
 
         destinataireExistant = true;
