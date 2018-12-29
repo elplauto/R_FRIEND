@@ -22,7 +22,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -36,7 +35,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 
@@ -61,6 +59,8 @@ public class CreationRecommandationActivity extends AppCompatActivity {
     Boolean destinataireExistant;
 
     List<String> pseudos;
+
+    String complementInfos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -226,6 +226,8 @@ public class CreationRecommandationActivity extends AppCompatActivity {
                     text=queryString;
                 } else {
                     text = queryString.subSequence(0,sautDeLigne).toString();
+                    complementInfos = queryString.subSequence(sautDeLigne+1,queryString.length()).toString();
+                    Log.e("----", complementInfos);
                 }
                 searchAutoComplete.setText(text);
                 recherchePrecise = true;
@@ -270,7 +272,7 @@ public class CreationRecommandationActivity extends AppCompatActivity {
         if (recherchePrecise && morceaux.size()!=0) {
             Morceau morceau = morceaux.get(0);
             for (Morceau each : morceaux) {
-                if (each.getTitre().equals(searchAutoComplete.getText().toString())) {
+                if (each.getTitre().equals(searchAutoComplete.getText().toString()) && complementInfos.equals(each.getArtiste())) {
                     morceau=each;
                 }
             }
@@ -296,7 +298,7 @@ public class CreationRecommandationActivity extends AppCompatActivity {
         if (recherchePrecise && albums.size()!=0) {
             Album album = albums.get(0);
             for (Album each : albums) {
-                if (each.getTitre().equals(searchAutoComplete.getText().toString())) {
+                if (each.getTitre().equals(searchAutoComplete.getText().toString()) && complementInfos.equals(each.getArtiste())) {
                     album=each;
                  }
             }

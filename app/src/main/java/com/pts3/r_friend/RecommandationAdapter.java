@@ -75,12 +75,17 @@ public class RecommandationAdapter extends ArrayAdapter<Recommandation> {
             viewHolder.image_button_plus_un.setBackgroundResource(R.drawable.one_white);
         }
 
+
         if (recommandation instanceof MorceauRecom) {
             viewHolder.emetteur_destinataire.setText(recommandation.getEmetteur() + " recommande un morceau" + (recommandation.getDestinataire().equals("")?"":" à " + recommandation.getDestinataire()));
             viewHolder.titre.setText("Titre : " + ((MorceauRecom) recommandation).getTitre());
             viewHolder.nom_artiste.setText("Artiste : "+ ((MorceauRecom) recommandation).getArtiste());
             viewHolder.album.setText("Album : " + ((MorceauRecom) recommandation).getNomAlbum());
+            if (context.deezerMusicPlayer.idMorceauEnCours == Integer.parseInt(((MorceauRecom)recommandation).getIdMorceau())) {
+                viewHolder.image_play.setBackgroundResource(R.drawable.pause);
+            }
             final RecommandationViewHolder finalViewHolder = viewHolder;
+
             viewHolder.image_play.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -103,6 +108,9 @@ public class RecommandationAdapter extends ArrayAdapter<Recommandation> {
             viewHolder.titre.setText("Titre : " + ((AlbumRecom) recommandation).getTitre());
             viewHolder.nom_artiste.setText("Artiste : "+ ((AlbumRecom) recommandation).getArtiste());
             viewHolder.album.setText("Nombre de morceaux : " + ((AlbumRecom) recommandation).getNbTracks());
+            if (context.deezerMusicPlayer.idAlbumEnCours == Integer.parseInt(((AlbumRecom)recommandation).getIdAlbum())) {
+                viewHolder.image_play.setBackgroundResource(R.drawable.pause);
+            }
             final RecommandationViewHolder finalViewHolder = viewHolder;
             viewHolder.image_play.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -146,7 +154,7 @@ public class RecommandationAdapter extends ArrayAdapter<Recommandation> {
                 } else {
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
                     alertDialogBuilder.setTitle("Confirmation");
-                    alertDialogBuilder.setMessage("Êtes-vous certain de vouloir aimer cette recommandation ?");
+                    alertDialogBuilder.setMessage("Aimer signifie que vous avez découvert l'objet de la recommandation et que vous l'appréciez.\n\nÊtes-vous certain de vouloir aimer cette recommandation ?");
                     alertDialogBuilder.setPositiveButton("Aimer", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -182,7 +190,7 @@ public class RecommandationAdapter extends ArrayAdapter<Recommandation> {
                 } else {
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
                     alertDialogBuilder.setTitle("Confirmation");
-                    alertDialogBuilder.setMessage("Êtes-vous certain de vouloir appuyer cette recommandation ?");
+                    alertDialogBuilder.setMessage("Appuyer signifie que vous connaissez déja l'objet de la recommandation et que vous l'approuvez.\n\nÊtes-vous certain de vouloir appuyer cette recommandation ?");
                     alertDialogBuilder.setPositiveButton("Appuyer", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
