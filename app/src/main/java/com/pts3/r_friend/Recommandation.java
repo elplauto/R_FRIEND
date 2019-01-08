@@ -12,10 +12,11 @@ public abstract class Recommandation {
     private String picture;
     private List<String> likingUsers;
     private List<String> supportingUsers;
+    private List<Commentaire> commentaires;
 
 
 
-    public Recommandation(String idRecommandation, Long dateRecommandation, String destinataire, String emetteur, String picture, List<String> likingUsers, List<String> supportingUsers) {
+    public Recommandation(String idRecommandation, Long dateRecommandation, String destinataire, String emetteur, String picture, List<String> likingUsers, List<String> supportingUsers, List<Commentaire> commentaires) {
         this.idRecommandation=idRecommandation;
         this.dateRecommandation = dateRecommandation;
         this.destinataire = destinataire;
@@ -23,6 +24,7 @@ public abstract class Recommandation {
         this.picture = picture;
         this.likingUsers=likingUsers;
         this.supportingUsers=supportingUsers;
+        this.commentaires=commentaires;
     }
 
     public String getDestinataire() {
@@ -68,6 +70,10 @@ public abstract class Recommandation {
         if (supportingUsers.contains(pseudo))
             return false;
         return supportingUsers.add(pseudo);
+    }
+
+    public List<Commentaire> getCommentaires() {
+        return commentaires;
     }
 
     public abstract boolean contains(String text);

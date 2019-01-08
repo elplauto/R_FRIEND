@@ -19,8 +19,8 @@ public class ArtisteRecom extends Recommandation {
     private String nom;
     private Integer nbAlbums;
 
-    public ArtisteRecom(String idRecommandation,  Long dateRecommandation, String destinataire, String emetteur, String picture, List<String> likingUsers, List<String> supportingUsers, String nom, Integer nbAlbums) {
-        super(idRecommandation, dateRecommandation, destinataire, emetteur, picture, likingUsers, supportingUsers);
+    public ArtisteRecom(String idRecommandation,  Long dateRecommandation, String destinataire, String emetteur, String picture, List<String> likingUsers, List<String> supportingUsers,List<Commentaire> commentaires, String nom, Integer nbAlbums) {
+        super(idRecommandation, dateRecommandation, destinataire, emetteur, picture, likingUsers, supportingUsers,commentaires);
         this.nom = nom;
         this.nbAlbums = nbAlbums;
     }

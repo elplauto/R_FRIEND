@@ -36,7 +36,6 @@ public class RecommandationAdapter extends ArrayAdapter<Recommandation> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-
         //getItem(position) va récupérer l'item [position] de la List<Recommandation> recomandations
         final Recommandation recommandation = getItem(position);
 
@@ -51,6 +50,7 @@ public class RecommandationAdapter extends ArrayAdapter<Recommandation> {
             viewHolder.album = (TextView) convertView.findViewById(R.id.album);
             viewHolder.nombre_coeur = (TextView) convertView.findViewById(R.id.nombre_coeur);
             viewHolder.nombre_plus_un = (TextView) convertView.findViewById(R.id.nombre_plus_un);
+            viewHolder.nombre_commentaire = (TextView) convertView.findViewById(R.id.nombre_commentaire);
             viewHolder.date = (TextView) convertView.findViewById(R.id.date);
 
             viewHolder.imageRecommandation = (ImageView) convertView.findViewById(R.id.imageRecommandation);
@@ -58,6 +58,7 @@ public class RecommandationAdapter extends ArrayAdapter<Recommandation> {
             viewHolder.image_play = (ImageButton) convertView.findViewById(R.id.image_play);
             viewHolder.image_button_coeur = (ImageButton) convertView.findViewById(R.id.image_button_coeur);
             viewHolder.image_button_plus_un = (ImageButton) convertView.findViewById(R.id.image_button_plus_un);
+            viewHolder.image_button_commentaire = (ImageButton) convertView.findViewById(R.id.image_button_commentaire);
 
             convertView.setTag(viewHolder);
             
@@ -253,20 +254,28 @@ public class RecommandationAdapter extends ArrayAdapter<Recommandation> {
             }
         });
 
-        viewHolder.nombre_plus_un.setText(recommandation.getSupportingUsers().size()+"");
-        viewHolder.nombre_coeur.setText(recommandation.getLikingUsers().size()+"");
+        viewHolder.nombre_plus_un.setText("("+recommandation.getSupportingUsers().size()+")");
+        viewHolder.nombre_coeur.setText("("+recommandation.getLikingUsers().size()+")");
+        viewHolder.nombre_commentaire.setText("("+recommandation.getCommentaires().size()+")");
         viewHolder.date.setText(getDate(recommandation.getDateRecommandation()));
 
         Picasso.with(context).load(recommandation.getPicture()).into(viewHolder.imageRecommandation);
 
-        convertView.setOnClickListener(new View.OnClickListener() {
+        viewHolder.image_button_commentaire.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent =new Intent(context,DetailsRecommandationActivity.class);
-                intent.putExtra("idRecommandation", recommandation.getIdRecommandation());
-                intent.putExtra("type", recommandation.getClass().getSimpleName());
-                intent.putExtra("redacteur", context.username.getText().toString());
-                context.startActivity(intent);
+                final String pseudo = context.username.getText().toString();
+                if (pseudo.equals("Non connecté")) {
+                    Toast.makeText(context, "Vous devez être connecté pour voir ou poster un commentaire", Toast.LENGTH_SHORT).show();
+                    Intent intent =new Intent(context,ConnexionActivity.class);
+                    context.startActivity(intent);
+                } else {
+                    Intent intent = new Intent(context, DetailsRecommandationActivity.class);
+                    intent.putExtra("idRecommandation", recommandation.getIdRecommandation());
+                    intent.putExtra("type", recommandation.getClass().getSimpleName());
+                    intent.putExtra("redacteur", context.username.getText().toString());
+                    context.startActivity(intent);
+                }
             }
         });
 
@@ -322,6 +331,7 @@ public class RecommandationAdapter extends ArrayAdapter<Recommandation> {
         public TextView album;
         public TextView nombre_coeur;
         public TextView nombre_plus_un;
+        public TextView nombre_commentaire;
         public TextView date;
 
         public ImageView imageRecommandation;
@@ -329,5 +339,6 @@ public class RecommandationAdapter extends ArrayAdapter<Recommandation> {
         public ImageButton image_play;
         public ImageButton image_button_coeur;
         public ImageButton image_button_plus_un;
+        public ImageButton image_button_commentaire;
     }
 }

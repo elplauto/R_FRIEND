@@ -392,6 +392,7 @@ public class MainActivity extends AppCompatActivity
             String emet = dataRecom.child("emetteur").getValue(String.class);
             List<String> likingUsers = new ArrayList<>();
             List<String> supportingUsers = new ArrayList<>();
+            List<Commentaire> commentaires = new ArrayList<>();
             Iterator<DataSnapshot> it = dataRecom.child("likingUsers").getChildren().iterator();
             while (it.hasNext()) {
                 likingUsers.add(it.next().getValue().toString());
@@ -399,6 +400,13 @@ public class MainActivity extends AppCompatActivity
             it = dataRecom.child("supportingUsers").getChildren().iterator();
             while (it.hasNext()) {
                 supportingUsers.add(it.next().getValue().toString());
+            }
+            it = dataRecom.child("commentaires").getChildren().iterator();
+            while (it.hasNext()) {
+                DataSnapshot temp = it.next();
+                commentaires.add(new Commentaire(temp.child("redacteur").getValue().toString(),
+                        temp.child("message").getValue().toString(),
+                        temp.child("date").getValue(Long.class)));
             }
 
             String idInfosSupp = dataRecom.child(infosSuppID).getValue(String.class);
@@ -416,7 +424,7 @@ public class MainActivity extends AppCompatActivity
                             String imgAlb = dataInfosSupp.child("pictureURL").getValue(String.class);
                             String nomAlbum = dataInfosSupp.child("album").getValue(String.class);
                             String idMorceau = dataInfosSupp.getKey().toString();
-                            recommandations.add(new MorceauRecom(idRecommandation, date, dest, emet, imgAlb, likingUsers, supportingUsers,artisteMorceau, dureeMinutes, titreMorceau, nomAlbum,idMorceau));
+                            recommandations.add(new MorceauRecom(idRecommandation, date, dest, emet, imgAlb, likingUsers, supportingUsers,commentaires,artisteMorceau, dureeMinutes, titreMorceau, nomAlbum,idMorceau));
                             break;
 
                         case "album":
@@ -425,14 +433,14 @@ public class MainActivity extends AppCompatActivity
                             String titreAlbum = dataInfosSupp.child("titre").getValue(String.class);
                             String imgAlbum = dataInfosSupp.child("pictureURL").getValue(String.class);
                             String idAlbum = dataInfosSupp.getKey().toString();
-                            recommandations.add(new AlbumRecom(idRecommandation, date, dest, emet, imgAlbum, likingUsers, supportingUsers, artisteAlbum, nbTracks, titreAlbum, idAlbum));
+                            recommandations.add(new AlbumRecom(idRecommandation, date, dest, emet, imgAlbum, likingUsers, supportingUsers,commentaires, artisteAlbum, nbTracks, titreAlbum, idAlbum));
                             break;
 
                         case "artiste":
                             String nom = dataInfosSupp.child("nom").getValue(String.class);
                             Integer nbAlbums = dataInfosSupp.child("nbAlbums").getValue(Integer.class);
                             String picture = dataInfosSupp.child("pictureURL").getValue(String.class);
-                            recommandations.add(new ArtisteRecom(idRecommandation, date, dest, emet, picture, likingUsers, supportingUsers, nom, nbAlbums));
+                            recommandations.add(new ArtisteRecom(idRecommandation, date, dest, emet, picture, likingUsers, supportingUsers,commentaires, nom, nbAlbums));
                             break;
                     }
                     break; //pour ne pas parcourir tous les autres infosSuppChildren
