@@ -35,7 +35,11 @@
 
         <activity android:name=".CreationRecommandationActivity" android:screenOrientation="portrait"></activity>
 
-        <activity android:name=".DetailsRecommandationActivity" android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".DetailsRecommandationActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
 
     </application>
 

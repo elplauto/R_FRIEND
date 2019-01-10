@@ -161,7 +161,7 @@ public class RecommandationAdapter extends ArrayAdapter<Recommandation> {
                         public void onClick(DialogInterface dialog, int which) {
                             recommandation.addNewLikingUser(context.username.getText().toString());
                             finalViewHolder.image_button_coeur.setBackgroundResource(R.drawable.coeur_rouge);
-                            finalViewHolder.nombre_coeur.setText(recommandation.getLikingUsers().size()+"");
+                            finalViewHolder.nombre_coeur.setText("("+recommandation.getLikingUsers().size()+")");
                             addNewLikingUserToDatabase(recommandation,pseudo);
                         }
                     });
@@ -197,7 +197,7 @@ public class RecommandationAdapter extends ArrayAdapter<Recommandation> {
                         public void onClick(DialogInterface dialog, int which) {
                             recommandation.addNewSupportingUser(context.username.getText().toString());
                             finalViewHolder.image_button_plus_un.setBackgroundResource(R.drawable.one_green);
-                            finalViewHolder.nombre_plus_un.setText(recommandation.getSupportingUsers().size()+"");
+                            finalViewHolder.nombre_plus_un.setText("("+recommandation.getSupportingUsers().size()+")");
                             addNewSupportingUserToDatabase(recommandation,pseudo);
                         }
                     });

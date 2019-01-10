@@ -1,5 +1,6 @@
 package com.pts3.r_friend;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -23,6 +24,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.support.v7.widget.SearchView;
@@ -76,6 +79,7 @@ public class MainActivity extends AppCompatActivity
         size = new Point();
         display.getSize(size);
         fenetrePrincipale = (ConstraintLayout) findViewById(R.id.fenetrePrincipale);
+        fenetrePrincipale.setFocusable(true);
 
         root = FirebaseDatabase.getInstance().getReference();
 
@@ -150,6 +154,12 @@ public class MainActivity extends AppCompatActivity
                 switchRecommandationsEffectuees.setChecked(false);
             }
         }
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     @Override
@@ -538,5 +548,20 @@ public class MainActivity extends AppCompatActivity
         Collections.sort(recommandations,comparator);
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        deezerMusicPlayer.stopAlbum();
+        deezerMusicPlayer.stopMorceau();
+       // mainSearchView.
+    }
+
+    private void closeKeyboard() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
 }
 
