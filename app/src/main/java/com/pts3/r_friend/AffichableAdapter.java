@@ -51,7 +51,7 @@ public class AffichableAdapter extends ArrayAdapter<Affichable> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        int rowType = getItemViewType(position);
+        final int rowType = getItemViewType(position);
 
         if (rowType == 0) {
 
@@ -328,6 +328,13 @@ public class AffichableAdapter extends ArrayAdapter<Affichable> {
             viewHolder.dateInterraction = (TextView) convertView.findViewById(R.id.dateInterraction);
             viewHolder.phrase.setText(interraction.getPhrase());
             viewHolder.dateInterraction.setText(getDate(interraction.getDate()));
+
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    context.scrollToItem(interraction.getIdRecommandation(),interraction.getType());
+                }
+            });
         }
         return convertView;
     }

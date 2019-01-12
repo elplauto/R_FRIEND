@@ -49,6 +49,8 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, InternetConnectivityListener {
 
     List<Recommandation> recommandations;
+    List<Interraction> interractions;
+    List<Affichable> flux;
     ConstraintLayout fenetrePrincipale;
     Point size;
     ListView listView;
@@ -66,6 +68,7 @@ public class MainActivity extends AppCompatActivity
     DatabaseReference root;
     DataSnapshot dataSnapshotRecom;
     DataSnapshot dataSnapshotInfosSupp;
+    DataSnapshot dataSnapshotInterraction;
 
     SwipeRefreshLayout swipeRefreshLayout;
 
@@ -76,6 +79,8 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         recommandations= new ArrayList<>();
+        interractions= new ArrayList<>();
+        flux= new ArrayList<>();
         Display display = getWindowManager().getDefaultDisplay();
         size = new Point();
         display.getSize(size);
@@ -186,7 +191,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public boolean onQueryTextSubmit(String query) {
                 filtreSearchView = query;
-                afficherRecommandation();
+                afficherFlux();
                 return false;
             }
 
@@ -194,7 +199,7 @@ public class MainActivity extends AppCompatActivity
             public boolean onQueryTextChange(String s) {
                 if (s.equals("")) {
                     filtreSearchView = "";
-                    afficherRecommandation();
+                    afficherFlux();
                 }
                 return false;
             }
@@ -229,19 +234,19 @@ public class MainActivity extends AppCompatActivity
         switchAlbums.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                afficherRecommandation();
+                afficherFlux();
             }
         });
         switchMorceaux.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                afficherRecommandation();
+                afficherFlux();
             }
         });
         switchArtistes.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                afficherRecommandation();
+                afficherFlux();
             }
         });
 
@@ -251,7 +256,7 @@ public class MainActivity extends AppCompatActivity
                 if (switchRecommandationsRecues.isChecked()) {
                     switchRecommandationsEffectuees.setChecked(false);
                 }
-                afficherRecommandation();
+                afficherFlux();
             }
         });
 
@@ -261,7 +266,7 @@ public class MainActivity extends AppCompatActivity
                 if (switchRecommandationsEffectuees.isChecked()) {
                     switchRecommandationsRecues.setChecked(false);
                 }
-                afficherRecommandation();
+                afficherFlux();
             }
         });
 
@@ -330,6 +335,55 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    public void remplirInterraction() {
+        root.child("interractions").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot ds) {
+                dataSnapshotInterraction = ds;
+                createInterraction();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                debug("erreur");
+            }
+        });
+    }
+
+    public void createInterraction() {
+        Iterator<DataSnapshot> i = dataSnapshotInterraction.getChildren().iterator();
+        while (i.hasNext()) {
+            DataSnapshot dataInterraction = i.next();
+            String idRecommandation = dataInterraction.child("idRecommandation").getValue(String.class);
+            Long date = dataInterraction.child("date").getValue(Long.class);
+            String typeInterraction = dataInterraction.child("typeInterraction").getValue(String.class);
+            String typeRecommandation = dataInterraction.child("typeRecommandation").getValue(String.class);
+            String user = dataInterraction.child("user").getValue(String.class);
+
+            String phrase="";
+            if (typeInterraction.equals("commentaire")) {
+                phrase += user + " a commenté";
+            } else if (typeInterraction.equals("like")) {
+                phrase += user + " a aimé";
+            } else if (typeInterraction.equals("plusun")) {
+                phrase += user + " a appuyé";
+            }
+
+            if (typeRecommandation.equals("morceau")) {
+                phrase += " une recommandation du morceau";
+            } else if (typeRecommandation.equals("album")) {
+                phrase += " une recommandation de l'album ";
+            } else if (typeRecommandation.equals("artiste")) {
+                phrase += " une recommandation de l'artiste";
+            }
+
+            interractions.add(new Interraction(phrase,typeRecommandation,idRecommandation,date));
+
+        }
+        remplirRecommandation();
+    }
+
     public void remplirRecommandation() {
 
         root.child("recommandations").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -357,8 +411,7 @@ public class MainActivity extends AppCompatActivity
                 createRecommandation("morceau");
                 createRecommandation("album");
                 createRecommandation("artiste");
-                ordonnerRecommandation();
-                afficherRecommandation();
+                afficherFlux();
                 swipeRefreshLayout.setRefreshing(false);
             }
 
@@ -460,11 +513,9 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    public void afficherRecommandation() {
+    public void afficherFlux() {
         List<Affichable> temp = new ArrayList<>();
         for (Recommandation recommandation : recommandations) {
-            temp.add(new Interraction("Flo a commenté une recommandation","","",0l));
-            temp.add(new Interraction("segsegsegsegse","","",0l));
             if (filtreSearchView.equals("") || recommandation.contains(filtreSearchView)) {
                 if (recommandation instanceof MorceauRecom && switchMorceaux.isChecked()
                         || recommandation instanceof ArtisteRecom && switchArtistes.isChecked()
@@ -483,7 +534,11 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         }
-        AffichableAdapter adapter = new AffichableAdapter(MainActivity.this, temp);
+        for (Interraction interraction : interractions) {
+            temp.add(interraction);
+        }
+
+        AffichableAdapter adapter = new AffichableAdapter(MainActivity.this, ordonnerFlux(temp));
         listView.setAdapter(adapter);
     }
 
@@ -505,7 +560,7 @@ public class MainActivity extends AppCompatActivity
         switchRecommandationsRecues.setChecked(false);
         switchRecommandationsEffectuees.setChecked(false);
 
-        afficherRecommandation();
+        afficherFlux();
     }
 
     public int getNavBarHeight() {
@@ -529,27 +584,45 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void refresh() {
+        interractions.clear();
         recommandations.clear();
-        afficherRecommandation();
-        remplirRecommandation();
+        flux.clear();
+        afficherFlux();
+        remplirInterraction();
         deezerMusicPlayer.stopMorceau();
         deezerMusicPlayer.stopAlbum();
     }
 
-    public void ordonnerRecommandation() {
-        Comparator<Recommandation> comparator = new Comparator<Recommandation>() {
+    public List<Affichable> ordonnerFlux(List<Affichable> liste) {
+        Comparator<Affichable> comparator = new Comparator<Affichable>() {
             @Override
-            public int compare(Recommandation o1, Recommandation o2) {
-                if (o1.getDateRecommandation() < o2.getDateRecommandation()) {
+            public int compare(Affichable o1, Affichable o2) {
+                Long t1=0l,t2=0l;
+                if (o1 instanceof Recommandation) {
+                    t1= ((Recommandation) o1).getDateRecommandation();
+                } else if (o1 instanceof Interraction) {
+                    t1 = ((Interraction) o1).getDate();
+                }
+                if (o2 instanceof Recommandation) {
+                    t2= ((Recommandation) o2).getDateRecommandation();
+                } else if (o2 instanceof Interraction) {
+                    t2 = ((Interraction) o2).getDate();
+                }
+               /* debug(o1+"");
+                debug(o2+"");
+                debug(t1+"-");
+                debug(t2+"-");*/
+
+                if (t1 < t2) {
                     return 1;
-                } else if (o1.getDateRecommandation() > o2.getDateRecommandation()) {
+                } else if (t1 > t2) {
                     return -1;
                 }
                 return 0;
-
             }
         };
-        Collections.sort(recommandations,comparator);
+        Collections.sort(liste,comparator);
+        return liste;
     }
 
     @Override
@@ -576,6 +649,13 @@ public class MainActivity extends AppCompatActivity
             msg="Vous n'êtes pas connecté à internet, de nombreuses fonctionnalités ne sont plus disponibles";
         }
         Toast.makeText(getApplication().getApplicationContext(),msg,Toast.LENGTH_LONG).show();
+    }
+
+    public void scrollToItem(String idRecommandation, String typeRecommandation) {
+        for (int i = 0; i < listView.getChildCount(); i++) {
+            debug(listView.getChildAt(i)+"0000");
+        }
+        listView.smoothScrollToPosition(1000);
     }
 }
 
