@@ -76,14 +76,26 @@ public class CreationCompteActivity extends AppCompatActivity {
         if (email.equals("")){
             Toast.makeText(getApplicationContext(), "Veuillez saisir une adresse mail",Toast.LENGTH_SHORT).show();
         }
-        else if (pseudo.equals("")) {
+        else if (pseudo.equals("") || pseudo.replace(" ","").equals("")) {
             Toast.makeText(getApplicationContext(), "Veuillez saisir un pseudo",Toast.LENGTH_SHORT).show();
+        }
+        else if (pseudo.length() < 3) {
+            Toast.makeText(getApplicationContext(), "Le pseudo doit contenir au moins 3 caractères",Toast.LENGTH_SHORT).show();
+        }
+        else if (pseudo.length() > 20) {
+            Toast.makeText(getApplicationContext(), "Le pseudo doit contenir au maximum 20 caractères",Toast.LENGTH_SHORT).show();
         }
         else if(!pseudoDispo || pseudo.equals("Non connecté")) {
             Toast.makeText(getApplicationContext(), "Pseudo indisponible",Toast.LENGTH_SHORT).show();
         }
         else if (mdp.equals("")) {
             Toast.makeText(getApplicationContext(), "Veuillez saisir un mot de passe",Toast.LENGTH_SHORT).show();
+        }
+        else if (mdp.length() < 6) {
+            Toast.makeText(getApplicationContext(), "Le mot de passe doit contenir au moins 6 caractères",Toast.LENGTH_SHORT).show();
+        }
+        else if (mdp.length() > 20) {
+            Toast.makeText(getApplicationContext(), "Le mot de passe doit contenir au maximum 20 caractères",Toast.LENGTH_SHORT).show();
         }
         else if (confirmerMdp.equals("")) {
             Toast.makeText(getApplicationContext(), "Veuillez confirmer le mot de passe",Toast.LENGTH_SHORT).show();

@@ -3,7 +3,7 @@ package com.pts3.r_friend;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Recommandation {
+public abstract class Recommandation implements Affichable{
 
     private String idRecommandation;
     private Long dateRecommandation;

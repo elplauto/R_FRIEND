@@ -24,7 +24,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton;
 import android.widget.ListView;
@@ -37,6 +36,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.treebo.internetavailabilitychecker.InternetAvailabilityChecker;
+import com.treebo.internetavailabilitychecker.InternetConnectivityListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,7 +46,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, InternetConnectivityListener {
 
     List<Recommandation> recommandations;
     ConstraintLayout fenetrePrincipale;
@@ -128,6 +129,11 @@ public class MainActivity extends AppCompatActivity
 
         filtreSearchView="";
 
+        InternetAvailabilityChecker.init(this);
+        InternetAvailabilityChecker mInternetAvailabilityChecker;
+        mInternetAvailabilityChecker = InternetAvailabilityChecker.getInstance();
+        mInternetAvailabilityChecker.addInternetConnectivityListener(this);
+
     }
 
     @Override
@@ -154,12 +160,6 @@ public class MainActivity extends AppCompatActivity
                 switchRecommandationsEffectuees.setChecked(false);
             }
         }
-
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
     }
 
     @Override
@@ -461,8 +461,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void afficherRecommandation() {
-        List<Recommandation> temp = new ArrayList<>();
+        List<Affichable> temp = new ArrayList<>();
         for (Recommandation recommandation : recommandations) {
+            temp.add(new Interraction("Flo a commenté une recommandation","",""));
             if (filtreSearchView.equals("") || recommandation.contains(filtreSearchView)) {
                 if (recommandation instanceof MorceauRecom && switchMorceaux.isChecked()
                         || recommandation instanceof ArtisteRecom && switchArtistes.isChecked()
@@ -482,7 +483,7 @@ public class MainActivity extends AppCompatActivity
             }
         }
 
-        RecommandationAdapter adapter = new RecommandationAdapter(MainActivity.this, temp);
+        AffichableAdapter adapter = new AffichableAdapter(MainActivity.this, temp);
         listView.setAdapter(adapter);
     }
 
@@ -553,7 +554,6 @@ public class MainActivity extends AppCompatActivity
         super.onPause();
         deezerMusicPlayer.stopAlbum();
         deezerMusicPlayer.stopMorceau();
-       // mainSearchView.
     }
 
     private void closeKeyboard() {
@@ -562,6 +562,17 @@ public class MainActivity extends AppCompatActivity
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
+    }
+
+    @Override
+    public void onInternetConnectivityChanged(boolean isConnected) {
+        String msg;
+        if (isConnected) {
+            msg="Vous êtes connecté à internet";
+        } else {
+            msg="Vous n'êtes pas connecté à internet, de nombreuses fonctionnalités ne sont plus disponibles";
+        }
+        Toast.makeText(getApplication().getApplicationContext(),msg,Toast.LENGTH_LONG).show();
     }
 }
 
