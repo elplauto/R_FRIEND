@@ -3,6 +3,7 @@ package com.pts3.r_friend;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,6 +55,8 @@ public class AffichableAdapter extends ArrayAdapter<Affichable> {
 
         if (rowType == 0) {
 
+            String typeRecommandation="";
+
             //getItem(position) va récupérer l'item [position] de la List<Recommandation> recomandations
             final Recommandation recommandation = (Recommandation) getItem(position);
 
@@ -93,8 +96,8 @@ public class AffichableAdapter extends ArrayAdapter<Affichable> {
                 viewHolder.image_button_plus_un.setBackgroundResource(R.drawable.one_white);
             }
 
-
             if (recommandation instanceof MorceauRecom) {
+                typeRecommandation="morceau";
                 viewHolder.emetteur_destinataire.setText(recommandation.getEmetteur() + " recommande un morceau" + (recommandation.getDestinataire().equals("") ? "" : " à " + recommandation.getDestinataire()));
                 viewHolder.titre.setText("Titre : " + ((MorceauRecom) recommandation).getTitre());
                 viewHolder.nom_artiste.setText("Artiste : " + ((MorceauRecom) recommandation).getArtiste());
@@ -122,6 +125,7 @@ public class AffichableAdapter extends ArrayAdapter<Affichable> {
                 });
 
             } else if (recommandation instanceof AlbumRecom) {
+                typeRecommandation="album";
                 viewHolder.emetteur_destinataire.setText(recommandation.getEmetteur() + " recommande un album" + (recommandation.getDestinataire().equals("") ? "" : " à " + recommandation.getDestinataire()));
                 viewHolder.titre.setText("Titre : " + ((AlbumRecom) recommandation).getTitre());
                 viewHolder.nom_artiste.setText("Artiste : " + ((AlbumRecom) recommandation).getArtiste());
@@ -148,6 +152,7 @@ public class AffichableAdapter extends ArrayAdapter<Affichable> {
                 });
 
             } else if (recommandation instanceof ArtisteRecom) {
+                typeRecommandation="artiste";
                 viewHolder.emetteur_destinataire.setText(recommandation.getEmetteur() + " recommande un artiste" + (recommandation.getDestinataire().equals("") ? "" : " à " + recommandation.getDestinataire()));
                 viewHolder.titre.setText("Nom : " + ((ArtisteRecom) recommandation).getNom());
                 viewHolder.nom_artiste.setText("Nombre d'album : " + ((ArtisteRecom) recommandation).getNbAlbums());
@@ -157,6 +162,7 @@ public class AffichableAdapter extends ArrayAdapter<Affichable> {
 
             final RecommandationViewHolder finalViewHolder = viewHolder;
 
+            final String finalTypeRecommandation = typeRecommandation;
             viewHolder.image_button_coeur.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -180,6 +186,13 @@ public class AffichableAdapter extends ArrayAdapter<Affichable> {
                                 finalViewHolder.image_button_coeur.setBackgroundResource(R.drawable.coeur_rouge);
                                 finalViewHolder.nombre_coeur.setText("(" + recommandation.getLikingUsers().size() + ")");
                                 addNewLikingUserToDatabase(recommandation, pseudo);
+                                DatabaseReference interractions = root.child("interractions").push();
+                                interractions.child("user").setValue(pseudo);
+                                interractions.child("typeInterraction").setValue("like");
+                                interractions.child("typeRecommandation").setValue(finalTypeRecommandation);
+                                interractions.child("idRecommandation").setValue(recommandation.getIdRecommandation());
+                                interractions.child("date").setValue(System.currentTimeMillis());
+
                             }
                         });
 
@@ -193,6 +206,7 @@ public class AffichableAdapter extends ArrayAdapter<Affichable> {
                 }
             });
 
+            final String finalTypeRecommandation1 = typeRecommandation;
             viewHolder.image_button_plus_un.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -216,6 +230,12 @@ public class AffichableAdapter extends ArrayAdapter<Affichable> {
                                 finalViewHolder.image_button_plus_un.setBackgroundResource(R.drawable.one_green);
                                 finalViewHolder.nombre_plus_un.setText("(" + recommandation.getSupportingUsers().size() + ")");
                                 addNewSupportingUserToDatabase(recommandation, pseudo);
+                                DatabaseReference interractions = root.child("interractions").push();
+                                interractions.child("user").setValue(pseudo);
+                                interractions.child("typeInterraction").setValue("plusun");
+                                interractions.child("typeRecommandation").setValue(finalTypeRecommandation1);
+                                interractions.child("idRecommandation").setValue(recommandation.getIdRecommandation());
+                                interractions.child("date").setValue(System.currentTimeMillis());
                             }
                         });
 
@@ -305,7 +325,9 @@ public class AffichableAdapter extends ArrayAdapter<Affichable> {
 
             viewHolder = new InterractionViewHolder();
             viewHolder.phrase = (TextView) convertView.findViewById(R.id.phrase);
+            viewHolder.dateInterraction = (TextView) convertView.findViewById(R.id.dateInterraction);
             viewHolder.phrase.setText(interraction.getPhrase());
+            viewHolder.dateInterraction.setText(getDate(interraction.getDate()));
         }
         return convertView;
     }
@@ -372,5 +394,6 @@ public class AffichableAdapter extends ArrayAdapter<Affichable> {
 
     private class InterractionViewHolder {
         public TextView phrase;
+        public TextView dateInterraction;
     }
 }

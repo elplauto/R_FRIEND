@@ -99,6 +99,12 @@ public class DetailsRecommandationActivity extends AppCompatActivity {
                     newComment.child("redacteur").setValue(redacteur);
                     newComment.child("message").setValue(nouveauCommentaire.getText().toString());
                     newComment.child("date").setValue(System.currentTimeMillis());
+                    DatabaseReference interractions = root.child("interractions").push();
+                    interractions.child("user").setValue(redacteur);
+                    interractions.child("typeInterraction").setValue("commentaire");
+                    interractions.child("typeRecommandation").setValue(infosSuppChild.substring(0,infosSuppChild.length()-1));
+                    interractions.child("idRecommandation").setValue(idRecommandation);
+                    interractions.child("date").setValue(System.currentTimeMillis());
                     nouveauCommentaire.setText("");
                     btnSend.setVisibility(View.INVISIBLE);
                     chargerRecommandation();
@@ -239,8 +245,10 @@ public class DetailsRecommandationActivity extends AppCompatActivity {
             public int compare(Commentaire o1, Commentaire o2) {
                 if (o1.getDate() < o2.getDate()) {
                     return 1;
+                } else if (o1.getDate() > o2.getDate()) {
+                    return -1;
                 }
-                return -1;
+                return 0;
             }
         };
         Collections.sort(commentaires,comparator);

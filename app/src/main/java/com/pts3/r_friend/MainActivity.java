@@ -463,7 +463,8 @@ public class MainActivity extends AppCompatActivity
     public void afficherRecommandation() {
         List<Affichable> temp = new ArrayList<>();
         for (Recommandation recommandation : recommandations) {
-            temp.add(new Interraction("Flo a commenté une recommandation","",""));
+            temp.add(new Interraction("Flo a commenté une recommandation","","",0l));
+            temp.add(new Interraction("segsegsegsegse","","",0l));
             if (filtreSearchView.equals("") || recommandation.contains(filtreSearchView)) {
                 if (recommandation instanceof MorceauRecom && switchMorceaux.isChecked()
                         || recommandation instanceof ArtisteRecom && switchArtistes.isChecked()
@@ -482,7 +483,6 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         }
-
         AffichableAdapter adapter = new AffichableAdapter(MainActivity.this, temp);
         listView.setAdapter(adapter);
     }
@@ -542,8 +542,11 @@ public class MainActivity extends AppCompatActivity
             public int compare(Recommandation o1, Recommandation o2) {
                 if (o1.getDateRecommandation() < o2.getDateRecommandation()) {
                     return 1;
+                } else if (o1.getDateRecommandation() > o2.getDateRecommandation()) {
+                    return -1;
                 }
-                return -1;
+                return 0;
+
             }
         };
         Collections.sort(recommandations,comparator);
