@@ -50,7 +50,8 @@ public class MainActivity extends AppCompatActivity
 
     List<Recommandation> recommandations;
     List<Interraction> interractions;
-    List<Affichable> flux;
+    List<Affichable> fluxCharge;
+    List<Affichable> fluxAffiche;
     ConstraintLayout fenetrePrincipale;
     Point size;
     ListView listView;
@@ -59,6 +60,7 @@ public class MainActivity extends AppCompatActivity
     SwitchCompat switchMorceaux;
     SwitchCompat switchArtistes;
     SwitchCompat switchRecommandationsEffectuees;
+    SwitchCompat switchInterractions;
     SearchView mainSearchView;
     TextView username;
     TextView userMail;
@@ -80,7 +82,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         recommandations= new ArrayList<>();
         interractions= new ArrayList<>();
-        flux= new ArrayList<>();
+        fluxCharge = new ArrayList<>();
         Display display = getWindowManager().getDefaultDisplay();
         size = new Point();
         display.getSize(size);
@@ -210,10 +212,12 @@ public class MainActivity extends AppCompatActivity
         switchMorceaux = findViewById(R.id.app_bar_switch_morceaux);
         switchAlbums = findViewById(R.id.app_bar_switch_albums);
         switchArtistes = findViewById(R.id.app_bar_switch_artistes);
+        switchInterractions = findViewById(R.id.app_bar_switch_interractions);
 
         switchArtistes.setChecked(true);
         switchAlbums.setChecked(true);
         switchMorceaux.setChecked(true);
+        switchInterractions.setChecked(true);
         switchRecommandationsRecues.setChecked(false);
         switchRecommandationsEffectuees.setChecked(false);
 
@@ -249,6 +253,12 @@ public class MainActivity extends AppCompatActivity
                 afficherFlux();
             }
         });
+        switchInterractions.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                afficherFlux();
+            }
+        });
 
         switchRecommandationsRecues.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -270,7 +280,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        remplirRecommandation();
+        remplirInterraction();
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -302,6 +312,10 @@ public class MainActivity extends AppCompatActivity
 
         else if (id == R.id.app_bar_switch_morceaux) {
             switchMorceaux.setChecked(!switchMorceaux.isChecked());
+        }
+
+        else if (id == R.id.app_bar_switch_interractions) {
+            switchInterractions.setChecked(!switchInterractions.isChecked());
         }
 
         else if (id == R.id.buttonConnexion) {
@@ -340,6 +354,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onDataChange(DataSnapshot ds) {
                 dataSnapshotInterraction = ds;
+                interractions.clear();
                 createInterraction();
             }
 
@@ -514,7 +529,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void afficherFlux() {
-        List<Affichable> temp = new ArrayList<>();
+        fluxCharge = new ArrayList<>();
         for (Recommandation recommandation : recommandations) {
             if (filtreSearchView.equals("") || recommandation.contains(filtreSearchView)) {
                 if (recommandation instanceof MorceauRecom && switchMorceaux.isChecked()
@@ -522,23 +537,34 @@ public class MainActivity extends AppCompatActivity
                         || recommandation instanceof AlbumRecom && switchAlbums.isChecked()
                         ){
                     if (switchRecommandationsEffectuees.isChecked()) {
-                        if (recommandation.getEmetteur().equals(username.getText().toString())) temp.add(recommandation);
+                        if (recommandation.getEmetteur().equals(username.getText().toString())) fluxCharge.add(recommandation);
                     }
                     else if (switchRecommandationsRecues.isChecked()) {
-                        if (recommandation.getDestinataire().equals(username.getText().toString())) temp.add(recommandation);
+                        if (recommandation.getDestinataire().equals(username.getText().toString())) fluxCharge.add(recommandation);
                     }
                     else {
-                        temp.add(recommandation);
+                        fluxCharge.add(recommandation);
                     }
 
                 }
             }
         }
+        List<Interraction> temp = new ArrayList<>();
         for (Interraction interraction : interractions) {
-            temp.add(interraction);
+            for (Affichable each : fluxCharge) {
+                Recommandation recommandation = (Recommandation) each;
+                if (recommandation.getIdRecommandation().equals(interraction.getIdRecommandation())
+                        && (recommandation instanceof MorceauRecom && interraction.getType().equals("morceau"))
+                        || ((recommandation instanceof AlbumRecom && interraction.getType().equals("album"))
+                        || (recommandation instanceof ArtisteRecom && interraction.getType().equals("artiste")))) {
+                    temp.add(interraction);
+                    break;
+                }
+            }
         }
+        fluxCharge.addAll(temp);
 
-        AffichableAdapter adapter = new AffichableAdapter(MainActivity.this, ordonnerFlux(temp));
+        AffichableAdapter adapter = new AffichableAdapter(MainActivity.this, ordonnerFlux(fluxCharge));
         listView.setAdapter(adapter);
     }
 
@@ -586,7 +612,7 @@ public class MainActivity extends AppCompatActivity
     public void refresh() {
         interractions.clear();
         recommandations.clear();
-        flux.clear();
+        fluxCharge.clear();
         afficherFlux();
         remplirInterraction();
         deezerMusicPlayer.stopMorceau();
@@ -652,10 +678,26 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void scrollToItem(String idRecommandation, String typeRecommandation) {
-        for (int i = 0; i < listView.getChildCount(); i++) {
-            debug(listView.getChildAt(i)+"0000");
+
+        for (int i = 0; i < fluxCharge.size(); i++) {
+            Recommandation recommandation=null;
+            if (fluxCharge.get(i) instanceof Recommandation) {
+                recommandation = (Recommandation) fluxCharge.get(i);
+            } else {
+                continue;
+            }
+
+            if (recommandation instanceof  MorceauRecom && typeRecommandation.equals("morceau") && recommandation.getIdRecommandation().equals(idRecommandation)) {
+                listView.smoothScrollToPositionFromTop(i,0);
+                break;
+            } else if (recommandation instanceof  AlbumRecom && typeRecommandation.equals("album") && recommandation.getIdRecommandation().equals(idRecommandation)) {
+                listView.smoothScrollToPositionFromTop(i,0);
+                break;
+            } else if (recommandation instanceof  ArtisteRecom && typeRecommandation.equals("artiste") && recommandation.getIdRecommandation().equals(idRecommandation)) {
+                listView.smoothScrollToPositionFromTop(i,0);
+                break;
+            }
         }
-        listView.smoothScrollToPosition(1000);
     }
 }
 

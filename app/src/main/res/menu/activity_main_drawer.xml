@@ -29,6 +29,10 @@
                 />
 
             <item
+                android:id="@+id/app_bar_switch_morceaux"
+                android:title="Morceaux"
+                app:actionViewClass="android.support.v7.widget.SwitchCompat" />
+            <item
                 android:id="@+id/app_bar_switch_albums"
                 android:title="Albums"
                 app:actionViewClass="android.support.v7.widget.SwitchCompat" />
@@ -37,9 +41,10 @@
                 android:title="Artistes"
                 app:actionViewClass="android.support.v7.widget.SwitchCompat" />
             <item
-                android:id="@+id/app_bar_switch_morceaux"
-                android:title="Morceaux"
+                android:id="@+id/app_bar_switch_interractions"
+                android:title="Interractions"
                 app:actionViewClass="android.support.v7.widget.SwitchCompat" />
+
         </menu>
     </item>
 
