@@ -145,9 +145,10 @@ public class DeezerDataSearcher {
                 for (Track track : tracks) {
                    if (track.getArtist().getId() == Long.parseLong(artiste.getId())) {
                        context.rechercheTitreArtisteReponse(track.getId(),artiste);
-                       break;
+                       return;
                    }
                 }
+                context.rechercheTitreArtisteReponse(null,artiste);
             }
 
             public void onUnparsedResult(String requestResponse, Object requestId) {}

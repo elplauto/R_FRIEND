@@ -48,10 +48,10 @@ public class DetailsRecommandationActivity extends AppCompatActivity {
 
     ImageView imageRecommandation;
     ImageButton btnSend;
-    ImageView coeur;
-    ImageView plusUn;
+
     TextView nbLikes;
     TextView nbAppuis;
+    TextView nbCommentaire;
 
     TextView intro;
     TextView dateRecom;
@@ -84,8 +84,7 @@ public class DetailsRecommandationActivity extends AppCompatActivity {
         imageRecommandation = (ImageView) findViewById(R.id.image_detailsRecom);
         nbLikes = (TextView) findViewById(R.id.nombre_coeur);
         nbAppuis = (TextView) findViewById(R.id.nombre_plus_un);
-        coeur = (ImageView) findViewById(R.id.coeur_detailsRecom);
-        plusUn = (ImageView) findViewById(R.id.plus_un_detailsRecom);
+        nbCommentaire = (TextView) findViewById(R.id.nombre_commentaires);
         intro = (TextView) findViewById(R.id.emetteur_destinataire_details);
         dateRecom = (TextView) findViewById(R.id.date_details);
         champ1 = (TextView) findViewById(R.id.champ1_detailsRecom);
@@ -191,8 +190,9 @@ public class DetailsRecommandationActivity extends AppCompatActivity {
         }
 
         dateRecom.setText(getDate((Long) recomData.child("dateRecommandation").getValue(Long.class)));
-        nbAppuis.setText(supportingUsers.size()+"");
-        nbLikes.setText(likingUsers.size()+"");
+        nbAppuis.setText(supportingUsers.size()+" appui(s)");
+        nbLikes.setText(likingUsers.size()+" like(s)");
+        nbCommentaire.setText(commentaires.size()+ " commentaire(s)");
 
         Picasso.with(this).load(oeuvreData.child("pictureURL").getValue().toString()).into(imageRecommandation);
 

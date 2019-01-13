@@ -62,32 +62,12 @@
         android:textColor="#cccccc"
         android:text="Champ3" />
 
-    <ImageView
-        android:id="@+id/coeur_detailsRecom"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_below="@id/image_detailsRecom"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/coeur_rouge" />
-
-    <ImageView
-        android:id="@+id/plus_un_detailsRecom"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_below="@id/imageRecommandation"
-        android:layout_alignTop="@+id/coeur_detailsRecom"
-        android:layout_marginLeft="20dp"
-        android:layout_toRightOf="@id/nombre_coeur"
-        android:background="@drawable/one_green" />
-
     <TextView
         android:id="@+id/nombre_coeur"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/image_detailsRecom"
-        android:layout_alignTop="@+id/coeur_detailsRecom"
-        android:layout_marginLeft="2dp"
-        android:layout_toRightOf="@id/coeur_detailsRecom"
+        android:layout_alignLeft="@id/emetteur_destinataire_details"
         android:textColor="@android:color/white"
         android:text="0" />
 
@@ -95,10 +75,17 @@
         android:id="@+id/nombre_plus_un"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/image_detailsRecom"
-        android:layout_alignTop="@+id/coeur_detailsRecom"
-        android:layout_marginLeft="2dp"
-        android:layout_toRightOf="@id/plus_un_detailsRecom"
+        android:layout_below="@id/nombre_coeur"
+        android:layout_alignLeft="@id/emetteur_destinataire_details"
+        android:textColor="@android:color/white"
+        android:text="0" />
+
+    <TextView
+        android:id="@+id/nombre_commentaires"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/nombre_plus_un"
+        android:layout_alignLeft="@id/emetteur_destinataire_details"
         android:textColor="@android:color/white"
         android:text="0" />
 
@@ -106,7 +93,7 @@
         android:id="@+id/commentaire"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/coeur_detailsRecom"
+        android:layout_below="@id/nombre_commentaires"
         android:layout_marginLeft="110dp"
         android:layout_marginTop="20dp"
         android:textColor="@android:color/white"

@@ -161,17 +161,23 @@ public class AffichableAdapter extends ArrayAdapter<Affichable> {
                 viewHolder.image_play.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String status = context.deezerMusicPlayer.getTrackPlayerState();
-                        if (status.equals("STARTED") || status.equals("PAUSED") || status.equals("PLAYBACK_COMPLETED") || status.equals("STOPPED")) {
-                            context.deezerMusicPlayer.jouerMorceau(Integer.parseInt(((ArtisteRecom) recommandation).getIdTitre()), finalViewHolder.image_play);
-                            finalViewHolder.image_play.setBackgroundResource(R.drawable.pause);
-                        } else if (status.equals("PLAYING") && ((ArtisteRecom) recommandation).getIdTitre().equals(context.deezerMusicPlayer.getIdMorceauEnCours() + "")) {
-                            context.deezerMusicPlayer.stopMorceau();
-                            finalViewHolder.image_play.setBackgroundResource(R.drawable.play);
-                        } else if (status.equals("PLAYING") && !((ArtisteRecom) recommandation).getIdTitre().equals(context.deezerMusicPlayer.getIdMorceauEnCours())) {
-                            context.deezerMusicPlayer.jouerMorceau(Integer.parseInt(((ArtisteRecom) recommandation).getIdTitre()), finalViewHolder.image_play);
-                            finalViewHolder.image_play.setBackgroundResource(R.drawable.pause);
+                        Log.e("----",((ArtisteRecom) recommandation).getIdTitre()+"----");
+                        if (((ArtisteRecom) recommandation).getIdTitre().equals("null")) {
+                            Toast.makeText(context, "Pas de titre disponible pour cet artiste",Toast.LENGTH_SHORT).show();
+                        } else {
+                            String status = context.deezerMusicPlayer.getTrackPlayerState();
+                            if (status.equals("STARTED") || status.equals("PAUSED") || status.equals("PLAYBACK_COMPLETED") || status.equals("STOPPED")) {
+                                context.deezerMusicPlayer.jouerMorceau(Integer.parseInt(((ArtisteRecom) recommandation).getIdTitre()), finalViewHolder.image_play);
+                                finalViewHolder.image_play.setBackgroundResource(R.drawable.pause);
+                            } else if (status.equals("PLAYING") && ((ArtisteRecom) recommandation).getIdTitre().equals(context.deezerMusicPlayer.getIdMorceauEnCours() + "")) {
+                                context.deezerMusicPlayer.stopMorceau();
+                                finalViewHolder.image_play.setBackgroundResource(R.drawable.play);
+                            } else if (status.equals("PLAYING") && !((ArtisteRecom) recommandation).getIdTitre().equals(context.deezerMusicPlayer.getIdMorceauEnCours())) {
+                                context.deezerMusicPlayer.jouerMorceau(Integer.parseInt(((ArtisteRecom) recommandation).getIdTitre()), finalViewHolder.image_play);
+                                finalViewHolder.image_play.setBackgroundResource(R.drawable.pause);
+                            }
                         }
+
                     }
                 });
             }
