@@ -77,4 +77,6 @@ public abstract class Recommandation implements Affichable{
     }
 
     public abstract boolean contains(String text);
+
+    public abstract String getNomObjet();
 }

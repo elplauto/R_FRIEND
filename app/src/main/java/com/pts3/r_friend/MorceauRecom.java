@@ -50,4 +50,9 @@ public class MorceauRecom extends Recommandation {
             return true;
         return false;
     }
+
+    @Override
+    public String getNomObjet() {
+        return this.titre;
+    }
 }

@@ -192,7 +192,7 @@ public class AffichableAdapter extends ArrayAdapter<Affichable> {
                                 interractions.child("typeRecommandation").setValue(finalTypeRecommandation);
                                 interractions.child("idRecommandation").setValue(recommandation.getIdRecommandation());
                                 interractions.child("date").setValue(System.currentTimeMillis());
-
+                                interractions.child("nom").setValue(recommandation.getNomObjet());
                             }
                         });
 
@@ -236,6 +236,7 @@ public class AffichableAdapter extends ArrayAdapter<Affichable> {
                                 interractions.child("typeRecommandation").setValue(finalTypeRecommandation1);
                                 interractions.child("idRecommandation").setValue(recommandation.getIdRecommandation());
                                 interractions.child("date").setValue(System.currentTimeMillis());
+                                interractions.child("nom").setValue(recommandation.getNomObjet());
                             }
                         });
 

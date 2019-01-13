@@ -170,6 +170,15 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+       /* SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        listView.smoothScrollToPosition(sharedPref.getInt("firstItemVisible",0));
+        debug(sharedPref.getInt("firstItemVisible",0)+"------------------");*/
+
+    }
+
+    @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -263,9 +272,6 @@ public class MainActivity extends AppCompatActivity
         switchRecommandationsRecues.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (switchRecommandationsRecues.isChecked()) {
-                    switchRecommandationsEffectuees.setChecked(false);
-                }
                 afficherFlux();
             }
         });
@@ -273,9 +279,6 @@ public class MainActivity extends AppCompatActivity
         switchRecommandationsEffectuees.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (switchRecommandationsEffectuees.isChecked()) {
-                    switchRecommandationsRecues.setChecked(false);
-                }
                 afficherFlux();
             }
         });
@@ -375,6 +378,7 @@ public class MainActivity extends AppCompatActivity
             String typeInterraction = dataInterraction.child("typeInterraction").getValue(String.class);
             String typeRecommandation = dataInterraction.child("typeRecommandation").getValue(String.class);
             String user = dataInterraction.child("user").getValue(String.class);
+            String nomObjet = dataInterraction.child("nom").getValue(String.class);
 
             String phrase="";
             if (typeInterraction.equals("commentaire")) {
@@ -386,11 +390,11 @@ public class MainActivity extends AppCompatActivity
             }
 
             if (typeRecommandation.equals("morceau")) {
-                phrase += " une recommandation du morceau";
+                phrase += " une recommandation concernant le morceau " + "\"" + nomObjet +"\"";
             } else if (typeRecommandation.equals("album")) {
-                phrase += " une recommandation de l'album ";
+                phrase += " une recommandation concernant l'album " + "\"" + nomObjet +"\"";
             } else if (typeRecommandation.equals("artiste")) {
-                phrase += " une recommandation de l'artiste";
+                phrase += " une recommandation concernant l'artiste " + "\"" + nomObjet +"\"";
             }
 
             interractions.add(new Interraction(phrase,typeRecommandation,idRecommandation,date));
@@ -537,12 +541,18 @@ public class MainActivity extends AppCompatActivity
                         || recommandation instanceof AlbumRecom && switchAlbums.isChecked()
                         ){
                     if (switchRecommandationsEffectuees.isChecked()) {
-                        if (recommandation.getEmetteur().equals(username.getText().toString())) fluxCharge.add(recommandation);
+                        if (recommandation.getEmetteur().equals(username.getText().toString())) {
+                            fluxCharge.add(recommandation);
+                            continue;
+                        }
                     }
-                    else if (switchRecommandationsRecues.isChecked()) {
-                        if (recommandation.getDestinataire().equals(username.getText().toString())) fluxCharge.add(recommandation);
+                    if (switchRecommandationsRecues.isChecked()) {
+                        if (recommandation.getDestinataire().equals(username.getText().toString())) {
+                            fluxCharge.add(recommandation);
+                            continue;
+                        }
                     }
-                    else {
+                    if (!switchRecommandationsRecues.isChecked() && !switchRecommandationsEffectuees.isChecked()) {
                         fluxCharge.add(recommandation);
                     }
 
@@ -553,10 +563,10 @@ public class MainActivity extends AppCompatActivity
         for (Interraction interraction : interractions) {
             for (Affichable each : fluxCharge) {
                 Recommandation recommandation = (Recommandation) each;
-                if (recommandation.getIdRecommandation().equals(interraction.getIdRecommandation())
-                        && (recommandation instanceof MorceauRecom && interraction.getType().equals("morceau"))
+                if (switchInterractions.isChecked() && recommandation.getIdRecommandation().equals(interraction.getIdRecommandation())
+                        && ((recommandation instanceof MorceauRecom && interraction.getType().equals("morceau"))
                         || ((recommandation instanceof AlbumRecom && interraction.getType().equals("album"))
-                        || (recommandation instanceof ArtisteRecom && interraction.getType().equals("artiste")))) {
+                        || (recommandation instanceof ArtisteRecom && interraction.getType().equals("artiste"))))) {
                     temp.add(interraction);
                     break;
                 }
@@ -634,10 +644,6 @@ public class MainActivity extends AppCompatActivity
                 } else if (o2 instanceof Interraction) {
                     t2 = ((Interraction) o2).getDate();
                 }
-               /* debug(o1+"");
-                debug(o2+"");
-                debug(t1+"-");
-                debug(t2+"-");*/
 
                 if (t1 < t2) {
                     return 1;
@@ -656,6 +662,10 @@ public class MainActivity extends AppCompatActivity
         super.onPause();
         deezerMusicPlayer.stopAlbum();
         deezerMusicPlayer.stopMorceau();
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt("firstItemVisible",listView.getFirstVisiblePosition());
+        editor.commit();
     }
 
     private void closeKeyboard() {

@@ -59,6 +59,8 @@ public class DetailsRecommandationActivity extends AppCompatActivity {
     TextView champ2;
     TextView champ3;
 
+    String nomOeuvre;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +107,7 @@ public class DetailsRecommandationActivity extends AppCompatActivity {
                     interractions.child("typeRecommandation").setValue(infosSuppChild.substring(0,infosSuppChild.length()-1));
                     interractions.child("idRecommandation").setValue(idRecommandation);
                     interractions.child("date").setValue(System.currentTimeMillis());
+                    interractions.child("nom").setValue(nomOeuvre);
                     nouveauCommentaire.setText("");
                     btnSend.setVisibility(View.INVISIBLE);
                     chargerRecommandation();
@@ -203,6 +206,7 @@ public class DetailsRecommandationActivity extends AppCompatActivity {
                             Integer dureeSecondes = oeuvreData.child("duree").getValue(Integer.class);
                             String dureeMinutes = dureeSecondes/60 + "min" + dureeSecondes%60 + "s";
                             String titreMorceau = oeuvreData.child("titre").getValue(String.class);
+                            nomOeuvre=titreMorceau;
                             String nomAlbum = oeuvreData.child("album").getValue(String.class);
                             intro.setText(emetteur + " recommande un morceau" + (destinataire.equals("")?"":" à " + destinataire));
                             champ1.setText("Titre : " + titreMorceau + " (" + dureeMinutes + ")");
@@ -214,6 +218,7 @@ public class DetailsRecommandationActivity extends AppCompatActivity {
                             Integer nbTracks = oeuvreData.child("nbTrack").getValue(Integer.class);
                             String artisteAlbum = oeuvreData.child("artiste").getValue(String.class);
                             String titreAlbum = oeuvreData.child("titre").getValue(String.class);
+                            nomOeuvre=titreAlbum;
                             intro.setText(emetteur + " recommande un album" + (destinataire.equals("")?"":" à " + destinataire));
                             champ1.setText("Titre : " + titreAlbum);
                             champ2.setText("Artiste : " +  artisteAlbum);
@@ -222,12 +227,12 @@ public class DetailsRecommandationActivity extends AppCompatActivity {
 
                         case "ArtisteRecom":
                             String nom = oeuvreData.child("nom").getValue(String.class);
+                            nomOeuvre = nom;
                             Integer nbAlbums = oeuvreData.child("nbAlbums").getValue(Integer.class);
                             intro.setText(emetteur + " recommande un artiste" + (destinataire.equals("")?"":" à " + destinataire));
                             champ1.setText("Nom : " + nom);
                             champ2.setText("Nombre d'album : " +  nbAlbums);
                             champ3.setText("");
-
                             break;
 
             }

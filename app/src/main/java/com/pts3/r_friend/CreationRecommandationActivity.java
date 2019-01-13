@@ -42,6 +42,7 @@ public class CreationRecommandationActivity extends AppCompatActivity {
 
     DeezerDataSearcher deezerDataSearcher;
     Spinner spinner;
+    Spinner spinner2;
     android.support.v7.widget.SearchView.SearchAutoComplete searchAutoComplete;
     TextView tv1;
     TextView tv2;
@@ -79,6 +80,12 @@ public class CreationRecommandationActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(R.layout.spinner_item);
         spinner.setAdapter(adapter);
 
+        spinner2 = (Spinner) findViewById(R.id.spinner2);
+        String choix2[] = {"Tout le monde","Un utilisateur"};
+        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1 ,choix2);
+        adapter.setDropDownViewResource(R.layout.spinner_item);
+        spinner2.setAdapter(adapter2);
+
         destinataireExistant = true;
         pseudos = new ArrayList<>();
 
@@ -90,7 +97,8 @@ public class CreationRecommandationActivity extends AppCompatActivity {
         destinataire = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView);
         destinataire.setTextColor(Color.argb(255,255,255,255));
         destinataire.setHintTextColor(Color.argb(255,255,255,255));
-        destinataire.setHint("Destinataire");
+        destinataire.setHint("Pseudo du destinataire");
+        destinataire.setVisibility(View.GONE);
         destinataire.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
@@ -181,6 +189,21 @@ public class CreationRecommandationActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) { }
         });
 
+        spinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (spinner2.getSelectedItem().toString().equals("Tout le monde")) {
+                    destinataire.setVisibility(View.GONE);
+                    destinataire.setText("");
+                } else if (spinner2.getSelectedItem().toString().equals("Un utilisateur")) {
+                    destinataire.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) { }
+        });
+
         deezerDataSearcher = new DeezerDataSearcher(this,getResources().getString(R.string.app_id));
 
 
@@ -200,6 +223,7 @@ public class CreationRecommandationActivity extends AppCompatActivity {
         menuInflater.inflate(R.menu.menu_creation_recommandation, menu);
         // Get the search menu.
         MenuItem searchMenu = menu.findItem(R.id.search_view);
+
 
         // Get SearchView object.
         android.support.v7.widget.SearchView searchView = (android.support.v7.widget.SearchView) searchMenu.getActionView();

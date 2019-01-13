@@ -1,16 +1,6 @@
 package com.pts3.r_friend;
 
-import android.graphics.Point;
-import android.graphics.Typeface;
-import android.util.Log;
-import android.view.View;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.Space;
-import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -49,5 +39,10 @@ public class ArtisteRecom extends Recommandation {
                 || getEmetteur().toLowerCase().contains(text))
             return true;
         return false;
+    }
+
+    @Override
+    public String getNomObjet() {
+        return this.nom;
     }
 }
