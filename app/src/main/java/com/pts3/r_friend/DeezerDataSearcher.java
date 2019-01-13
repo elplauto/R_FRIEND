@@ -118,7 +118,7 @@ public class DeezerDataSearcher {
                 final List<Artiste> artistes = new ArrayList<>();
                 List<Artist> artists = (List<Artist>) result;
                 for (Artist artist : artists) {
-                    artistes.add(new Artiste(artist.getId()+"",artist.getName(), artist.getNbAlbums(), artist.getBigImageUrl()));
+                    artistes.add(new Artiste(artist.getId()+"",artist.getName(), artist.getNbAlbums(), artist.getBigImageUrl(),null));
                 }
                 context.rechercheArtisteReponse(artistes);
             }
@@ -129,6 +129,33 @@ public class DeezerDataSearcher {
         };
 
         DeezerRequest request = DeezerRequestFactory.requestSearchArtists(nom);
+
+        // set a requestId, that will be passed on the listener's callback methods
+        request.setId("trackRequest");
+
+        // launch the request asynchronously
+        deezerConnect.requestAsync(request, listener);
+    }
+
+    public void rechercherTitreArtiste(final Artiste artiste) {
+        RequestListener listener = new JsonRequestListener() {
+
+            public void onResult(Object result, Object requestId) {
+                List<Track> tracks = (List<Track>) result;
+                for (Track track : tracks) {
+                   if (track.getArtist().getId() == Long.parseLong(artiste.getId())) {
+                       context.rechercheTitreArtisteReponse(track.getId(),artiste);
+                       break;
+                   }
+                }
+            }
+
+            public void onUnparsedResult(String requestResponse, Object requestId) {}
+
+            public void onException(Exception e, Object requestId) {}
+        };
+
+        DeezerRequest request = DeezerRequestFactory.requestSearchTracks(artiste.getNom());
 
         // set a requestId, that will be passed on the listener's callback methods
         request.setId("trackRequest");

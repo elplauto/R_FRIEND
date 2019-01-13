@@ -152,12 +152,28 @@ public class AffichableAdapter extends ArrayAdapter<Affichable> {
                 });
 
             } else if (recommandation instanceof ArtisteRecom) {
+                final RecommandationViewHolder finalViewHolder = viewHolder;
                 typeRecommandation="artiste";
                 viewHolder.emetteur_destinataire.setText(recommandation.getEmetteur() + " recommande un artiste" + (recommandation.getDestinataire().equals("") ? "" : " à " + recommandation.getDestinataire()));
                 viewHolder.titre.setText("Nom : " + ((ArtisteRecom) recommandation).getNom());
                 viewHolder.nom_artiste.setText("Nombre d'album : " + ((ArtisteRecom) recommandation).getNbAlbums());
                 viewHolder.album.setText("");
-                viewHolder.image_play.setVisibility(View.INVISIBLE);
+                viewHolder.image_play.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String status = context.deezerMusicPlayer.getTrackPlayerState();
+                        if (status.equals("STARTED") || status.equals("PAUSED") || status.equals("PLAYBACK_COMPLETED") || status.equals("STOPPED")) {
+                            context.deezerMusicPlayer.jouerMorceau(Integer.parseInt(((ArtisteRecom) recommandation).getIdTitre()), finalViewHolder.image_play);
+                            finalViewHolder.image_play.setBackgroundResource(R.drawable.pause);
+                        } else if (status.equals("PLAYING") && ((ArtisteRecom) recommandation).getIdTitre().equals(context.deezerMusicPlayer.getIdMorceauEnCours() + "")) {
+                            context.deezerMusicPlayer.stopMorceau();
+                            finalViewHolder.image_play.setBackgroundResource(R.drawable.play);
+                        } else if (status.equals("PLAYING") && !((ArtisteRecom) recommandation).getIdTitre().equals(context.deezerMusicPlayer.getIdMorceauEnCours())) {
+                            context.deezerMusicPlayer.jouerMorceau(Integer.parseInt(((ArtisteRecom) recommandation).getIdTitre()), finalViewHolder.image_play);
+                            finalViewHolder.image_play.setBackgroundResource(R.drawable.pause);
+                        }
+                    }
+                });
             }
 
             final RecommandationViewHolder finalViewHolder = viewHolder;

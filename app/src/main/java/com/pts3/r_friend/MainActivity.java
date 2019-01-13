@@ -522,7 +522,8 @@ public class MainActivity extends AppCompatActivity
                             String nom = dataInfosSupp.child("nom").getValue(String.class);
                             Integer nbAlbums = dataInfosSupp.child("nbAlbums").getValue(Integer.class);
                             String picture = dataInfosSupp.child("pictureURL").getValue(String.class);
-                            recommandations.add(new ArtisteRecom(idRecommandation, date, dest, emet, picture, likingUsers, supportingUsers,commentaires, nom, nbAlbums));
+                            String idTitre = dataInfosSupp.child("idTitre").getValue(Long.class)+"";
+                            recommandations.add(new ArtisteRecom(idRecommandation, date, dest, emet, picture, likingUsers, supportingUsers,commentaires, nom, nbAlbums,idTitre));
                             break;
                     }
                     break; //pour ne pas parcourir tous les autres infosSuppChildren

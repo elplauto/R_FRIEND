@@ -1,18 +1,18 @@
 package com.pts3.r_friend;
 
-
-
 import java.util.List;
 
 public class ArtisteRecom extends Recommandation {
 
     private String nom;
     private Integer nbAlbums;
+    private String idTitre;
 
-    public ArtisteRecom(String idRecommandation,  Long dateRecommandation, String destinataire, String emetteur, String picture, List<String> likingUsers, List<String> supportingUsers,List<Commentaire> commentaires, String nom, Integer nbAlbums) {
+    public ArtisteRecom(String idRecommandation,  Long dateRecommandation, String destinataire, String emetteur, String picture, List<String> likingUsers, List<String> supportingUsers,List<Commentaire> commentaires, String nom, Integer nbAlbums, String idTitre) {
         super(idRecommandation, dateRecommandation, destinataire, emetteur, picture, likingUsers, supportingUsers,commentaires);
         this.nom = nom;
         this.nbAlbums = nbAlbums;
+        this.idTitre=idTitre;
     }
 
     public String getNom() {
@@ -29,6 +29,10 @@ public class ArtisteRecom extends Recommandation {
 
     public void setNbAlbums(Integer nbAlbums) {
         this.nbAlbums = nbAlbums;
+    }
+
+    public String getIdTitre() {
+        return idTitre;
     }
 
     @Override

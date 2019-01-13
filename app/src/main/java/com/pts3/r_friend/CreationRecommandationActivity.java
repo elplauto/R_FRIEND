@@ -371,6 +371,15 @@ public class CreationRecommandationActivity extends AppCompatActivity {
         }
     }
 
+    public void rechercheTitreArtisteReponse(Long idTrack, Artiste artiste) {
+        DatabaseReference refArtistes = root.child("recommandables").child("artistes");
+        DatabaseReference ref = refArtistes.child(artiste.getId());
+        ref.child("nom").setValue(artiste.getNom());
+        ref.child("nbAlbums").setValue(artiste.getNbAlbums());
+        ref.child("pictureURL").setValue(artiste.getPictureURL());
+        ref.child("idTitre").setValue(idTrack);
+    }
+
     private void ajouterRecommandation() {
         DatabaseReference recommandation;
         if (spinner.getSelectedItem().toString().equals("Morceau")) {
@@ -428,11 +437,7 @@ public class CreationRecommandationActivity extends AppCompatActivity {
     }
 
     public void ajouterArtiste(Artiste artiste) {
-        DatabaseReference refArtistes = root.child("recommandables").child("artistes");
-        DatabaseReference ref = refArtistes.child(artiste.getId());
-        ref.child("nom").setValue(artiste.getNom());
-        ref.child("nbAlbums").setValue(artiste.getNbAlbums());
-        ref.child("pictureURL").setValue(artiste.getPictureURL());
+        deezerDataSearcher.rechercherTitreArtiste(artiste);
     }
 
     private void closeKeyboard() {

@@ -6,12 +6,14 @@ public class Artiste {
     private String nom;
     private Integer nbAlbums;
     private String pictureURL;
+    private String idTitre;
 
-    public Artiste(String id, String nom, Integer nbAlbums, String pictureURL) {
+    public Artiste(String id, String nom, Integer nbAlbums, String pictureURL, String idTitre) {
         this.id=id;
         this.nom = nom;
         this.nbAlbums=nbAlbums;
         this.pictureURL=pictureURL;
+        this.idTitre=idTitre;
     }
 
     public Integer getNbAlbums() {
@@ -28,5 +30,9 @@ public class Artiste {
 
     public String getNom() {
         return nom;
+    }
+
+    public String getIdTitre() {
+        return idTitre;
     }
 }
