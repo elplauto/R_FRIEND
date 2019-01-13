@@ -137,15 +137,15 @@ public class AffichableAdapter extends ArrayAdapter<Affichable> {
                 viewHolder.image_play.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String status = context.deezerMusicPlayer.getTrackPlayerState();
+                        String status = context.deezerMusicPlayer.getAlbumPlayerState();
                         if (status.equals("STARTED") || status.equals("PAUSED") || status.equals("PLAYBACK_COMPLETED") || status.equals("STOPPED")) {
                             context.deezerMusicPlayer.jouerAlbum(Integer.parseInt(((AlbumRecom) recommandation).getIdAlbum()), finalViewHolder.image_play);
                             finalViewHolder.image_play.setBackgroundResource(R.drawable.pause);
-                        } else if (status.equals("PLAYING") && ((AlbumRecom) recommandation).getIdAlbum().equals(context.deezerMusicPlayer.getIdMorceauEnCours() + "")) {
-                            context.deezerMusicPlayer.stopMorceau();
+                        } else if (status.equals("PLAYING") && ((AlbumRecom) recommandation).getIdAlbum().equals(context.deezerMusicPlayer.getIdAlbumEnCours() + "")) {
+                            context.deezerMusicPlayer.stopAlbum();
                             finalViewHolder.image_play.setBackgroundResource(R.drawable.play);
-                        } else if (status.equals("PLAYING") && !((AlbumRecom) recommandation).getIdAlbum().equals(context.deezerMusicPlayer.getIdMorceauEnCours())) {
-                            context.deezerMusicPlayer.jouerMorceau(Integer.parseInt(((AlbumRecom) recommandation).getIdAlbum()), finalViewHolder.image_play);
+                        } else if (status.equals("PLAYING") && !((AlbumRecom) recommandation).getIdAlbum().equals(context.deezerMusicPlayer.getIdAlbumEnCours())) {
+                            context.deezerMusicPlayer.jouerAlbum(Integer.parseInt(((AlbumRecom) recommandation).getIdAlbum()), finalViewHolder.image_play);
                             finalViewHolder.image_play.setBackgroundResource(R.drawable.pause);
                         }
                     }

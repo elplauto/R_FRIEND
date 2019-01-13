@@ -62,7 +62,6 @@ public class DeezerMusicPlayer {
             }
         });
 
-
         idAlbumEnCours=0;
         idMorceauEnCours=0;
     }
