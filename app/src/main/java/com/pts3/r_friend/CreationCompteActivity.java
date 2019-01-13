@@ -1,5 +1,8 @@
 package com.pts3.r_friend;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -38,8 +41,8 @@ public class CreationCompteActivity extends AppCompatActivity {
         btnValider = findViewById(R.id.btnCreerCompte);
         editTextEmail = findViewById(R.id.editTextEmail);
         editTextPseudo = findViewById(R.id.editTextPseudo);
-        editTextMdp = findViewById(R.id.editTextMdp);
-        editTextConfirmerMdp = findViewById(R.id.editTextConfirmerMdp);
+        editTextMdp = findViewById(R.id.editTextNouveauMdp1);
+        editTextConfirmerMdp = findViewById(R.id.editTextNouveauMdp2);
 
         database = FirebaseDatabase.getInstance();
         root = database.getReference();
@@ -54,6 +57,10 @@ public class CreationCompteActivity extends AppCompatActivity {
                 verifierDispoPseudo();
             }
         });
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("");
+        actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#26223C")));
     }
 
     private void verifierDispoPseudo() {

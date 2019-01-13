@@ -331,7 +331,8 @@ public class MainActivity extends AppCompatActivity
         }
 
         else if (id == R.id.buttonCompte) {
-
+            Intent intent = new Intent(getApplicationContext(),ChangementMdpActivity.class);
+            startActivity(intent);
         }
 
         return true;

@@ -5,95 +5,70 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#534C74"
-    tools:context=".CreationCompteActivity">
+    tools:context=".ChangementMdpActivity">
 
     <TextView
-        android:id="@+id/textViewEmail"
+        android:id="@+id/textViewPseudo1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
-        android:text="Veuillez rentrer votre adresse mail :"
-        android:textSize="20dp"
+        android:layout_marginTop="8dp"
+        android:text="Pseudo"
         android:textColor="@android:color/white"
+        android:textSize="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editTextEmail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColorHint="#cccccc"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:ems="10"
-        android:hint="Adresse mail"
-        android:inputType="textEmailAddress"
-        android:singleLine="false"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewEmail" />
-
-    <TextView
-        android:id="@+id/textViewPseudo"
+        android:id="@+id/chgtMdpPseudo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:textColor="@android:color/white"
-        android:layout_marginTop="24dp"
-        android:text="Veuillez rentrer votre pseudo :"
-        android:textSize="20dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextEmail" />
-
-    <EditText
-        android:id="@+id/editTextPseudo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:textColorHint="#cccccc"
         android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="Pseudo"
-        android:inputType="textPersonName"
-
+        android:inputType="textEmailAddress"
+        android:singleLine="false"
+        android:textColorHint="#cccccc"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewPseudo" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewPseudo1" />
 
     <TextView
-        android:id="@+id/textViewMdp"
+        android:id="@+id/textViewMdpActuel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:textColor="@android:color/white"
         android:layout_marginTop="24dp"
-        android:text="Veuillez rentrer votre mot de passe :"
+        android:text="Mot de passe actuel"
+        android:textColor="@android:color/white"
         android:textSize="20dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextPseudo" />
+        app:layout_constraintTop_toBottomOf="@+id/chgtMdpPseudo" />
 
-    <TextView
-        android:id="@+id/textViewConfirmerMdp"
+    <EditText
+        android:id="@+id/editTextMdpActuel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="24dp"
-        android:textColor="@android:color/white"
-        android:text="Veuillez valider votre mot de passe :"
-        android:textSize="20dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:hint="Mot de passe actuel"
+        android:inputType="textPassword"
+        android:textColorHint="#cccccc"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextNouveauMdp1" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewMdpActuel" />
 
-    <Button
-        android:id="@+id/btnCreerCompte"
+    <TextView
+        android:id="@+id/textViewNouveauMdp1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Valider"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        android:text="Nouveau mot de passe"
+        android:textColor="@android:color/white"
+        android:textSize="20dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextNouveauMdp2" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextMdpActuel" />
 
     <EditText
         android:id="@+id/editTextNouveauMdp1"
@@ -102,11 +77,23 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:ems="10"
-        android:hint="Mot de passe"
-        android:textColorHint="#cccccc"
+        android:hint="Nouveau mot de passe"
         android:inputType="textPassword"
+        android:textColorHint="#cccccc"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewMdp" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewNouveauMdp1" />
+
+    <TextView
+        android:id="@+id/textViewNouveauMdp2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        android:text="Confirmation nouveau mot de passe"
+        android:textColor="@android:color/white"
+        android:textSize="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextNouveauMdp1" />
 
     <EditText
         android:id="@+id/editTextNouveauMdp2"
@@ -115,10 +102,19 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:ems="10"
-        android:hint="Valider mot de passe"
+        android:hint="Confirmation nouveau mot de passe"
         android:inputType="textPassword"
         android:textColorHint="#cccccc"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewConfirmerMdp" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewNouveauMdp2" />
+
+    <Button
+        android:id="@+id/btnValiderChgtMdp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Valider"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

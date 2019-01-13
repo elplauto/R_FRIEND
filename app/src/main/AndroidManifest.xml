@@ -32,6 +32,8 @@
 
         <activity android:name=".MdpOublieActivity" android:screenOrientation="portrait"/>
 
+        <activity android:name=".ChangementMdpActivity" android:screenOrientation="portrait"/>
+
         <activity
             android:name=".CreationCompteActivity"
             android:screenOrientation="portrait"

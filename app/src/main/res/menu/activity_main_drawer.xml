@@ -6,7 +6,7 @@
 
     <item
         android:id="@+id/buttonCompte"
-        android:title="Compte"
+        android:title="Changer de mdp"
         android:icon="@drawable/compte"></item>
 
     <item

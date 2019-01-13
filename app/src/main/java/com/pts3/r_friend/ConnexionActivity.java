@@ -2,7 +2,10 @@ package com.pts3.r_friend;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -38,6 +41,10 @@ public class ConnexionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_connexion);
         database = FirebaseDatabase.getInstance();
         root = database.getReference();
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("");
+        actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#26223C")));
 
         btnConnexion = findViewById(R.id.btnConnexion);
         btnCreerCompte = findViewById(R.id.btnCreerCompte);
@@ -75,8 +82,10 @@ public class ConnexionActivity extends AppCompatActivity {
         mdpOublie.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ConnexionActivity.this,MdpOublieActivity.class);
-                startActivity(intent);
+                Toast.makeText(getApplicationContext(),"Cette fonctionnalité n'est pas encore disponible", Toast.LENGTH_LONG).show();
+
+                /*Intent intent = new Intent(ConnexionActivity.this,MdpOublieActivity.class);
+                startActivity(intent);*/
             }
         });
     }
